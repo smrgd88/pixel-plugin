@@ -55,7 +55,10 @@ run_test "Plugin Structure Validation" "$SCRIPT_DIR/validate-plugin-structure.sh
 run_test "Skills Validation" "$SCRIPT_DIR/validate-skills.sh" || true
 run_test "Commands Validation" "$SCRIPT_DIR/validate-commands.sh" || true
 run_test "Documentation Validation" "$SCRIPT_DIR/validate-docs.sh" || true
-run_test "MCP Integration Test" "$SCRIPT_DIR/test-mcp.sh" || true
+run_test "MCP Package Validation" "$SCRIPT_DIR/test-mcp.sh" || true
+
+run_test "MCP Contract Validation" "$SCRIPT_DIR/test-mcp-contract.sh" || true
+run_test "MCP Wrapper Tests" "$SCRIPT_DIR/test-mcp-wrapper.py" || true
 
 # Print summary
 echo -e "${BLUE}═══════════════════════════════════════════════════════${NC}"

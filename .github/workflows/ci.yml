@@ -16,5 +16,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install contract test dependencies
+        run: python3 -m pip install -r bin/requirements-test.txt
+
       - name: Run plugin validation suite
         run: ./bin/test-plugin.sh

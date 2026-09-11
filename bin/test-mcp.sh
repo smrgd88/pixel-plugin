@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Test MCP server integration and binary availability
+# Validate MCP package files; no actual server or Aseprite operations
 
 set -e
 
@@ -15,7 +15,7 @@ BIN_DIR="$PLUGIN_ROOT/bin"
 
 ERRORS=0
 
-echo "Testing MCP Integration..."
+echo "Validating MCP Package..."
 
 # Check .mcp.json exists
 if [ ! -f "$PLUGIN_ROOT/.mcp.json" ]; then
@@ -124,7 +124,7 @@ else
 fi
 
 if [ $ERRORS -eq 0 ]; then
-    echo -e "${GREEN}✓ MCP integration valid${NC}"
+    echo -e "${GREEN}✓ MCP package files valid (no Aseprite operations)${NC}"
     exit 0
 else
     echo -e "${RED}✗ Found $ERRORS error(s)${NC}"
