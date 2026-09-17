@@ -123,13 +123,13 @@ def basic(name):
  elif name=='apply_outline':draw(p);call(name,**d,color='#00FF00',thickness=1);assert px(p)['2,3']=='#FF0000FF' and any(v=='#00FF00FF' for v in px(p).values())
  elif name in ['select_rectangle','select_ellipse','select_all','deselect','move_selection','copy_selection','cut_selection','paste_clipboard']:
   rect(p,color='#FF0000')
-  if name=='select_all':call(name,**s);assert all(json.loads(inspect(p)['data'])['selection'][k]==v for k,v in {'x':0,'y':0,'w':16,'h':16}.items()), f'Invalid selection persistence: {inspect(p)["data"]}'
-  elif name=='select_ellipse':call(name,**s,x=2,y=2,width=6,height=6,mode='replace');assert json.loads(inspect(p)['data'])['selection']['w']==6, f'Expected width 6; persisted data={inspect(p)["data"]}'
+  if name=='select_all':call(name,**s);assert all(inspect(p)['selection'][k]==v for k,v in {'x':0,'y':0,'w':16,'h':16}.items()), f'Invalid selection persistence: {inspect(p)["data"]}'
+  elif name=='select_ellipse':call(name,**s,x=2,y=2,width=6,height=6,mode='replace');assert inspect(p)['selection']['w']==6, f'Expected width 6; persisted data={inspect(p)["data"]}'
   else:
    call('select_rectangle',**s,x=2,y=3,width=3,height=3,mode='replace')
-   if name=='select_rectangle':assert all(json.loads(inspect(p)['data'])['selection'][k]==v for k,v in {'x':2,'y':3,'w':3,'h':3}.items())
-   elif name=='deselect':call(name,**s);assert inspect(p)['data']==''
-   elif name=='move_selection':call(name,**s,dx=1,dy=2);assert all(json.loads(inspect(p)['data'])['selection'][k]==v for k,v in {'x':3,'y':5,'w':3,'h':3}.items())
+   if name=='select_rectangle':assert all(inspect(p)['selection'][k]==v for k,v in {'x':2,'y':3,'w':3,'h':3}.items())
+   elif name=='deselect':call(name,**s);assert inspect(p)['data']=='' and not inspect(p).get('selection')
+   elif name=='move_selection':call(name,**s,dx=1,dy=2);assert all(inspect(p)['selection'][k]==v for k,v in {'x':3,'y':5,'w':3,'h':3}.items())
    elif name=='cut_selection':call(name,**d);assert '2,3' not in px(p) and '1,3' in px(p)
    else:
     call('copy_selection',**s);assert len(px(p,'__mcp_clipboard__'))==9
@@ -207,6 +207,30 @@ def palette_snap():
  p=sprite('indexed');call('set_palette',sprite_path=p,colors=['#000000','#FFFFFF','#FF0000']);call('add_layer',sprite_path=p,layer_name='New')
  call('draw_pixels',sprite_path=p,layer_name='New',frame_number=1,pixels=[{'x':1,'y':2,'color':'#FFFFFF'}],use_palette=True)
  assert px(p,'New')=={'1,2':'#FFFFFFFF'}, px(p,'New')
+def lua_assert(path,code):
+ script=RUN/'review-check.lua';script.write_text(code)
+ result=subprocess.run([ASE,'--batch',path,'--script',str(script)],capture_output=True,text=True,timeout=30)
+ assert result.returncode==0,result.stdout+result.stderr
+
+def duplicate_group_attributes():
+ p=sprite()
+ lua_assert(p,'''local s=app.activeSprite;local l=s.layers[1];local outer=s:newGroup();outer.name="Outer";local inner=s:newGroup();inner.parent=outer;l.parent=inner;local c=l:cel(1);c.image:drawPixel(5,5,app.pixelColor.rgba(255,0,0,255));c.data="KEEP";c.zIndex=2;c.opacity=123;c.color=Color(40,50,60);c.properties.answer=42;c.properties("org/test").flag="yes";s:newEmptyFrame(2);s:newEmptyFrame(3);s:saveAs(s.filename)''')
+ r=call('duplicate_frame',sprite_path=p,source_frame=1,insert_after=0);assert r['new_frame_number']==4
+ lua_assert(p,'''local s=app.activeSprite;local l=s.layers[1].layers[1].layers[1];local c=l:cel(4);assert(c and c.data=="KEEP" and c.zIndex==2 and c.opacity==123);assert(c.color.red==40 and c.properties.answer==42 and c.properties("org/test").flag=="yes");assert(app.pixelColor.rgbaR(c.image:getPixel(5,5))==255)''')
+
+def duplicate_render_order():
+ p=sprite()
+ lua_assert(p,'''local s=app.activeSprite;local i=Image(1,1,ColorMode.RGB);i:drawPixel(0,0,app.pixelColor.rgba(255,0,0,255));local c=s:newCel(s.layers[1],1,i,Point(5,5));c.zIndex=2;local top=s:newLayer();local blue=Image(1,1,ColorMode.RGB);blue:drawPixel(0,0,app.pixelColor.rgba(0,0,255,255));s:newCel(top,1,blue,Point(5,5));s:saveAs(s.filename)''')
+ call('duplicate_frame',sprite_path=p,source_frame=1,insert_after=0)
+ lua_assert(p,'''local s=app.activeSprite;for n=1,2 do local im=Image(16,16,ColorMode.RGB);im:drawSprite(s,n);assert(app.pixelColor.rgbaR(im:getPixel(5,5))==255,"zIndex changed rendered order") end''')
+
+def selection_user_data():
+ p=sprite();raw='{ "empty":{}, "array":[null,{},[],false,0], "null":null, "large":9007199254740993 }'
+ quoted=json.dumps(raw)
+ lua_assert(p,'app.activeSprite.data='+quoted+';app.activeSprite:saveAs(app.activeSprite.filename)')
+ for name in ['select_all','deselect','select_all','deselect']:
+  call(name,sprite_path=p);lua_assert(p,'assert(app.activeSprite.data=='+quoted+',"metadata changed")')
+
 try:
  snapshot=json.loads((ROOT/'config/mcp-contract.json').read_text())['tools'];assert list(tools.values())==snapshot
  for name in tools:case(name,lambda n=name:basic(n))
@@ -226,6 +250,9 @@ try:
  case('select_all',all_then_copy,'followed-by-copy')
  case('select_ellipse',ellipse_cut,'followed-by-cut-mask')
  case('draw_pixels',palette_snap,'indexed-use-palette-true')
+ case('duplicate_frame',duplicate_group_attributes,'nested-groups-and-cel-attributes')
+ case('duplicate_frame',duplicate_render_order,'rendered-order')
+ case('select_all',selection_user_data,'metadata-null-empty-roundtrip')
 finally:
  c.close();summary={'server_version':version,'run_dir':str(RUN),'calls':len(calls),'results':results,'tools_unattempted':sorted(set(tools)-{x['tool'] for x in results})};(RUN/'summary.json').write_text(json.dumps(summary,indent=2));(OUT/'latest-run.txt').write_text(str(RUN)+'\n');print('ARTIFACTS',RUN,flush=True)
 

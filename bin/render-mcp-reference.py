@@ -8,7 +8,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def render(contract):
     lines = ['# MCP tool contract', '',
-             'Generated from the actual `tools/list` response at MCP develop commit `' + contract['source_commit'] + '`.',
+             'Generated from the actual `tools/list` response at MCP source commit `' + contract['source_commit'] + '`.',
              'Regenerate with `python3 bin/render-mcp-reference.py` after reviewing a new snapshot.', '',
              'Read the tool section needed for the task. All tool names use the `mcp__aseprite__` prefix in skills/commands.',
              'Required fields come from JSON Schema, even if their descriptions mention defaults. Object and array child fields are included below.', '',

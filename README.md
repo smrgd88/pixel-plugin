@@ -214,7 +214,7 @@ Exports support still PNG, animated GIF and spritesheets with horizontal, vertic
 
 ## Local MCP development
 
-The bundled server and schemas are pinned to MCP behavior-repair commit `27b30fd40d8d3697ac44794df5b6280b0ff4c67d`. Build a local committed revision and select it through PIXEL_MCP_BINARY; no personal source paths are stored in the distribution. See [reproducible build and validation](docs/LOCAL_MCP.md), [tool contract](docs/MCP_TOOLS.md), and [synchronization audit](docs/MCP_SYNC.md).
+The bundled server and schemas are pinned to MCP behavior-repair commit `b166b166ddb63af1a0d843f2cf30ec38541529eb`. Build a local committed revision and select it through PIXEL_MCP_BINARY; no personal source paths are stored in the distribution. See [reproducible build and validation](docs/LOCAL_MCP.md), [tool contract](docs/MCP_TOOLS.md), and [synchronization audit](docs/MCP_SYNC.md).
 
 ## Documentation
 

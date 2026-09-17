@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Self-review preservation follow-up
+- Consume the MCP fixes for nested-group frame duplication, complete cel attributes and byte-exact preservation of user metadata during selection operations.
+- Read the versioned selection-property namespace in the independent inspector and add three bundled regression scenarios (105 total).
+- Retain legacy mask read compatibility without resurrecting stale state after clear.
+
+
 ### Follow-up restoration and verified behavior
 - Restore reusable creation, animation timing, material shading, manual patterns and export guidance from the original skills while retaining corrected MCP contracts.
 - Add eight executable end-to-end skill recipes, ownership/argument validation and real output checks.

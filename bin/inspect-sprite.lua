@@ -1,5 +1,11 @@
 local s=app.activeSprite
 local o={width=s.width,height=s.height,mode=s.colorMode,transparent=s.transparentColor,data=s.data,palette={},frames={},layers={},tags={}}
+local store=s.properties("pixel-mcp/selection")
+if store.version==1 then o.selection=store.mask
+elseif s.data~="" then
+ local ok,legacy=pcall(function() return json.decode(s.data).selection end)
+ if ok then o.selection=legacy end
+end
 for i=0,#s.palettes[1]-1 do
  local c=s.palettes[1]:getColor(i)
  o.palette[#o.palette+1]=string.format('#%02X%02X%02X%02X',c.red,c.green,c.blue,c.alpha)
