@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Follow-up restoration and verified behavior
+- Restore reusable creation, animation timing, material shading, manual patterns and export guidance from the original skills while retaining corrected MCP contracts.
+- Add eight executable end-to-end skill recipes, ownership/argument validation and real output checks.
+- Add a 50-tool behavior sweep with selected option/offset cases; consume the separate MCP fixes for indexed pixels, dithering, selection masks, clipboard offsets, transparent quantization and frame duplication.
+
+
 ### Fixed
 - Synchronize all four skills, five commands, examples, allowlists and exact input/output reference with MCP develop `1076166edf99f60e92bfd7fc4def261264930dcb` (50 tools).
 - Correct tool aliases, one-based frames, path handling, export options and response casing; document native linked-cel construction, indexed auto shading and upstream behavior limits.
@@ -15,7 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Reproducible committed-source host/release builds, source/schema snapshots and binary SHA-256 provenance.
 - Live MCP contract comparison, 68 documented payload checks, negative regressions and wrapper/config tests in CI.
-- Isolated real-Aseprite smoke tests for native links, indexed shading, PNG/GIF/sheet exports and opaque quantization. Transparent quantization still fails upstream on alpha hex parsing and is explicitly reported.
+- Isolated real-Aseprite smoke tests for native links, indexed shading, PNG/GIF/sheet exports and opaque quantization. Transparent quantization and selection/pixel/dithering regressions are covered by the follow-up repaired MCP build.
 
 ## [Unreleased]
 

@@ -36,7 +36,7 @@ This plugin uses the [pixel-mcp](https://github.com/willibrandon/pixel-mcp) Mode
 
 ### 1. Prerequisites
 
-- [Aseprite](https://www.aseprite.org/) v1.3.0+ installed
+- [Aseprite](https://www.aseprite.org/) v1.3.17.2+ installed
 - [Claude Code](https://claude.com/code) installed
 
 ### 2. Installation
@@ -214,7 +214,7 @@ Exports support still PNG, animated GIF and spritesheets with horizontal, vertic
 
 ## Local MCP development
 
-The bundled server and schemas are pinned to MCP develop commit `1076166edf99f60e92bfd7fc4def261264930dcb`. Build a local committed revision and select it through PIXEL_MCP_BINARY; no personal source paths are stored in the distribution. See [reproducible build and validation](docs/LOCAL_MCP.md), [tool contract](docs/MCP_TOOLS.md), and [synchronization audit](docs/MCP_SYNC.md).
+The bundled server and schemas are pinned to MCP behavior-repair commit `27b30fd40d8d3697ac44794df5b6280b0ff4c67d`. Build a local committed revision and select it through PIXEL_MCP_BINARY; no personal source paths are stored in the distribution. See [reproducible build and validation](docs/LOCAL_MCP.md), [tool contract](docs/MCP_TOOLS.md), and [synchronization audit](docs/MCP_SYNC.md).
 
 ## Documentation
 
@@ -258,7 +258,7 @@ See [Known Issues](docs/KNOWN_ISSUES.md) for additional troubleshooting informat
 
 ## Requirements
 
-- **Aseprite**: v1.3.0 or higher
+- **Aseprite**: v1.3.17.2 or higher
 - **Claude Code**: v1.0.0 or higher
 - **pixel-mcp**: MCP server (bundled) - [Source](https://github.com/willibrandon/pixel-mcp)
 

@@ -466,3 +466,9 @@ These are MCP tools/call payloads, not a script to run sequentially. Replace `/w
   }
 }
 ```
+
+## Complete creation recipes
+
+The executable recipes `heart`, `sword` and `layered-character` in [workflows.json](workflows.json) preserve the original icon/item/character approach with corrected MCP payloads. Heart uses the original 8×8 silhouette; sword builds blade, guard and handle; the character keeps background and actor separate. Each starts with create_canvas and carries the returned file_path. Read a recipe to adapt its composition rather than merely copying a single primitive.
+
+Recipe JSON uses `{source}` for an existing absolute sprite path, `{output}` for a caller-selected output directory, and saved step results such as `{canvas.file_path}`. These are recipe substitutions, never literal MCP arguments. The runner resolves them before schema validation. Run `python3 bin/test-skill-workflows.py --aseprite /absolute/path/to/aseprite` to validate the recipes with real files. The prerequisite fixture is created only by the test runner; production use must inspect the user's actual source.

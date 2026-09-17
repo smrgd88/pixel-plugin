@@ -20,7 +20,7 @@ Use the GitHub issue tracker to report bugs or suggest features:
 ## Development Setup
 
 ### Prerequisites
-- Aseprite v1.3.0+
+- Aseprite v1.3.17.2+
 - Go 1.25+ (for building pixel-mcp binaries)
 - Bash (for test scripts)
 - Python 3 and bin/requirements-test.txt (for JSON Schema validation)

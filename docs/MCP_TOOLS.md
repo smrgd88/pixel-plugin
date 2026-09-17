@@ -1,6 +1,6 @@
 # MCP tool contract
 
-Generated from the actual `tools/list` response at MCP develop commit `1076166edf99f60e92bfd7fc4def261264930dcb`.
+Generated from the actual `tools/list` response at MCP develop commit `27b30fd40d8d3697ac44794df5b6280b0ff4c67d`.
 Regenerate with `python3 bin/render-mcp-reference.py` after reviewing a new snapshot.
 
 Read the tool section needed for the task. All tool names use the `mcp__aseprite__` prefix in skills/commands.

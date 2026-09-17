@@ -22,5 +22,3 @@ Check MCP `isError` before reading `structuredContent` (or JSON text content). R
 6. Use `suggest_antialiasing` first with `auto_apply: false`; inspect `suggestions` and `total_edges`. Set `auto_apply: true` to apply smoothing, with `use_palette: true` for palette snapping. Verify `applied` and inspect pixels.
 
 Read [reference.md](reference.md) for algorithm choices and response fields. Keep intentional hard edges on small sprites; antialiasing is optional.
-
-Known upstream limit: quantization with transparent pixels and `preserve_transparency: true` can fail on `#00000000` color parsing at the pinned revision. Preserve the original and report that error; do not retry with transparency disabled unless losing transparency is explicitly wanted. The live smoke test verifies opaque-image quantization separately. See [known issues](../../docs/KNOWN_ISSUES.md).

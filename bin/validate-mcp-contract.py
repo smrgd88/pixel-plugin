@@ -157,6 +157,8 @@ def main():
         for key in ['inputSchema','outputSchema']:
             Draft202012Validator.check_schema(t[key])
     examples = validate_docs(tools)
+    workflows = load_module('workflows', 'test-skill-workflows.py')
+    print(f'PASS: {workflows.validate_recipes(tools)} complete skill recipes have valid arguments, references and allowlists')
     renderer = load_module('reference', 'render-mcp-reference.py')
     assert (ROOT/'docs/MCP_TOOLS.md').read_text() == renderer.render(contract), 'Regenerate docs/MCP_TOOLS.md'
     regressions(tools, examples)

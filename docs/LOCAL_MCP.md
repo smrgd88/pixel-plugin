@@ -4,7 +4,7 @@ The plugin launches `.mcp.json` → `bin/pixel-mcp` → a platform binary. A bui
 
 ## Pinned source
 
-[config/mcp-source.json](../config/mcp-source.json) pins MCP origin/develop at `1076166edf99f60e92bfd7fc4def261264930dcb`. All five bundled executables are built from that commit; [bin/mcp-build.json](../bin/mcp-build.json) records their SHA-256 hashes. The actual `tools/list` input/output schemas are in [config/mcp-contract.json](../config/mcp-contract.json).
+[config/mcp-source.json](../config/mcp-source.json) pins the MCP behavior repair at `27b30fd40d8d3697ac44794df5b6280b0ff4c67d`. All five bundled executables are built from that commit; [bin/mcp-build.json](../bin/mcp-build.json) records their SHA-256 hashes. The actual `tools/list` input/output schemas are in [config/mcp-contract.json](../config/mcp-contract.json).
 
 The MCP protocol's `serverInfo.version` is still `0.1.0` in this source. It is not the plugin version or a reliable source identifier. `bin/pixel-mcp --version` in these builds reports the full source commit.
 
@@ -47,11 +47,11 @@ python3 bin/validate-mcp-contract.py --live
 python3 bin/test-mcp-live.py --aseprite /absolute/path/to/aseprite
 ```
 
-The default suite validates documents, examples, allowlists, all bundled checksums and actual bundled MCP initialization/tools/list. Its startup fixture uses Python as a placeholder executable and **does not test Aseprite**. The separate live test requires real Aseprite and checks native cel links, shared pixel edits, indexed auto shading, dither/quantization, PNG dimensions, GIF and spritesheet metadata. A missing dependency or failed call is an error, never an integration pass.
+The default suite validates documents, examples, allowlists, all bundled checksums and actual bundled MCP initialization/tools/list. Its startup fixture uses Python as a placeholder executable and **does not test Aseprite**. The live tests require real Aseprite: test-mcp-live.py checks the smoke workflow; test-mcp-behavior.py checks every tool and selected options; test-skill-workflows.py executes the restored complete skill recipes. A missing dependency or failed call is an error, never an integration pass.
 
 ## Update bundled distribution
 
-After reviewing a new MCP develop commit, update the source pin, capture its real `tools/list` into the contract snapshot, review input/output and handler differences, update examples/skills, and regenerate the reference:
+After reviewing a new MCP behavior-repair commit, update the source pin, capture its real `tools/list` into the contract snapshot, review input/output and handler differences, update examples/skills, and regenerate the reference:
 
 ```bash
 python3 bin/build-mcp.py /path/to/pixel-mcp --release

@@ -18,3 +18,19 @@ Spritesheet padding applies to border, shape and inner padding. Do not assume it
 Scale and FPS are plugin workflows: save a native copy, scale with nearest-neighbor and/or change frame durations, then export. For tag or layer filtering, obtain a known range or layer list and delete unwanted frames/layers on the copy. Delete frames from the end to avoid index shifts. There is no loop-count export option.
 
 For Unity/Godot/Phaser, consume the actual frame names, coordinates and duration fields from the exported JSON; engine-specific asset/code generation is a separate adaptation, not an MCP export format.
+
+## Keep the delivered asset readable
+
+Choose PNG for a still with alpha, GIF for simple animation previews, and a sheet plus actual Aseprite metadata for engine integration. GIF cannot represent the full range of partial alpha; inspect the result instead of assuming it will match PNG. JPG is lossy and is usually a poor fit for crisp sprite edges unless specifically required.
+
+For 2× or 4× output, scale a native copy with nearest-neighbor. A single source pixel should become an integer block of the same color. Bilinear interpolation creates intermediate colors; it is useful for some artwork but changes the pixel grid. Leave originals at native size when the engine will scale them.
+
+Engine import guidance is separate from MCP export:
+
+- Use point/nearest sampling when a crisp pixel grid is desired; inspect the target engine's filtering, compression and mipmap settings.
+- For sheets, slice using actual frame rectangles from the generated metadata. Do not assume zero padding, uniform file names or a fixed number of columns.
+- Preserve per-frame durations when constructing an animation. A fixed FPS cannot represent intentional holds exactly.
+- Keep atlas padding and display scaling separate: padding protects frame edges, while sampling/scale controls how they appear on screen.
+- Ask which engine/version is targeted before generating engine-specific code. This guide does not promise a Unity/Godot/Phaser-specific JSON schema or reuse unverified SDK examples.
+
+The [copy-and-export recipe](examples.md#complete-export-recipe) demonstrates native-source preservation, 2× pixel scaling and real sheet metadata rather than an invented export option.

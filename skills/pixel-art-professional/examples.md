@@ -267,3 +267,9 @@ These are MCP tools/call payloads, not a script to run sequentially. Replace `/w
   }
 }
 ```
+
+## Complete refinement recipes
+
+The `steel-shading` and `manual-checker` recipes in [workflows.json](workflows.json) show the restored material-ramp and manual texture workflows. Steel starts with a flat midtone shape on Layer 1; use its explicit ramp and compare resulting colors. Manual checker expands the 4×4 A/B tile into exact pixel coordinates, making it suitable for deliberate texture placement. No nonexistent custom-pattern argument is sent.
+
+Recipe JSON uses `{source}` for an existing absolute sprite path, `{output}` for a caller-selected output directory, and saved step results such as `{canvas.file_path}`. These are recipe substitutions, never literal MCP arguments. The runner resolves them before schema validation. Run `python3 bin/test-skill-workflows.py --aseprite /absolute/path/to/aseprite` to validate the recipes with real files. The prerequisite fixture is created only by the test runner; production use must inspect the user's actual source.

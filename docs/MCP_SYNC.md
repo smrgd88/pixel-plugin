@@ -1,4 +1,6 @@
-# MCP develop synchronization audit
+# Original MCP develop synchronization audit
+
+This records the first synchronization. The later behavior repair, restored workflows and current pinned build are documented in [REPAIR_VALIDATION.md](REPAIR_VALIDATION.md).
 
 ## Source baseline
 

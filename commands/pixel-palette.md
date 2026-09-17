@@ -1,7 +1,7 @@
 ---
 description: Show, set, edit, analyze or quantize a sprite palette
 argument-hint: <action> [args]
-allowed-tools: Read, Write, Bash, mcp__aseprite__get_sprite_info, mcp__aseprite__set_palette, mcp__aseprite__get_palette, mcp__aseprite__quantize_palette, mcp__aseprite__set_palette_color, mcp__aseprite__add_palette_color, mcp__aseprite__sort_palette, mcp__aseprite__analyze_palette_harmonies
+allowed-tools: Read, Write, Bash, mcp__aseprite__save_as, mcp__aseprite__get_sprite_info, mcp__aseprite__set_palette, mcp__aseprite__get_palette, mcp__aseprite__quantize_palette, mcp__aseprite__set_palette_color, mcp__aseprite__add_palette_color, mcp__aseprite__sort_palette, mcp__aseprite__analyze_palette_harmonies
 ---
 
 # /pixel-palette
@@ -21,8 +21,6 @@ Parse `$ARGUMENTS` as an action plus its arguments. Resolve the sprite's absolut
 
 For GPL write `GIMP Palette`, a Name line, Columns line, `#`, then decimal R G B and a color name per row. Do not silently write GPL content into an unspecified `.pal` dialect; clarify the target format or offer `.gpl`/`.json`/`.txt`.
 
-Quantization modifies artwork and normally converts it to indexed color. Explain that effect and report actual quantized_colors, color_mode, palette and algorithm_used. Set optional convert_to_indexed=false when RGB preservation is requested. Palette editing returns mixed response shapes; follow [the contract](../docs/MCP_TOOLS.md), including uppercase Success for set/edit/sort.
+Quantization modifies artwork and normally converts it to indexed color. Its dither workflow can flatten/replace content; use `save_as` to preserve a native copy when needed and re-read sprite structure afterwards. Explain that effect and report actual quantized_colors, color_mode, palette and algorithm_used. Set optional convert_to_indexed=false when RGB preservation is requested. Palette editing returns mixed response shapes; follow [the contract](../docs/MCP_TOOLS.md), including uppercase Success for set/edit/sort.
 
 Examples: `/pixel-palette set gameboy`, `/pixel-palette optimize 16 dither=true`, `/pixel-palette edit 1 #884422`, `/pixel-palette export palette.gpl`.
-
-Known upstream limit: quantization with transparent pixels and `preserve_transparency: true` can fail on `#00000000` color parsing at the pinned revision. Preserve the original and report that error; do not retry with transparency disabled unless losing transparency is explicitly wanted. The live smoke test verifies opaque-image quantization separately. See [known issues](../docs/KNOWN_ISSUES.md).

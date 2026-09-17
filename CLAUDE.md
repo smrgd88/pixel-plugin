@@ -9,7 +9,7 @@ This is a Claude Code plugin that integrates Aseprite pixel art capabilities thr
 **Plugin Name:** pixel-plugin
 **Version:** 0.5.0 (see .claude-plugin/plugin.json)
 **Type:** Claude Code Plugin (Skills + Commands + MCP Integration)
-**Dependencies:** pixel-mcp server (Go binary), Aseprite v1.3.0+
+**Dependencies:** pixel-mcp server (Go binary), Aseprite v1.3.17.2+
 
 ## Architecture
 
@@ -232,7 +232,7 @@ bin/pixel-mcp --health            # May fail without Aseprite configured
   - Built with Go 1.25+
   - Communicates with Aseprite via CLI
 
-- **Aseprite**: v1.3.0+ pixel art editor
+- **Aseprite**: v1.3.17.2+ pixel art editor
   - Not bundled with plugin
   - Users configure path via `/pixel-setup` command
   - Platform-specific paths documented in `config/README.md`

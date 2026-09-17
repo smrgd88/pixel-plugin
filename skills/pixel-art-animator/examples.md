@@ -156,3 +156,9 @@ These are MCP tools/call payloads, not a script to run sequentially. Replace `/w
   }
 }
 ```
+
+## Complete animation recipes
+
+The `breathing-idle` and `attack-timing` recipes in [workflows.json](workflows.json) start from a one-frame 16×16 sprite with a 4×4 body at (6,6) on Layer 1. This is a concrete example fixture; adapt coordinates to the real subject. Idle duplicates then clears the displaced bottom row before drawing the raised row. Attack uses separate windup/strike/recovery frames and varied durations. Native links remain for static shared layers, not these distinct poses.
+
+Recipe JSON uses `{source}` for an existing absolute sprite path, `{output}` for a caller-selected output directory, and saved step results such as `{canvas.file_path}`. These are recipe substitutions, never literal MCP arguments. The runner resolves them before schema validation. Run `python3 bin/test-skill-workflows.py --aseprite /absolute/path/to/aseprite` to validate the recipes with real files. The prerequisite fixture is created only by the test runner; production use must inspect the user's actual source.

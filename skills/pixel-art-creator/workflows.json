@@ -1,0 +1,369 @@
+[
+  {
+    "id": "heart",
+    "steps": [
+      {
+        "name": "create_canvas",
+        "arguments": {
+          "width": 8,
+          "height": 8,
+          "color_mode": "rgb"
+        },
+        "save": "canvas"
+      },
+      {
+        "name": "draw_pixels",
+        "arguments": {
+          "sprite_path": "{canvas.file_path}",
+          "layer_name": "Layer 1",
+          "frame_number": 1,
+          "pixels": [
+            {
+              "x": 1,
+              "y": 1,
+              "color": "#FF0000"
+            },
+            {
+              "x": 2,
+              "y": 1,
+              "color": "#FF0000"
+            },
+            {
+              "x": 5,
+              "y": 1,
+              "color": "#FF0000"
+            },
+            {
+              "x": 6,
+              "y": 1,
+              "color": "#FF0000"
+            },
+            {
+              "x": 0,
+              "y": 2,
+              "color": "#FF0000"
+            },
+            {
+              "x": 1,
+              "y": 2,
+              "color": "#FF0000"
+            },
+            {
+              "x": 2,
+              "y": 2,
+              "color": "#FF0000"
+            },
+            {
+              "x": 3,
+              "y": 2,
+              "color": "#FF0000"
+            },
+            {
+              "x": 4,
+              "y": 2,
+              "color": "#FF0000"
+            },
+            {
+              "x": 5,
+              "y": 2,
+              "color": "#FF0000"
+            },
+            {
+              "x": 6,
+              "y": 2,
+              "color": "#FF0000"
+            },
+            {
+              "x": 7,
+              "y": 2,
+              "color": "#FF0000"
+            },
+            {
+              "x": 0,
+              "y": 3,
+              "color": "#FF0000"
+            },
+            {
+              "x": 1,
+              "y": 3,
+              "color": "#FF0000"
+            },
+            {
+              "x": 2,
+              "y": 3,
+              "color": "#FF0000"
+            },
+            {
+              "x": 3,
+              "y": 3,
+              "color": "#FF0000"
+            },
+            {
+              "x": 4,
+              "y": 3,
+              "color": "#FF0000"
+            },
+            {
+              "x": 5,
+              "y": 3,
+              "color": "#FF0000"
+            },
+            {
+              "x": 6,
+              "y": 3,
+              "color": "#FF0000"
+            },
+            {
+              "x": 7,
+              "y": 3,
+              "color": "#FF0000"
+            },
+            {
+              "x": 1,
+              "y": 4,
+              "color": "#FF0000"
+            },
+            {
+              "x": 2,
+              "y": 4,
+              "color": "#FF0000"
+            },
+            {
+              "x": 3,
+              "y": 4,
+              "color": "#FF0000"
+            },
+            {
+              "x": 4,
+              "y": 4,
+              "color": "#FF0000"
+            },
+            {
+              "x": 5,
+              "y": 4,
+              "color": "#FF0000"
+            },
+            {
+              "x": 6,
+              "y": 4,
+              "color": "#FF0000"
+            },
+            {
+              "x": 2,
+              "y": 5,
+              "color": "#FF0000"
+            },
+            {
+              "x": 3,
+              "y": 5,
+              "color": "#FF0000"
+            },
+            {
+              "x": 4,
+              "y": 5,
+              "color": "#FF0000"
+            },
+            {
+              "x": 5,
+              "y": 5,
+              "color": "#FF0000"
+            },
+            {
+              "x": 3,
+              "y": 6,
+              "color": "#FF0000"
+            },
+            {
+              "x": 4,
+              "y": 6,
+              "color": "#FF0000"
+            }
+          ]
+        }
+      },
+      {
+        "name": "save_as",
+        "arguments": {
+          "sprite_path": "{canvas.file_path}",
+          "output_path": "{output}/heart.aseprite"
+        },
+        "save": "result"
+      }
+    ]
+  },
+  {
+    "id": "sword",
+    "steps": [
+      {
+        "name": "create_canvas",
+        "arguments": {
+          "width": 16,
+          "height": 16,
+          "color_mode": "rgb"
+        },
+        "save": "canvas"
+      },
+      {
+        "name": "draw_rectangle",
+        "arguments": {
+          "sprite_path": "{canvas.file_path}",
+          "layer_name": "Layer 1",
+          "frame_number": 1,
+          "x": 7,
+          "y": 2,
+          "width": 2,
+          "height": 8,
+          "color": "#AAAABB",
+          "filled": true
+        }
+      },
+      {
+        "name": "draw_rectangle",
+        "arguments": {
+          "sprite_path": "{canvas.file_path}",
+          "layer_name": "Layer 1",
+          "frame_number": 1,
+          "x": 5,
+          "y": 10,
+          "width": 6,
+          "height": 1,
+          "color": "#DDAA33",
+          "filled": true
+        }
+      },
+      {
+        "name": "draw_rectangle",
+        "arguments": {
+          "sprite_path": "{canvas.file_path}",
+          "layer_name": "Layer 1",
+          "frame_number": 1,
+          "x": 7,
+          "y": 11,
+          "width": 2,
+          "height": 3,
+          "color": "#6B4423",
+          "filled": true
+        }
+      },
+      {
+        "name": "draw_pixels",
+        "arguments": {
+          "sprite_path": "{canvas.file_path}",
+          "layer_name": "Layer 1",
+          "frame_number": 1,
+          "pixels": [
+            {
+              "x": 7,
+              "y": 2,
+              "color": "#FFFFFF"
+            },
+            {
+              "x": 7,
+              "y": 3,
+              "color": "#FFFFFF"
+            }
+          ]
+        }
+      },
+      {
+        "name": "save_as",
+        "arguments": {
+          "sprite_path": "{canvas.file_path}",
+          "output_path": "{output}/sword.aseprite"
+        },
+        "save": "result"
+      }
+    ]
+  },
+  {
+    "id": "layered-character",
+    "steps": [
+      {
+        "name": "create_canvas",
+        "arguments": {
+          "width": 16,
+          "height": 16,
+          "color_mode": "rgb"
+        },
+        "save": "canvas"
+      },
+      {
+        "name": "draw_rectangle",
+        "arguments": {
+          "sprite_path": "{canvas.file_path}",
+          "layer_name": "Layer 1",
+          "frame_number": 1,
+          "x": 0,
+          "y": 0,
+          "width": 16,
+          "height": 16,
+          "color": "#1D2B53",
+          "filled": true
+        }
+      },
+      {
+        "name": "add_layer",
+        "arguments": {
+          "sprite_path": "{canvas.file_path}",
+          "layer_name": "Character"
+        }
+      },
+      {
+        "name": "draw_rectangle",
+        "arguments": {
+          "sprite_path": "{canvas.file_path}",
+          "layer_name": "Character",
+          "frame_number": 1,
+          "x": 6,
+          "y": 4,
+          "width": 4,
+          "height": 4,
+          "color": "#E6B896",
+          "filled": true
+        }
+      },
+      {
+        "name": "draw_rectangle",
+        "arguments": {
+          "sprite_path": "{canvas.file_path}",
+          "layer_name": "Character",
+          "frame_number": 1,
+          "x": 5,
+          "y": 8,
+          "width": 6,
+          "height": 5,
+          "color": "#4477AA",
+          "filled": true
+        }
+      },
+      {
+        "name": "draw_pixels",
+        "arguments": {
+          "sprite_path": "{canvas.file_path}",
+          "layer_name": "Character",
+          "frame_number": 1,
+          "pixels": [
+            {
+              "x": 6,
+              "y": 6,
+              "color": "#1A1A24"
+            },
+            {
+              "x": 9,
+              "y": 6,
+              "color": "#1A1A24"
+            }
+          ]
+        }
+      },
+      {
+        "name": "save_as",
+        "arguments": {
+          "sprite_path": "{canvas.file_path}",
+          "output_path": "{output}/character.aseprite"
+        },
+        "save": "result"
+      }
+    ]
+  }
+]

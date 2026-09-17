@@ -123,14 +123,15 @@ def main():
             assert len(palette)>3, 'Indexed shading did not preserve generated palette colors'
             # Dither and quantization are distinct actual calls; validate legacy output casing.
             call('draw_with_dither',**target,region={'x':0,'y':0,'width':2,'height':2},color1='#000000',color2='#FFFFFF',pattern='checkerboard',density=0.5)
-            transparent=client.request('tools/call', {'name':'quantize_palette','arguments':{**p,'target_colors':4,'algorithm':'median_cut','dither':True,'preserve_transparency':True,'convert_to_indexed':True}})
-            assert transparent.get('isError') and '#00000000' in str(transparent), 'Review transparent quantization limitation: upstream behavior changed'
-            print('KNOWN UPSTREAM LIMITATION: transparent quantization rejected #00000000 (not a successful quantization)')
+            transparent=call('quantize_palette',**p,target_colors=4,algorithm='median_cut',dither=True,preserve_transparency=True,convert_to_indexed=True)
+            assert transparent['color_mode']=='indexed' and transparent['quantized_colors']<=4
             opaque=call('create_canvas',width=8,height=8,color_mode='rgb')['file_path']
             opaque_layer=call('get_sprite_info',sprite_path=opaque)['layers'][0]
             call('draw_with_dither',sprite_path=opaque,layer_name=opaque_layer,frame_number=1,region={'x':0,'y':0,'width':8,'height':8},color1='#223344',color2='#CCDDEE',pattern='checkerboard',density=0.5)
             quant=call('quantize_palette',sprite_path=opaque,target_colors=4,algorithm='median_cut',dither=True,preserve_transparency=True,convert_to_indexed=True)
             assert quant['color_mode']=='indexed' and quant['quantized_colors']<=4
+            # Dithered quantization flattens/replaces layers; do not reuse a stale name.
+            target['layer_name']=call('get_sprite_info',**p)['layers'][0]
             call('suggest_antialiasing',**target,auto_apply=False,use_palette=True)
             print('PASS: indexed auto shading changes real colors, dither fill, opaque-image quantization and AA analysis')
             print(f'PASS: {calls} real tools/call operations with input/output schema validation')
