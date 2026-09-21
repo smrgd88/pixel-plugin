@@ -2,6 +2,8 @@
 .claude/
 
 # Build artifacts
+bin/local/
+__pycache__/
 # (Binaries are committed as part of the plugin distribution)
 !bin/.gitkeep
 

@@ -7,7 +7,7 @@
   "enable_timing": false,
   "_comments": {
     "aseprite_path": "REQUIRED: Path to Aseprite executable. Use /pixel-setup to configure automatically.",
-    "temp_dir": "Optional: Temporary directory for MCP operations. Defaults to system temp if empty.",
+    "temp_dir": "Optional: defaults to OS temp directory plus pixel-mcp.",
     "timeout": "Optional: Command timeout in seconds. Default: 30.",
     "log_level": "Optional: Logging verbosity (debug, info, warn, error). Default: info.",
     "log_file": "Optional: Path to log file. Leave empty for no file logging.",
@@ -16,7 +16,7 @@
   "_examples": {
     "aseprite_path_macos": "/Applications/Aseprite.app/Contents/MacOS/aseprite",
     "aseprite_path_linux": "/usr/bin/aseprite",
-    "aseprite_path_windows": "C:\\\\Program Files\\\\Aseprite\\\\Aseprite.exe",
+    "aseprite_path_windows": "C:\\Program Files\\Aseprite\\Aseprite.exe",
     "temp_dir_example": "/tmp/pixel-mcp",
     "log_file_example": "/tmp/pixel-mcp.log"
   }

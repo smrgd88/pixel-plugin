@@ -1,0 +1,74 @@
+[
+  {
+    "id": "scaled-animation-export",
+    "fixture": {
+      "frames": 2
+    },
+    "steps": [
+      {
+        "name": "save_as",
+        "arguments": {
+          "sprite_path": "{source}",
+          "output_path": "{output}/export-copy.aseprite"
+        },
+        "save": "copy"
+      },
+      {
+        "name": "scale_sprite",
+        "arguments": {
+          "sprite_path": "{copy.file_path}",
+          "scale_x": 2,
+          "scale_y": 2,
+          "algorithm": "nearest"
+        }
+      },
+      {
+        "name": "set_frame_duration",
+        "arguments": {
+          "sprite_path": "{copy.file_path}",
+          "frame_number": 1,
+          "duration_ms": 150
+        }
+      },
+      {
+        "name": "set_frame_duration",
+        "arguments": {
+          "sprite_path": "{copy.file_path}",
+          "frame_number": 2,
+          "duration_ms": 100
+        }
+      },
+      {
+        "name": "export_sprite",
+        "arguments": {
+          "sprite_path": "{copy.file_path}",
+          "output_path": "{output}/sprite.png",
+          "format": "png",
+          "frame_number": 1
+        },
+        "save": "png"
+      },
+      {
+        "name": "export_sprite",
+        "arguments": {
+          "sprite_path": "{copy.file_path}",
+          "output_path": "{output}/animation.gif",
+          "format": "gif",
+          "frame_number": 0
+        },
+        "save": "gif"
+      },
+      {
+        "name": "export_spritesheet",
+        "arguments": {
+          "sprite_path": "{copy.file_path}",
+          "output_path": "{output}/sheet.png",
+          "layout": "rows",
+          "padding": 1,
+          "include_json": true
+        },
+        "save": "sheet"
+      }
+    ]
+  }
+]

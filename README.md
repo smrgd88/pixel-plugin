@@ -24,19 +24,19 @@ Create, animate, and export pixel art using Aseprite through natural language an
 
 **Game-Ready Export**
 - PNG, GIF, spritesheet formats
-- JSON metadata for Unity, Godot, Phaser
+- Aseprite JSON metadata for game-engine adaptation
 - Pixel-perfect scaling (2x, 4x, 8x)
 - Multiple spritesheet layouts
 
 ## How It Works
 
-This plugin uses the [pixel-mcp](https://github.com/willibrandon/pixel-mcp) Model Context Protocol server to communicate with Aseprite. The MCP server provides 40+ tools for pixel art operations and is bundled with the plugin.
+This plugin uses the [pixel-mcp](https://github.com/willibrandon/pixel-mcp) Model Context Protocol server to communicate with Aseprite. The MCP server provides 50 tools for pixel art operations and is bundled with the plugin.
 
 ## Quick Start
 
 ### 1. Prerequisites
 
-- [Aseprite](https://www.aseprite.org/) v1.3.0+ installed
+- [Aseprite](https://www.aseprite.org/) v1.3.17.2+ installed
 - [Claude Code](https://claude.com/code) installed
 
 ### 2. Installation
@@ -155,7 +155,7 @@ The plugin responds to natural language requests:
 "Export as PNG at 4x scale"
 "Export as animated GIF at 12 FPS"
 "Create a horizontal spritesheet"
-"Export with Unity JSON metadata"
+"Export a spritesheet with Aseprite JSON metadata for Unity"
 ```
 
 ## Examples
@@ -201,51 +201,20 @@ The plugin responds to natural language requests:
 "Draw a simple character"
 "Create an 8-frame run cycle"
 "Set frames to 80ms each"
-/pixel-export json game-character.json format=unity
+/pixel-export json game-character.json
 ```
 
-**Result:** `game-character.png` spritesheet + `game-character.json` ready for Unity import.
+**Result:** `game-character.png` spritesheet + `game-character.json` with Aseprite metadata; adapt it to the target engine.
 
-## Palette Presets
+## Palettes and exports
 
-### Retro Consoles
-- `nes` - 54-color NES palette
-- `gameboy` - 4-color Game Boy green
-- `gameboy-gray` - 4-shade grayscale
-- `c64` - 16-color Commodore 64
-- `cga` - 4-color IBM CGA
-- `snes` - 256-color Super Nintendo
+Read [palette presets](config/palettes.json) for gameboy, nes, pico8, db16, db32, c64, cga and retro (db16). Custom hex palettes are supported. Palette optimization uses the real quantize_palette tool and can preserve transparency or keep RGB mode.
 
-### Modern Palettes
-- `pico8` - PICO-8 fantasy console (16 colors)
-- `sweetie16` - Popular 16-color palette by GrafxKid
-- `db16` - DawnBringer's 16 colors
-- `db32` - DawnBringer's 32 colors
+Exports support still PNG, animated GIF and spritesheets with horizontal, vertical, rows, columns or packed layouts. A command-level grid request maps to rows. JSON is Aseprite metadata alongside a sheet, not an engine-specific format. Scale and FPS options create a native copy and transform/retime it before export; the server has no scale, FPS, tag-filter or loop export arguments. See [export details](skills/pixel-art-exporter/export-formats.md).
 
-### Generic
-- `retro16` - Generic 16-color retro
-- `retro8` - Generic 8-color retro
-- `grayscale4/8/16` - Grayscale palettes
+## Local MCP development
 
-## Export Formats
-
-### Formats
-- **PNG** - Single frame or current frame with transparency
-- **GIF** - Animated GIF with loop and timing control
-- **Spritesheet** - Multiple layouts (horizontal, vertical, grid, packed)
-- **JSON** - Metadata for game engines (Aseprite, TexturePacker, Unity, Godot)
-
-### Spritesheet Layouts
-- `horizontal` - All frames in a row (web animations)
-- `vertical` - All frames in a column
-- `grid` - Optimal rows × columns (game engines)
-- `packed` - Space-optimized (texture atlases)
-
-### Scaling
-- `scale=1` - Original size
-- `scale=2` - 2x pixel-perfect
-- `scale=4` - 4x pixel-perfect
-- `scale=8` - 8x pixel-perfect
+The bundled server and schemas are pinned to MCP behavior-repair commit `b166b166ddb63af1a0d843f2cf30ec38541529eb`. Build a local committed revision and select it through PIXEL_MCP_BINARY; no personal source paths are stored in the distribution. See [reproducible build and validation](docs/LOCAL_MCP.md), [tool contract](docs/MCP_TOOLS.md), and [synchronization audit](docs/MCP_SYNC.md).
 
 ## Documentation
 
@@ -289,20 +258,15 @@ See [Known Issues](docs/KNOWN_ISSUES.md) for additional troubleshooting informat
 
 ## Requirements
 
-- **Aseprite**: v1.3.0 or higher
+- **Aseprite**: v1.3.17.2 or higher
 - **Claude Code**: v1.0.0 or higher
 - **pixel-mcp**: MCP server (bundled) - [Source](https://github.com/willibrandon/pixel-mcp)
-- **Disk Space**: ~50MB for plugin and binaries
 
 ## Contributing
 
 Contributions welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
-1. Fork the repository
-2. Create feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push to branch (`git push origin feature/amazing-feature`)
-5. Open Pull Request
+Start work from the latest develop in a dedicated task branch/worktree. Test and review before integration; merge only when authorized.
 
 ## License
 

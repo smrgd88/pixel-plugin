@@ -1,23 +1,19 @@
-# Configuration Guide
+# Configuration guide
 
-## Aseprite MCP Server Configuration
+The server needs a JSON file containing an absolute `aseprite_path`. Copy [pixel-mcp-config.json](pixel-mcp-config.json) as a starting point, then set the real executable path. Existing user settings should be preserved when changing the path.
 
-The pixel-mcp server requires Aseprite to be installed and configured.
+Configuration precedence at the [pinned MCP develop revision](mcp-source.json):
 
-### Configuration Location
+1. CLI `--config /absolute/path/config.json`.
+2. `PIXEL_MCP_CONFIG` environment variable.
+3. The user's `.config/pixel-mcp/config.json` (`~/.config/pixel-mcp/config.json` on macOS/Linux; `%USERPROFILE%\.config\pixel-mcp\config.json` on Windows).
 
-By default, pixel-mcp looks for configuration at:
-- **macOS/Linux**: `~/.config/pixel-mcp/config.json`
-- **Windows**: `%APPDATA%\pixel-mcp\config.json`
-
-### Configuration Format
-
-The plugin includes a template at `config/pixel-mcp-config.json`:
+The default is not APPDATA or XDG_CONFIG_HOME. Neither `CONFIG_PATH` nor `ASEPRITE_PATH` selects the server config. Shell variables and `~` in JSON paths are not expanded. The plugin's `.mcp.json` leaves environment overrides intact.
 
 ```json
 {
-  "aseprite_path": "/path/to/aseprite",
-  "temp_dir": "/tmp/pixel-mcp",
+  "aseprite_path": "/Applications/Aseprite.app/Contents/MacOS/aseprite",
+  "temp_dir": "",
   "timeout": 30,
   "log_level": "info",
   "log_file": "",
@@ -25,125 +21,19 @@ The plugin includes a template at `config/pixel-mcp-config.json`:
 }
 ```
 
-### Required Configuration
+`temp_dir` defaults to the OS temp directory plus `pixel-mcp`; the server creates it. `timeout` is seconds and defaults to 30 when omitted or zero; negative values fail. Logging levels are debug/info/warn/error. Empty log_file means stderr only. enable_timing logs operation timing; stdout is reserved for MCP JSON-RPC.
 
-The only required field is `aseprite_path`. All other fields have sensible defaults.
+Example executable paths:
 
-### Setup Methods
+- macOS: `/Applications/Aseprite.app/Contents/MacOS/aseprite` (not the `.app` directory).
+- Linux: `/usr/bin/aseprite` or another verified executable.
+- Windows JSON: `"aseprite_path": "C:\\Program Files\\Aseprite\\Aseprite.exe"`.
 
-#### Option 1: Use /pixel-setup Command (Recommended)
-
-The `/pixel-setup` command will guide you through configuration:
-
-```
-> /pixel-setup
-```
-
-This will:
-1. Detect Aseprite installation automatically (if in common path)
-2. Prompt for manual path if not found
-3. Validate the path
-4. Create configuration file
-5. Test MCP server connectivity
-
-#### Option 2: Manual Configuration
-
-1. Create the config directory:
-```bash
-mkdir -p ~/.config/pixel-mcp
-```
-
-2. Copy the template:
-```bash
-cp config/pixel-mcp-config.json ~/.config/pixel-mcp/config.json
-```
-
-3. Edit the config file and set `aseprite_path`:
-```bash
-# macOS example
-"aseprite_path": "/Applications/Aseprite.app/Contents/MacOS/aseprite"
-
-# Linux example
-"aseprite_path": "/usr/bin/aseprite"
-
-# Windows example
-"aseprite_path": "C:\\Program Files\\Aseprite\\Aseprite.exe"
-```
-
-### Verifying Configuration
-
-Test that pixel-mcp can find Aseprite:
+Run `/pixel-setup` to discover and configure Aseprite, or `/pixel-setup /absolute/path/to/aseprite` for a manual location. Reconnect after configuration changes so the server reloads the file.
 
 ```bash
-${CLAUDE_PLUGIN_ROOT}/bin/pixel-mcp --health
+bin/pixel-mcp --health
+bin/pixel-mcp --config /absolute/path/config.json --health
 ```
 
-Should output:
-```
-✓ Aseprite found at: /path/to/aseprite
-✓ Configuration loaded
-✓ MCP server ready
-```
-
-### Troubleshooting
-
-**Error: "Aseprite not found"**
-- Verify Aseprite is installed: https://www.aseprite.org/
-- Check the path in your config file
-- Ensure the path points to the executable, not the .app directory (on macOS)
-
-**Error: "Permission denied"**
-- Ensure pixel-mcp binary is executable: `chmod +x bin/pixel-mcp`
-- Ensure Aseprite binary is executable
-
-**Error: "Timeout"**
-- Increase `timeout` value in config (default: 30 seconds)
-- Check if Aseprite launches successfully manually
-
-### Platform-Specific Paths
-
-**macOS:**
-```
-/Applications/Aseprite.app/Contents/MacOS/aseprite
-```
-
-**Linux:**
-```
-/usr/bin/aseprite
-/usr/local/bin/aseprite
-~/.local/bin/aseprite
-```
-
-**Windows:**
-```
-C:\Program Files\Aseprite\Aseprite.exe
-C:\Program Files (x86)\Aseprite\Aseprite.exe
-```
-
-### Advanced Configuration
-
-**Enable Logging:**
-```json
-{
-  "log_level": "debug",
-  "log_file": "/tmp/pixel-mcp.log"
-}
-```
-
-**Enable Timing:**
-```json
-{
-  "enable_timing": true
-}
-```
-
-This will log operation timings for performance analysis.
-
-**Custom Temp Directory:**
-```json
-{
-  "temp_dir": "/custom/path/to/temp"
-}
-```
-
-Ensure the directory exists and is writable.
+Health checks execute Aseprite to read its version and check the temporary directory. This is not a drawing test. For actual MCP calls and selecting a local server build, see [local development](../docs/LOCAL_MCP.md).

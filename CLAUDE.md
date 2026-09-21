@@ -7,9 +7,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 This is a Claude Code plugin that integrates Aseprite pixel art capabilities through the pixel-mcp Model Context Protocol server. The plugin enables pixel art creation, editing, and export using natural language commands.
 
 **Plugin Name:** pixel-plugin
-**Version:** 0.1.0
+**Version:** 0.5.0 (see .claude-plugin/plugin.json)
 **Type:** Claude Code Plugin (Skills + Commands + MCP Integration)
-**Dependencies:** pixel-mcp server (Go binary), Aseprite v1.3.0+
+**Dependencies:** pixel-mcp server (Go binary), Aseprite v1.3.17.2+
 
 ## Architecture
 
@@ -17,7 +17,7 @@ The plugin follows a layered architecture:
 
 1. **User Layer**: Natural language or slash commands in Claude Code
 2. **Plugin Layer**: Skills (model-invoked) and Commands (user-invoked)
-3. **MCP Layer**: pixel-mcp server (40+ tools)
+3. **MCP Layer**: pixel-mcp server (50 tools)
 4. **Application Layer**: Aseprite CLI interactions
 
 **Key Integration Point:** The plugin bundles pre-compiled pixel-mcp binaries and provides a platform-detection wrapper (`bin/pixel-mcp`) that selects the correct binary for macOS, Linux, or Windows.
@@ -131,23 +131,9 @@ Can include bash execution: !`git status`
 
 ### MCP Server Integration
 
-`.mcp.json` configures the bundled pixel-mcp server:
+`.mcp.json` launches `${CLAUDE_PLUGIN_ROOT}/bin/pixel-mcp`. The wrapper selects a bundled platform binary or an absolute PIXEL_MCP_BINARY override. It preserves PIXEL_MCP_CONFIG. Server config precedence is --config, PIXEL_MCP_CONFIG, then the user-home .config/pixel-mcp/config.json.
 
-```json
-{
-  "mcpServers": {
-    "aseprite": {
-      "command": "${CLAUDE_PLUGIN_ROOT}/bin/pixel-mcp",
-      "args": [],
-      "env": {
-        "CONFIG_PATH": "${CLAUDE_PLUGIN_ROOT}/config/pixel-mcp-config.json"
-      }
-    }
-  }
-}
-```
-
-**Platform Detection:** The `bin/pixel-mcp` wrapper script detects OS and architecture, then executes the appropriate binary.
+See [MCP contract](docs/MCP_TOOLS.md) for exact input/output fields and [local build instructions](docs/LOCAL_MCP.md) for reproducible committed-source builds. Never assume a sibling source checkout is the running server.
 
 ## Development Guidelines
 
@@ -185,7 +171,7 @@ chmod +x config/detect-aseprite.sh
 
 ### Testing
 
-Run the full test suite:
+Install `bin/requirements-test.txt`, then run the full test suite:
 ```bash
 ./bin/test-plugin.sh
 ```
@@ -193,27 +179,11 @@ Run the full test suite:
 Individual test suites:
 - `./bin/validate-skills.sh` - Skills validation
 - `./bin/validate-commands.sh` - Commands validation
-- `./bin/test-mcp.sh` - MCP integration test
+- `./bin/test-mcp.sh` - MCP file/package validation
 
 ## Building MCP Binaries
 
-Located at `/Users/brandon/src/pixel-mcp`:
-
-```bash
-cd /Users/brandon/src/pixel-mcp
-make clean
-make release
-
-# Binaries created in bin/:
-# - pixel-mcp-darwin-amd64
-# - pixel-mcp-darwin-arm64
-# - pixel-mcp-linux-amd64
-# - pixel-mcp-linux-arm64
-# - pixel-mcp-windows-amd64.exe
-
-# Copy to plugin:
-cp bin/pixel-mcp-* /Users/brandon/src/pixel-plugin-plugin/bin/
-```
+Use `python3 bin/build-mcp.py /path/to/pixel-mcp` for a host development binary or add `--release` for all pinned bundled platforms. See [local MCP development](docs/LOCAL_MCP.md). Builds use an exported commit without mutating other worktrees.
 
 ## Key Design Principles
 
@@ -257,12 +227,12 @@ bin/pixel-mcp --health            # May fail without Aseprite configured
 
 ## External Dependencies
 
-- **pixel-mcp**: Go-based MCP server at `/Users/brandon/src/pixel-mcp`
-  - Provides 40+ tools for pixel art operations
-  - Built with Go 1.23+
+- **pixel-mcp**: Go-based MCP server pinned in `config/mcp-source.json`
+  - Provides 50 tools for pixel art operations
+  - Built with Go 1.25+
   - Communicates with Aseprite via CLI
 
-- **Aseprite**: v1.3.0+ pixel art editor
+- **Aseprite**: v1.3.17.2+ pixel art editor
   - Not bundled with plugin
   - Users configure path via `/pixel-setup` command
   - Platform-specific paths documented in `config/README.md`

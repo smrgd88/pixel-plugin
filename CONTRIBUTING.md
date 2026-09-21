@@ -11,7 +11,7 @@ Use the GitHub issue tracker to report bugs or suggest features:
 ## Submitting Changes
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/your-feature`)
+2. Create a dedicated task branch/worktree from latest origin/develop (e.g. fix/shared-mcp-sync); never add feature commits directly to main/develop
 3. Make your changes
 4. Run tests: `./bin/test-plugin.sh`
 5. Commit with conventional commit format: `feat(scope): description`
@@ -20,26 +20,14 @@ Use the GitHub issue tracker to report bugs or suggest features:
 ## Development Setup
 
 ### Prerequisites
-- Aseprite v1.3.0+
-- Go 1.23+ (for building pixel-mcp binaries)
+- Aseprite v1.3.17.2+
+- Go 1.25+ (for building pixel-mcp binaries)
 - Bash (for test scripts)
-- Python 3 (for JSON validation)
+- Python 3 and bin/requirements-test.txt (for JSON Schema validation)
 
 ### Local Development
-```bash
-# Clone repositories
-git clone https://github.com/willibrandon/pixel-plugin-plugin.git
-git clone https://github.com/willibrandon/pixel-mcp.git
 
-# Build pixel-mcp
-cd pixel-mcp
-make release
-cp bin/* ../pixel-plugin-plugin/bin/
-
-# Test plugin
-cd ../pixel-plugin-plugin
-./bin/test-plugin.sh
-```
+Follow [local MCP development](docs/LOCAL_MCP.md) to build a pinned source commit without writing to another checkout. Use PIXEL_MCP_BINARY for a local binary; --release updates all bundled targets and checksums together. Install test dependencies, run the default suite, and run the separate real-Aseprite smoke test before release. No develop/main merge is implied by a code change.
 
 ## Project Structure
 
@@ -87,7 +75,7 @@ Run the full test suite before submitting:
 Individual test suites:
 - `./bin/validate-skills.sh` - Skills validation
 - `./bin/validate-commands.sh` - Commands validation
-- `./bin/test-mcp.sh` - MCP integration test
+- `./bin/test-mcp.sh` - MCP file/package validation
 
 ## Questions?
 

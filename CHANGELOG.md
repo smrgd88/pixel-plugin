@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Self-review preservation follow-up
+- Consume the MCP fixes for nested-group frame duplication, complete cel attributes and byte-exact preservation of user metadata during selection operations.
+- Read the versioned selection-property namespace in the independent inspector and add three bundled regression scenarios (105 total).
+- Retain legacy mask read compatibility without resurrecting stale state after clear.
+
+
+### Follow-up restoration and verified behavior
+- Restore reusable creation, animation timing, material shading, manual patterns and export guidance from the original skills while retaining corrected MCP contracts.
+- Add eight executable end-to-end skill recipes, ownership/argument validation and real output checks.
+- Add a 50-tool behavior sweep with selected option/offset cases; consume the separate MCP fixes for indexed pixels, dithering, selection masks, clipboard offsets, transparent quantization and frame duplication.
+
+
+### Fixed
+- Synchronize all four skills, five commands, examples, allowlists and exact input/output reference with MCP develop `1076166edf99f60e92bfd7fc4def261264930dcb` (50 tools).
+- Correct tool aliases, one-based frames, path handling, export options and response casing; document native linked-cel construction, indexed auto shading and upstream behavior limits.
+- Rebuild all five bundled targets at the same pinned commit; add portable PIXEL_MCP_BINARY selection and preserve config environment overrides.
+
+### Added
+- Reproducible committed-source host/release builds, source/schema snapshots and binary SHA-256 provenance.
+- Live MCP contract comparison, 68 documented payload checks, negative regressions and wrapper/config tests in CI.
+- Isolated real-Aseprite smoke tests for native links, indexed shading, PNG/GIF/sheet exports and opaque quantization. Transparent quantization and selection/pixel/dithering regressions are covered by the follow-up repaired MCP build.
+
+## [Unreleased]
+
 ## [0.5.0] - 2025-10-18
 
 ### Changed

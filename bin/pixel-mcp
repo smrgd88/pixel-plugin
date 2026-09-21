@@ -5,6 +5,23 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# Explicit development override. Never silently fall back after a bad override.
+if [ -n "${PIXEL_MCP_BINARY:-}" ]; then
+    case "$PIXEL_MCP_BINARY" in
+        /*|[A-Za-z]:[\\/]*) ;;
+        *) echo "Error: PIXEL_MCP_BINARY must be an absolute executable path" >&2; exit 1 ;;
+    esac
+    if [ ! -f "$PIXEL_MCP_BINARY" ] || [ ! -x "$PIXEL_MCP_BINARY" ]; then
+        echo "Error: PIXEL_MCP_BINARY is not executable: $PIXEL_MCP_BINARY" >&2
+        exit 1
+    fi
+    if [ "$PIXEL_MCP_BINARY" -ef "$SCRIPT_DIR/pixel-mcp" ]; then
+        echo "Error: PIXEL_MCP_BINARY must point to a server binary, not this wrapper" >&2
+        exit 1
+    fi
+    exec "$PIXEL_MCP_BINARY" "$@"
+fi
+
 # Detect platform
 OS="$(uname -s)"
 ARCH="$(uname -m)"
