@@ -12,6 +12,8 @@ Operations act on files, not the Aseprite GUI's current document. Keep the absol
 
 Check MCP `isError` before reading `structuredContent` (or JSON text content). Responses are tool-specific: some legacy palette/shading tools return uppercase `Success`. Report actual returned values and inspect the affected pixels or output file before claiming success.
 
+Read and apply [completed-operation warning handling](../../docs/MCP_WARNINGS.md): report every returned `warnings` message, including unknown codes, with the successful result. Warnings do not request approval, retry or undo; absent warnings do not guarantee lossless processing.
+
 ## Workflow
 
 1. Inspect the source path and frame count. Use `export_sprite` with distinct `sprite_path` and `output_path`, matching `format` (`png`, `gif`, `jpg`, `bmp`) and extension. Use a one-based frame for a still PNG, or `frame_number: 0` for all GIF frames.

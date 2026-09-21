@@ -12,6 +12,8 @@ Operations act on files, not the Aseprite GUI's current document. Keep the absol
 
 Check MCP `isError` before reading `structuredContent` (or JSON text content). Responses are tool-specific: some legacy palette/shading tools return uppercase `Success`. Report actual returned values and inspect the affected pixels or output file before claiming success.
 
+Read and apply [completed-operation warning handling](../../docs/MCP_WARNINGS.md): report every returned `warnings` message, including unknown codes, with the successful result. Warnings do not request approval, retry or undo; absent warnings do not guarantee lossless processing.
+
 ## Workflow
 
 1. Choose dimensions and `rgb`, `grayscale` or `indexed`; create a canvas. For retro palettes, read [palette presets](../../config/palettes.json), then call `set_palette` with explicit hex colors. Preset names are plugin conveniences, not MCP arguments.

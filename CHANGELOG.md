@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### MCP completed-operation warnings
+- Pin merged MCP #11 (`6c9ac5e`), regenerate the 50-tool contract/reference and rebuild all five bundles with source/checksum metadata.
+- Document optional success warnings and connect creator, professional, exporter and related commands to shared handling rules; retain legacy responses and unknown codes.
+- Add schema/client and real-Aseprite warning regressions; see [current validation](docs/WARNINGS_VALIDATION.md).
+
 ### Self-review preservation follow-up
 - Consume the MCP fixes for nested-group frame duplication, complete cel attributes and byte-exact preservation of user metadata during selection operations.
 - Read the versioned selection-property namespace in the independent inspector and add three bundled regression scenarios (105 total).

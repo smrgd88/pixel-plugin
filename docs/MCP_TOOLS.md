@@ -1,6 +1,6 @@
 # MCP tool contract
 
-Generated from the actual `tools/list` response at MCP source commit `b166b166ddb63af1a0d843f2cf30ec38541529eb`.
+Generated from the actual `tools/list` response at MCP source commit `6c9ac5ec211df74aafa9b14a96b132aee0209be8`.
 Regenerate with `python3 bin/render-mcp-reference.py` after reviewing a new snapshot.
 
 Read the tool section needed for the task. All tool names use the `mcp__aseprite__` prefix in skills/commands.
@@ -11,6 +11,8 @@ This records what the server advertises. Handler limits and workflow caveats are
 MCP frame inputs start at 1, except export `frame_number: 0` (all frames) and duplicate `insert_after: 0` (append). Pixel coordinates and palette indices start at 0.
 
 Use `structuredContent` after checking `isError`; clients exposing only text content must parse its JSON. `Success` and `success` are distinct response fields.
+
+Report optional success `warnings` according to [completed-operation warning handling](MCP_WARNINGS.md), including unknown codes. Missing warnings do not guarantee lossless processing.
 
 ## Index
 
@@ -741,6 +743,9 @@ Flatten all layers in a sprite into a single layer.
 
 | Field | Type | Required | Meaning |
 |---|---|---|---|
+| `warnings` | null/array | no | Potentially destructive effects of this completed operation; omitted when none apply |
+| `warnings[].code` | string | yes | Stable warning code |
+| `warnings[].message` | string | yes | Human-readable description of the operation's potential effect |
 | `success` | boolean | yes | Whether the layers were flattened successfully |
 
 ## flip_sprite
@@ -928,6 +933,9 @@ Automatically reduce sprite colors using industry-standard quantization algorith
 
 | Field | Type | Required | Meaning |
 |---|---|---|---|
+| `warnings` | null/array | no | Potentially destructive effects of this completed operation; omitted when none apply |
+| `warnings[].code` | string | yes | Stable warning code |
+| `warnings[].message` | string | yes | Human-readable description of the operation's potential effect |
 | `success` | boolean | yes | Whether the operation succeeded |
 | `original_colors` | integer | yes | Number of unique colors in original sprite |
 | `quantized_colors` | integer | yes | Number of colors in quantized palette |
@@ -1008,6 +1016,9 @@ Scale a sprite by specified X and Y factors using a chosen algorithm (nearest, b
 
 | Field | Type | Required | Meaning |
 |---|---|---|---|
+| `warnings` | null/array | no | Potentially destructive effects of this completed operation; omitted when none apply |
+| `warnings[].code` | string | yes | Stable warning code |
+| `warnings[].message` | string | yes | Human-readable description of the operation's potential effect |
 | `success` | boolean | yes |  |
 | `new_width` | integer | yes | New sprite width after scaling |
 | `new_height` | integer | yes | New sprite height after scaling |

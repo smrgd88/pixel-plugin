@@ -24,3 +24,5 @@ For GPL write `GIMP Palette`, a Name line, Columns line, `#`, then decimal R G B
 Quantization modifies artwork and normally converts it to indexed color. Its dither workflow can flatten/replace content; use `save_as` to preserve a native copy when needed and re-read sprite structure afterwards. Explain that effect and report actual quantized_colors, color_mode, palette and algorithm_used. Set optional convert_to_indexed=false when RGB preservation is requested. Palette editing returns mixed response shapes; follow [the contract](../docs/MCP_TOOLS.md), including uppercase Success for set/edit/sort.
 
 Examples: `/pixel-palette set gameboy`, `/pixel-palette optimize 16 dither=true`, `/pixel-palette edit 1 #884422`, `/pixel-palette export palette.gpl`.
+
+Report returned success `warnings` according to [the shared warning rules](../docs/MCP_WARNINGS.md), including unknown codes. These describe completed effects; do not retry or request approval because of a warning.
