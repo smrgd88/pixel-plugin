@@ -1,0 +1,30 @@
+{
+  "animations": [
+    {
+      "animation": "whole",
+      "size": 32,
+      "frames": 24,
+      "duration_ms": 2400,
+      "unique_gif_frames": 13,
+      "pixels_verified": true
+    },
+    {
+      "animation": "leaf",
+      "size": 32,
+      "frames": 24,
+      "duration_ms": 2400,
+      "unique_gif_frames": 12,
+      "pixels_verified": true
+    },
+    {
+      "animation": "roll",
+      "size": 40,
+      "frames": 32,
+      "duration_ms": 2240,
+      "unique_gif_frames": 32,
+      "pixels_verified": true
+    }
+  ],
+  "mcp_calls": 231,
+  "mcp_version": "pixel-mcp version b166b166ddb63af1a0d843f2cf30ec38541529eb (built source-commit)"
+}

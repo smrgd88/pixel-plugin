@@ -1,0 +1,10 @@
+const assert=require('node:assert/strict');const {createEngine}=require('./engine.js');const g=createEngine();
+const tick=(n,d=0,b=false)=>{for(let i=0;i<n;i++)g.step(1/60,d,b)};
+let angle=g.state.angle,x=g.state.x;tick(1,1);assert(g.state.x>x);assert(Math.abs((g.state.angle-angle)-(g.state.x-x)/36)<1e-9);
+tick(60,1);const right=g.state.x;tick(100,-1);assert(g.state.x<right);
+tick(1200,-1);assert.equal(g.state.x,45);assert.equal(g.state.v,0);
+g.reset();tick(120,1);assert(g.state.collected[0]);const count=g.state.collected.filter(Boolean).length;tick(120,-1);tick(120,1);assert(g.state.collected.filter(Boolean).length>=count);
+g.reset();tick(60,1);tick(60,0,true);assert.equal(g.state.v,0);tick(300);assert(Math.abs(Math.sin(g.state.angle))<.01);
+g.reset();tick(1200,1);assert(g.state.won);assert.equal(g.state.collected.filter(Boolean).length,5);const wonX=g.state.x;tick(60,-1);assert.equal(g.state.x,wonX);
+g.reset();assert.equal(g.state.x,88);assert(!g.state.won);assert.equal(g.state.time,0);assert(!g.state.collected.some(Boolean));
+console.log('PASS engine: distance/rotation, directions, boundaries, collection, brake/idle, win, restart');
