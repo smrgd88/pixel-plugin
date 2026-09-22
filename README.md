@@ -28,6 +28,11 @@ Create, animate, and export pixel art using Aseprite through natural language an
 - Pixel-perfect scaling (2x, 4x, 8x)
 - Multiple spritesheet layouts
 
+## Runnable Example
+
+See the [apple example](examples/apple/README.md) for reproducible MCP generation,
+checked-in animation assets, and an offline browser demo.
+
 ## How It Works
 
 This plugin uses the [pixel-mcp](https://github.com/willibrandon/pixel-mcp) Model Context Protocol server to communicate with Aseprite. The MCP server provides 50 tools for pixel art operations and is bundled with the plugin.

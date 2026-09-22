@@ -36,3 +36,10 @@ test-outputs/*
 *.aseprite
 *.png
 *.gif
+
+# Apple example: keep curated exports; local regeneration stays untracked.
+examples/apple/generated/
+examples/apple/.venv/
+!examples/apple/assets/*.aseprite
+!examples/apple/assets/*.png
+!examples/apple/assets/*.gif
