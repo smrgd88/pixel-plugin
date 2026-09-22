@@ -1,5 +1,5 @@
 {
-  "source_commit": "b166b166ddb63af1a0d843f2cf30ec38541529eb",
+  "source_commit": "6c9ac5ec211df74aafa9b14a96b132aee0209be8",
   "tools": [
     {
       "description": "Add a new frame to an existing Aseprite sprite. Returns the frame number (1-based index).",
@@ -2060,6 +2060,31 @@
       "outputSchema": {
         "type": "object",
         "properties": {
+          "warnings": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "description": "Stable warning code"
+                },
+                "message": {
+                  "type": "string",
+                  "description": "Human-readable description of the operation's potential effect"
+                }
+              },
+              "required": [
+                "code",
+                "message"
+              ],
+              "additionalProperties": false
+            },
+            "description": "Potentially destructive effects of this completed operation; omitted when none apply"
+          },
           "success": {
             "type": "boolean",
             "description": "Whether the layers were flattened successfully"
@@ -2564,6 +2589,31 @@
       "outputSchema": {
         "type": "object",
         "properties": {
+          "warnings": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "description": "Stable warning code"
+                },
+                "message": {
+                  "type": "string",
+                  "description": "Human-readable description of the operation's potential effect"
+                }
+              },
+              "required": [
+                "code",
+                "message"
+              ],
+              "additionalProperties": false
+            },
+            "description": "Potentially destructive effects of this completed operation; omitted when none apply"
+          },
           "success": {
             "type": "boolean",
             "description": "Whether the operation succeeded"
@@ -2763,6 +2813,31 @@
       "outputSchema": {
         "type": "object",
         "properties": {
+          "warnings": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "description": "Stable warning code"
+                },
+                "message": {
+                  "type": "string",
+                  "description": "Human-readable description of the operation's potential effect"
+                }
+              },
+              "required": [
+                "code",
+                "message"
+              ],
+              "additionalProperties": false
+            },
+            "description": "Potentially destructive effects of this completed operation; omitted when none apply"
+          },
           "success": {
             "type": "boolean"
           },

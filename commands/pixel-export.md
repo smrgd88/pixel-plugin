@@ -26,3 +26,5 @@ Never send scale, fps, loop, animation_tag, layer or an engine format to an expo
 When both scaling and timing changes are requested, create one separate native copy and apply both there. Reuse the original source for each independent resolution export, avoiding cumulative scaling. Do not overwrite the original with the working copy. Inspect output files; file_size=0 alone does not prove an export succeeded.
 
 Examples: `/pixel-export png hero.png frame=1 scale=4`, `/pixel-export gif idle.gif fps=12`, `/pixel-export sheet hero.png layout=rows padding=1`.
+
+Report returned success `warnings` according to [the shared warning rules](../docs/MCP_WARNINGS.md), including unknown codes. These describe completed effects; do not retry or request approval because of a warning.
