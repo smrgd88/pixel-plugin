@@ -141,3 +141,5 @@ The `scaled-animation-export` recipe in [workflows.json](workflows.json) begins 
 Recipe JSON uses `{source}` for an existing absolute sprite path, `{output}` for a caller-selected output directory, and saved step results such as `{canvas.file_path}`. These are recipe substitutions, never literal MCP arguments. The runner resolves them before schema validation. Run `python3 bin/test-skill-workflows.py --aseprite /absolute/path/to/aseprite` to validate the recipes with real files. The prerequisite fixture is created only by the test runner; production use must inspect the user's actual source.
 
 After successful calls, report optional `warnings` using [the shared warning rules](../../docs/MCP_WARNINGS.md). Preserve unknown codes and accept older responses without this field.
+
+Before adapting quantization calls, apply [single-frame, input-mode and actual-pixel validation rules](../../docs/MCP_COLOR_OPERATIONS.md). A returned palette size alone does not establish that the intended colors survived.

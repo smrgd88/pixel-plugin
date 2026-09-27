@@ -1,7 +1,7 @@
 ---
 name: pixel-art-exporter
 description: Export pixel art to PNG, animated GIF or spritesheets with Aseprite JSON metadata. Use for game assets, native save copies and scaled exports.
-allowed-tools: Read, Bash, mcp__aseprite__get_sprite_info, mcp__aseprite__export_sprite, mcp__aseprite__export_spritesheet, mcp__aseprite__save_as, mcp__aseprite__scale_sprite, mcp__aseprite__set_frame_duration, mcp__aseprite__delete_frame, mcp__aseprite__delete_layer, mcp__aseprite__get_palette, mcp__aseprite__quantize_palette
+allowed-tools: Read, Bash, mcp__aseprite__get_sprite_info, mcp__aseprite__get_pixels, mcp__aseprite__export_sprite, mcp__aseprite__export_spritesheet, mcp__aseprite__save_as, mcp__aseprite__scale_sprite, mcp__aseprite__set_frame_duration, mcp__aseprite__delete_frame, mcp__aseprite__delete_layer, mcp__aseprite__get_palette, mcp__aseprite__quantize_palette
 ---
 
 # Pixel Art Exporter
@@ -21,6 +21,7 @@ Read and apply [completed-operation warning handling](../../docs/MCP_WARNINGS.md
 3. For scaled exports, `save_as` to a separate native copy, then `scale_sprite` with equal integer `scale_x`/`scale_y` and `algorithm: nearest`, then export that copy. No export tool accepts a `scale` argument.
 4. For an FPS override, change every frame's `duration_ms` on that copy before exporting. Exports have no `fps`, `loop`, `animation_tag`, `layer` or frame-range argument. For a known frame range, save a copy and delete unwanted frames in descending order; for a layer-only export delete other layers from a copy. If a tag range is unknown, request its range or inspect real exported metadata rather than inventing a tag-list tool.
 5. `include_json` requests Aseprite metadata alongside a sheet. Read the resulting JSON before engine adaptation; there is no engine-specific format selector or standalone metadata tool. Do not invent frame names or assume `frames` is an array.
-6. Check the files exist and have content. `export_sprite` can return `file_size: 0` when its requested path does not exist (for example a numbered image sequence). Treat that as unverified output, not success.
+6. If palette reduction is requested, follow [the color-operation contract](../../docs/MCP_COLOR_OPERATIONS.md). Inspect the affected pixels with `get_pixels`. Do not quantize a multi-frame animation; report the unsupported request without silently dropping frames.
+7. Check the files exist and have content. All-frame PNG sequences are not supported reliably by this pinned single-file output contract and can fail when Aseprite generates numbered files. Use a selected frame for PNG or GIF/spritesheet for animation. Do not retry on the original or claim a failed export succeeded.
 
 Read [export-formats.md](export-formats.md) for format limits and copy-based option handling. Use actual dimensions and file size in the result.

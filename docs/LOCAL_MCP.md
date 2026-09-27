@@ -4,7 +4,7 @@ The plugin launches `.mcp.json` → `bin/pixel-mcp` → a platform binary. A bui
 
 ## Pinned source
 
-[config/mcp-source.json](../config/mcp-source.json) pins the merged MCP #11 warnings contract at `6c9ac5ec211df74aafa9b14a96b132aee0209be8`. All five bundled executables are built from that commit; [bin/mcp-build.json](../bin/mcp-build.json) records their SHA-256 hashes. The actual `tools/list` input/output schemas are in [config/mcp-contract.json](../config/mcp-contract.json).
+[config/mcp-source.json](../config/mcp-source.json) pins the merged MCP #17 density/quantization revision at `a7ffa0fc61763685b195f41b90ba6d1f07fdeece`. All five bundled executables are built from that commit; [bin/mcp-build.json](../bin/mcp-build.json) records their SHA-256 hashes. The actual `tools/list` input/output schemas are in [config/mcp-contract.json](../config/mcp-contract.json).
 
 The MCP protocol's `serverInfo.version` is still `0.1.0` in this source. It is not the plugin version or a reliable source identifier. `bin/pixel-mcp --version` in these builds reports the full source commit.
 
@@ -65,4 +65,8 @@ python3 bin/test-mcp-live.py --aseprite /absolute/path/to/aseprite
 
 `--release` rebuilds darwin amd64/arm64, linux amd64/arm64 and windows amd64 from the pinned commit with CGO disabled, trimpath and a source-commit version. It stages all requested build results before replacing bundles, then updates checksums. Cross-compilation is not execution validation on those platforms; run target-specific smoke tests before release. Keep source pin, snapshot, binaries, checksums and user guidance in the same reviewed change. Build inputs include the commit's go.mod/go.sum; record the toolchain when reporting results.
 
-Run `python3 bin/test-mcp-warnings.py` for schema/client compatibility and add `--aseprite /absolute/path/to/aseprite` for real warning conditions and failure paths. See [warning handling](MCP_WARNINGS.md) and [this update’s validation](WARNINGS_VALIDATION.md).
+Run `python3 bin/test-mcp-warnings.py` for schema/client compatibility and add `--aseprite /absolute/path/to/aseprite` for real warning conditions and failure paths. See [warning handling](MCP_WARNINGS.md) and [previous warnings validation](WARNINGS_VALIDATION.md).
+
+This pin also includes MCP #13 capability checks and #14 single-file protection. `--health` returns JSON with version/API support status; tools/list startup alone does not probe Aseprite. File locking/staging does not replace pre-edit copy guidance, and does not provide undo or atomic publication of a spritesheet plus JSON. Run `python3 bin/test-mcp-color-operations.py --aseprite /absolute/path/to/aseprite` for exact-pixel, density and rejection regressions.
+
+Current execution evidence and review: [color sync validation](COLOR_SYNC_VALIDATION.md).

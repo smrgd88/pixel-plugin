@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### MCP color-operation repairs
+- Pin MCP #17 `a7ffa0f`, including #16 quantization, #13 capability and #14 file-protection changes; refresh all five bundles and exact tool contracts.
+- Preserve explicit density endpoints and document pattern-dependent intermediate values, input-mode-preserving quantization and single-frame limits.
+- Verify actual saved pixel colors, exported pixels, rejection/original preservation and existing warnings instead of relying only on palette size; see [current validation](docs/COLOR_SYNC_VALIDATION.md).
+
+
 ### MCP completed-operation warnings
 - Pin merged MCP #11 (`6c9ac5e`), regenerate the 50-tool contract/reference and rebuild all five bundles with source/checksum metadata.
 - Document optional success warnings and connect creator, professional, exporter and related commands to shared handling rules; retain legacy responses and unknown codes.

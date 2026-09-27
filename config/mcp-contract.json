@@ -1,5 +1,5 @@
 {
-  "source_commit": "6c9ac5ec211df74aafa9b14a96b132aee0209be8",
+  "source_commit": "a7ffa0fc61763685b195f41b90ba6d1f07fdeece",
   "tools": [
     {
       "description": "Add a new frame to an existing Aseprite sprite. Returns the frame number (1-based index).",
@@ -1738,7 +1738,7 @@
       }
     },
     {
-      "description": "Fill a region with a dithering pattern to create smooth gradients and textures. Supports 16 patterns: Bayer matrix (bayer_2x2, bayer_4x4, bayer_8x8) for ordered dithering, Floyd-Steinberg error diffusion (floyd_steinberg) for high-quality gradients, checkerboard for 50/50 blends, and texture patterns (grass, water, stone, cloud, brick, dots, diagonal, cross, noise, horizontal_lines, vertical_lines) for organic effects. Use density parameter to control the ratio of color1 to color2 (0.0 = all color1, 1.0 = all color2, 0.5 = even mix). Essential for professional pixel art gradients and textures.",
+      "description": "Fill a region with one of 16 ordered, texture, or Floyd-Steinberg dithering patterns. Omitted or null density defaults to 0.5; explicit 0 fills color1 and 1 fills color2. Interior density values select a matrix threshold, so texture coverage need not equal the density or be 50/50. For floyd_steinberg, interior values retain the existing horizontal color1-to-color2 gradient and do not adjust its density.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -1796,8 +1796,11 @@
             "description": "Dithering pattern: bayer_2x2|bayer_4x4|bayer_8x8|checkerboard|floyd_steinberg|grass|water|stone|cloud|brick|dots|diagonal|cross|noise|horizontal_lines|vertical_lines"
           },
           "density": {
-            "type": "number",
-            "description": "Ratio of color1 to color2 (0.0-1.0, default: 0.5)"
+            "type": [
+              "null",
+              "number"
+            ],
+            "description": "Density threshold in [0,1]; omitted or null defaults to 0.5, 0 fills color1, 1 fills color2. Interior values depend on the pattern"
           }
         },
         "required": [
@@ -2542,7 +2545,7 @@
       }
     },
     {
-      "description": "Automatically reduce sprite colors using industry-standard quantization algorithms. Supports three algorithms: median_cut (fast, balanced quality), kmeans (highest quality, slower), octree (very fast, good for photos). Can apply Floyd-Steinberg dithering for smoother gradients. Optionally converts to indexed color mode for true palette constraint or keeps RGB mode for flexible multi-pass workflows.",
+      "description": "Reduce pixels to a quantized palette in single-frame sprites (tilemap layers are unsupported). Supports three algorithms: median_cut (fast, balanced quality), kmeans (highest quality, slower), octree (very fast, good for photos). Can apply Floyd-Steinberg dithering for smoother gradients. Always remaps pixels, even without dithering or indexed conversion. Non-dithered remapping preserves layers; dithering flattens them. Disabling indexed conversion preserves the input color mode. Palette size does not bound colors created by layer blending.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -2552,7 +2555,7 @@
           },
           "target_colors": {
             "type": "integer",
-            "description": "Target palette size (2-256)"
+            "description": "Maximum palette entries (2-256); indexed output reserves a transparent index and supports at most 255 opaque entries"
           },
           "algorithm": {
             "type": "string",
@@ -2567,14 +2570,14 @@
               "null",
               "boolean"
             ],
-            "description": "Keep transparent pixels transparent (default: true)"
+            "description": "Reserve a palette entry for fully transparent pixels (default: true); transparent pixels remain transparent in either setting"
           },
           "convert_to_indexed": {
             "type": [
               "null",
               "boolean"
             ],
-            "description": "Convert sprite to indexed color mode (default: true)"
+            "description": "Convert to indexed (default: true); false preserves the input color mode while still remapping pixels"
           }
         },
         "required": [
@@ -2628,7 +2631,7 @@
           },
           "color_mode": {
             "type": "string",
-            "description": "Color mode after quantization (indexed or rgb)"
+            "description": "Color mode after quantization (indexed, rgb, or grayscale)"
           },
           "palette": {
             "type": [

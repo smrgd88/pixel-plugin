@@ -34,3 +34,5 @@ Engine import guidance is separate from MCP export:
 - Ask which engine/version is targeted before generating engine-specific code. This guide does not promise a Unity/Godot/Phaser-specific JSON schema or reuse unverified SDK examples.
 
 The [copy-and-export recipe](examples.md#complete-export-recipe) demonstrates native-source preservation, 2× pixel scaling and real sheet metadata rather than an invented export option.
+
+In the pinned build, all-frame PNG output may fail because Aseprite emits numbered files while MCP stages a single requested output. Use a selected frame for PNG or GIF/spritesheet for animation; sequence-output repair is not included yet.
