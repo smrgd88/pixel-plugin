@@ -28,3 +28,5 @@ When both scaling and timing changes are requested, create one separate native c
 Examples: `/pixel-export png hero.png frame=1 scale=4`, `/pixel-export gif idle.gif fps=12`, `/pixel-export sheet hero.png layout=rows padding=1`.
 
 Report returned success `warnings` according to [the shared warning rules](../docs/MCP_WARNINGS.md), including unknown codes. These describe completed effects; do not retry or request approval because of a warning.
+
+In the pinned build, all-frame PNG output may fail because Aseprite emits numbered files while MCP stages a single requested output. Use a selected frame for PNG or GIF/spritesheet for animation; sequence-output repair is not included yet.

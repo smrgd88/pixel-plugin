@@ -38,3 +38,14 @@ Record the source commit, plugin commit, Go/Aseprite versions, platform and each
 - `python3 bin/test-mcp-behavior.py --aseprite /absolute/path/to/aseprite`: all 50 tool basics plus named option/offset scenarios; independently reopen saved files with Aseprite. Failures are retained and produce a nonzero exit code.
 - `python3 bin/test-skill-workflows.py --aseprite /absolute/path/to/aseprite`: run the eight skill-owned workflows.json recipes, checking actual pixels, timing and original-source preservation.
 - Both tests use isolated generated files and caller-selected output directories. They do not mutate the user's artwork/configuration. The broad behavior test preserves its requests/responses and scenario ledger.
+
+## Color-operation regression gate
+
+Run `python3 bin/test-mcp-color-operations.py --aseprite /absolute/path/to/aseprite`.
+It always selects the bundled server; use `--output test-outputs/color-check` to retain evidence.
+It reopens native files and exported PNGs independently, requiring known source colors
+and coordinates to survive rather than merely checking `unique_colors <= target_colors`.
+It also exercises actual RGB remapping, transparency, density default/null/endpoints,
+invalid inputs, animation/tilemap rejection, unsupported PNG sequence output preservation,
+hard-link refusal and simultaneous writes from two MCP processes.
+Run Aseprite suites sequentially to avoid unnecessary process contention.

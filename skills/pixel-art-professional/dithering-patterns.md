@@ -4,7 +4,7 @@
 
 Supported patterns: `bayer_2x2`, `bayer_4x4`, `bayer_8x8`, `checkerboard`, `floyd_steinberg`, `grass`, `water`, `stone`, `cloud`, `brick`, `dots`, `diagonal`, `cross`, `noise`, `horizontal_lines`, `vertical_lines`.
 
-Use Bayer/checkerboard for ordered transitions, material patterns for textures, and Floyd–Steinberg for error diffusion. `density` is the color ratio in 0–1; omitted or zero currently selects the handler's 0.5 default. For a uniform single color, use `draw_rectangle` through the creator skill.
+Use Bayer/checkerboard for ordered transitions, material patterns for textures, and Floyd–Steinberg for error diffusion. `density` is a pattern threshold in 0–1: omitted or null selects 0.5, explicit 0 fills color1 and 1 fills color2. Intermediate texture coverage is not an exact color ratio. For `floyd_steinberg`, intermediate values keep the existing horizontal gradient rather than adjusting its density.
 
 To reduce an existing image to a palette with dithering, use `quantize_palette` and `dither: true` instead. Atkinson and free-form custom patterns are not exposed by these tools.
 

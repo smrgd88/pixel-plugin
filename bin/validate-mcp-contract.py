@@ -102,6 +102,7 @@ def regressions(tools, examples):
     mutate('export_spritesheet', 'layout', 'grid')
     mutate('apply_auto_shading', 'style', 'hard')
     mutate('draw_pixels', 'frame_number', 0)
+    mutate('draw_with_dither', 'density', '0')
     mutate('draw_pixels', 'pixels', [{'x':0,'y':0,'colour':'#FFFFFF'}])
     mutate('create_canvas', 'width', '16')
     missing = copy.deepcopy(originals['export_sprite']); del missing['arguments']['sprite_path']; mutations.append(missing)
@@ -112,7 +113,11 @@ def regressions(tools, examples):
         except Exception:
             continue
         raise AssertionError('Validator accepted regression: ' + repr(bad))
-    print(f'PASS: {len(mutations)} historical contract regressions rejected')
+    for density in [None, 0, 0.5, 1]:
+        valid = copy.deepcopy(originals['draw_with_dither'])
+        valid['arguments']['density'] = density
+        validate_call(tools, valid)
+    print(f'PASS: {len(mutations)} contract regressions rejected; null/numeric density inputs accepted')
 
 
 def compare(live, snapshot):

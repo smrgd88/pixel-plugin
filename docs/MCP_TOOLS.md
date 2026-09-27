@@ -1,6 +1,6 @@
 # MCP tool contract
 
-Generated from the actual `tools/list` response at MCP source commit `6c9ac5ec211df74aafa9b14a96b132aee0209be8`.
+Generated from the actual `tools/list` response at MCP source commit `a7ffa0fc61763685b195f41b90ba6d1f07fdeece`.
 Regenerate with `python3 bin/render-mcp-reference.py` after reviewing a new snapshot.
 
 Read the tool section needed for the task. All tool names use the `mcp__aseprite__` prefix in skills/commands.
@@ -621,7 +621,7 @@ Draw a rectangle with specified position, size, color, and fill option.
 
 ## draw_with_dither
 
-Fill a region with a dithering pattern to create smooth gradients and textures. Supports 16 patterns: Bayer matrix (bayer_2x2, bayer_4x4, bayer_8x8) for ordered dithering, Floyd-Steinberg error diffusion (floyd_steinberg) for high-quality gradients, checkerboard for 50/50 blends, and texture patterns (grass, water, stone, cloud, brick, dots, diagonal, cross, noise, horizontal_lines, vertical_lines) for organic effects. Use density parameter to control the ratio of color1 to color2 (0.0 = all color1, 1.0 = all color2, 0.5 = even mix). Essential for professional pixel art gradients and textures.
+Fill a region with one of 16 ordered, texture, or Floyd-Steinberg dithering patterns. Omitted or null density defaults to 0.5; explicit 0 fills color1 and 1 fills color2. Interior density values select a matrix threshold, so texture coverage need not equal the density or be 50/50. For floyd_steinberg, interior values retain the existing horizontal color1-to-color2 gradient and do not adjust its density.
 
 ### Input
 
@@ -638,7 +638,7 @@ Fill a region with a dithering pattern to create smooth gradients and textures. 
 | `color1` | string | yes | First color (hex #RRGGBB or #RRGGBBAA) |
 | `color2` | string | yes | Second color (hex #RRGGBB or #RRGGBBAA) |
 | `pattern` | string | yes | Dithering pattern: bayer_2x2\|bayer_4x4\|bayer_8x8\|checkerboard\|floyd_steinberg\|grass\|water\|stone\|cloud\|brick\|dots\|diagonal\|cross\|noise\|horizontal_lines\|vertical_lines |
-| `density` | number | no | Ratio of color1 to color2 (0.0-1.0, default: 0.5) |
+| `density` | null/number | no | Density threshold in [0,1]; omitted or null defaults to 0.5, 0 fills color1, 1 fills color2. Interior values depend on the pattern |
 
 ### Output
 
@@ -916,18 +916,18 @@ Paste clipboard content onto the specified layer and frame. Optionally specify p
 
 ## quantize_palette
 
-Automatically reduce sprite colors using industry-standard quantization algorithms. Supports three algorithms: median_cut (fast, balanced quality), kmeans (highest quality, slower), octree (very fast, good for photos). Can apply Floyd-Steinberg dithering for smoother gradients. Optionally converts to indexed color mode for true palette constraint or keeps RGB mode for flexible multi-pass workflows.
+Reduce pixels to a quantized palette in single-frame sprites (tilemap layers are unsupported). Supports three algorithms: median_cut (fast, balanced quality), kmeans (highest quality, slower), octree (very fast, good for photos). Can apply Floyd-Steinberg dithering for smoother gradients. Always remaps pixels, even without dithering or indexed conversion. Non-dithered remapping preserves layers; dithering flattens them. Disabling indexed conversion preserves the input color mode. Palette size does not bound colors created by layer blending.
 
 ### Input
 
 | Field | Type | Required | Meaning |
 |---|---|---|---|
 | `sprite_path` | string | yes | Path to source .aseprite file |
-| `target_colors` | integer | yes | Target palette size (2-256) |
+| `target_colors` | integer | yes | Maximum palette entries (2-256); indexed output reserves a transparent index and supports at most 255 opaque entries |
 | `algorithm` | string | yes | Quantization algorithm: median_cut (default), kmeans, or octree |
 | `dither` | boolean | yes | Apply Floyd-Steinberg dithering during quantization (default: false) |
-| `preserve_transparency` | null/boolean | no | Keep transparent pixels transparent (default: true) |
-| `convert_to_indexed` | null/boolean | no | Convert sprite to indexed color mode (default: true) |
+| `preserve_transparency` | null/boolean | no | Reserve a palette entry for fully transparent pixels (default: true); transparent pixels remain transparent in either setting |
+| `convert_to_indexed` | null/boolean | no | Convert to indexed (default: true); false preserves the input color mode while still remapping pixels |
 
 ### Output
 
@@ -939,7 +939,7 @@ Automatically reduce sprite colors using industry-standard quantization algorith
 | `success` | boolean | yes | Whether the operation succeeded |
 | `original_colors` | integer | yes | Number of unique colors in original sprite |
 | `quantized_colors` | integer | yes | Number of colors in quantized palette |
-| `color_mode` | string | yes | Color mode after quantization (indexed or rgb) |
+| `color_mode` | string | yes | Color mode after quantization (indexed, rgb, or grayscale) |
 | `palette` | null/array | yes | Array of hex colors in the quantized palette |
 | `palette[]` | string | — | Array item |
 | `algorithm_used` | string | yes | Quantization algorithm that was used |

@@ -20,8 +20,11 @@ for _,l in ipairs(s.layers) do
    local raw=cel.image:getPixel(x,y)
    local color
    if s.colorMode==ColorMode.INDEXED then
-    if raw < #s.palettes[1] then color=s.palettes[1]:getColor(raw) else c.pixels[tostring(x+cel.position.x)..','..tostring(y+cel.position.y)]='INVALID_PALETTE_INDEX_'..raw; color=Color(0,0,0,0) end
-    if raw==s.transparentColor and not l.isBackground then color=Color(0,0,0,0) end
+    -- An unused mask index (e.g. 255) can be outside the compact palette.
+    -- It is transparent on non-background layers, not an invalid color entry.
+    if raw==s.transparentColor and not l.isBackground then color=Color(0,0,0,0)
+    elseif raw < #s.palettes[1] then color=s.palettes[1]:getColor(raw)
+    else c.pixels[tostring(x+cel.position.x)..','..tostring(y+cel.position.y)]='INVALID_PALETTE_INDEX_'..raw; color=Color(0,0,0,0) end
    elseif s.colorMode==ColorMode.GRAY then
     local val=app.pixelColor.grayaV(raw);color=Color(val,val,val,app.pixelColor.grayaA(raw))
    else color=Color{r=app.pixelColor.rgbaR(raw),g=app.pixelColor.rgbaG(raw),b=app.pixelColor.rgbaB(raw),a=app.pixelColor.rgbaA(raw)} end
