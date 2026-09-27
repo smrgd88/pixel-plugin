@@ -1,5 +1,7 @@
 # Original MCP develop synchronization audit
 
+> Historical execution record for the source/candidate named below. See [current fix and merge status](BUG_STATUS.md) for the present bundle and remaining issues.
+
 This records the first synchronization. The later behavior repair, restored workflows and current pinned build are documented in [REPAIR_VALIDATION.md](REPAIR_VALIDATION.md).
 
 ## Source baseline

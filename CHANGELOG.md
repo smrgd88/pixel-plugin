@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+These entries describe cumulative develop changes, not a newly published release.
+The active bundled source is `8d9bdde15c463b1c8227cfdb3a7d8cf65bfac966`; earlier pin
+entries below record their respective updates. See [current fix status](docs/BUG_STATUS.md).
+
+### Documentation and remaining-issue audit
+- Record merged fixes for the original five bugs and distinguish remaining implementation limits from unverified platforms/client installation.
+- Reproduce indexed palette-shrink transparency loss, reference edge-threshold zero defaulting, and the inactive AA threshold in the current bundle; document safe usage and MCP ownership without claiming runtime repairs.
+- Correct the stale README source pin and consolidate the Unreleased heading. See [audit evidence](docs/BUG_AUDIT.md).
+
 ### MCP export and reference analysis repairs
 - Pin MCP #20 `8d9bdde`, including #18 numbered PNG/JPG/BMP export with optional ordered files and BMP/native reference analysis.
 - Rebuild five bundles and update the exact 50-tool snapshot, generated reference, exporter/professional guidance and examples.
@@ -16,13 +25,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### MCP color-operation repairs
 - Pin MCP #17 `a7ffa0f`, including #16 quantization, #13 capability and #14 file-protection changes; refresh all five bundles and exact tool contracts.
 - Preserve explicit density endpoints and document pattern-dependent intermediate values, input-mode-preserving quantization and single-frame limits.
-- Verify actual saved pixel colors, exported pixels, rejection/original preservation and existing warnings instead of relying only on palette size; see [current validation](docs/COLOR_SYNC_VALIDATION.md).
+- Verify actual saved pixel colors, exported pixels, rejection/original preservation and existing warnings instead of relying only on palette size; see [color-update validation](docs/COLOR_SYNC_VALIDATION.md).
 
 
 ### MCP completed-operation warnings
 - Pin merged MCP #11 (`6c9ac5e`), regenerate the 50-tool contract/reference and rebuild all five bundles with source/checksum metadata.
 - Document optional success warnings and connect creator, professional, exporter and related commands to shared handling rules; retain legacy responses and unknown codes.
-- Add schema/client and real-Aseprite warning regressions; see [current validation](docs/WARNINGS_VALIDATION.md).
+- Add schema/client and real-Aseprite warning regressions; see [warnings-update validation](docs/WARNINGS_VALIDATION.md).
 
 ### Self-review preservation follow-up
 - Consume the MCP fixes for nested-group frame duplication, complete cel attributes and byte-exact preservation of user metadata during selection operations.
@@ -45,8 +54,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Reproducible committed-source host/release builds, source/schema snapshots and binary SHA-256 provenance.
 - Live MCP contract comparison, 68 documented payload checks, negative regressions and wrapper/config tests in CI.
 - Isolated real-Aseprite smoke tests for native links, indexed shading, PNG/GIF/sheet exports and opaque quantization. Transparent quantization and selection/pixel/dithering regressions are covered by the follow-up repaired MCP build.
-
-## [Unreleased]
 
 ## [0.5.0] - 2025-10-18
 

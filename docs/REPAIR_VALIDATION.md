@@ -1,5 +1,7 @@
 # Behavior repairs and skill restoration
 
+> Historical execution record for the source/candidate named below. See [current fix and merge status](BUG_STATUS.md) for the present bundle and remaining issues.
+
 This records the earlier candidate. The subsequent self-review preservation fixes are documented in [SELF_REVIEW_REPAIR.md](SELF_REVIEW_REPAIR.md).
 
 The original synchronization corrected tool contracts but removed useful creative guidance. A subsequent real-output sweep found server behavior failures that the original schema/smoke checks did not catch. This follow-up restores the useful skill material, repairs the reproducible server defects in a separate MCP branch, and verifies complete workflows.

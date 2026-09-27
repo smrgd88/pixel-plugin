@@ -4,6 +4,19 @@ Create, animate, and export pixel art using Aseprite through natural language an
 
 *Powered by [pixel-mcp](https://github.com/willibrandon/pixel-mcp) - a Model Context Protocol server for Aseprite.*
 
+## Current develop status
+
+The bundled MCP is pinned to `8d9bdde15c463b1c8227cfdb3a7d8cf65bfac966` (50 tools).
+The original five reported bugs are fixed and integrated through plugin PR #7;
+additional MCP issues remain. See [fix status](docs/BUG_STATUS.md),
+[remaining issues](docs/KNOWN_ISSUES.md), and [new reproducible findings](docs/BUG_AUDIT.md).
+
+These are changes merged into this fork's develop branch, not a new published release
+or a guarantee that an upstream marketplace install contains them. The installation
+instructions below describe the existing Claude plugin packaging. Actual Codex
+skill/MCP execution was verified through isolated CLI configuration; installed Codex
+plugin discovery and app GUI behavior were not verified.
+
 ## Features
 
 **Natural Language Pixel Art Creation**
@@ -219,7 +232,7 @@ Exports support still PNG, animated GIF and spritesheets with horizontal, vertic
 
 ## Local MCP development
 
-The bundled server and schemas are pinned to MCP behavior-repair commit `b166b166ddb63af1a0d843f2cf30ec38541529eb`. Build a local committed revision and select it through PIXEL_MCP_BINARY; no personal source paths are stored in the distribution. See [reproducible build and validation](docs/LOCAL_MCP.md), [tool contract](docs/MCP_TOOLS.md), and [synchronization audit](docs/MCP_SYNC.md).
+The bundled server and schemas are pinned to MCP export/reference revision `8d9bdde15c463b1c8227cfdb3a7d8cf65bfac966`. Build a local committed revision and select it through PIXEL_MCP_BINARY; no personal source paths are stored in the distribution. See [reproducible build and validation](docs/LOCAL_MCP.md), [tool contract](docs/MCP_TOOLS.md), [historical synchronization audit](docs/MCP_SYNC.md), and [current status](docs/BUG_STATUS.md).
 
 ## Documentation
 
