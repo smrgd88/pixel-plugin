@@ -10,7 +10,7 @@ Parse `$ARGUMENTS`, resolve the actual sprite_path, and read [exporter guidance]
 
 | Request | Translation |
 |---|---|
-| `png [file] [frame=N]` | export_sprite with format=png, output_path, frame_number=N (default 1) |
+| `png [file] [frame=N]` | export_sprite with format=png, output_path, frame_number=N (default 1); frame=0 exports all PNG frames as a numbered sequence |
 | `gif [file]` | export_sprite with format=gif, output_path, frame_number=0 (all) |
 | `sheet [file] [layout=horizontal] [padding=0]` | export_spritesheet with layout, padding, include_json=true |
 | `json [file.json]` | Export a companion PNG sheet with include_json=true and report both paths; no standalone JSON tool |
@@ -25,8 +25,8 @@ Never send scale, fps, loop, animation_tag, layer or an engine format to an expo
 
 When both scaling and timing changes are requested, create one separate native copy and apply both there. Reuse the original source for each independent resolution export, avoiding cumulative scaling. Do not overwrite the original with the working copy. Inspect output files; file_size=0 alone does not prove an export succeeded.
 
-Examples: `/pixel-export png hero.png frame=1 scale=4`, `/pixel-export gif idle.gif fps=12`, `/pixel-export sheet hero.png layout=rows padding=1`.
+Examples: `/pixel-export png hero.png frame=1 scale=4`, `/pixel-export png walk007.png frame=0`, `/pixel-export gif idle.gif fps=12`, `/pixel-export sheet hero.png layout=rows padding=1`.
 
 Report returned success `warnings` according to [the shared warning rules](../docs/MCP_WARNINGS.md), including unknown codes. These describe completed effects; do not retry or request approval because of a warning.
 
-In the pinned build, all-frame PNG output may fail because Aseprite emits numbered files while MCP stages a single requested output. Use a selected frame for PNG or GIF/spritesheet for animation; sequence-output repair is not included yet.
+For an all-frame PNG sequence use `frame=0`. Follow [sequence output handling](../docs/MCP_EXPORT_ANALYSIS.md): report all actual `files[].path`, `files[].frame_number` and sizes, not only the first `exported_path`. Do not claim the requested base file was created. Keep single-file/older responses without `files` compatible.

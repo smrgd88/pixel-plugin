@@ -1,6 +1,6 @@
 # MCP tool contract
 
-Generated from the actual `tools/list` response at MCP source commit `a7ffa0fc61763685b195f41b90ba6d1f07fdeece`.
+Generated from the actual `tools/list` response at MCP source commit `8d9bdde15c463b1c8227cfdb3a7d8cf65bfac966`.
 Regenerate with `python3 bin/render-mcp-reference.py` after reviewing a new snapshot.
 
 Read the tool section needed for the task. All tool names use the `mcp__aseprite__` prefix in skills/commands.
@@ -160,13 +160,13 @@ Analyze color palette for harmonious relationships. Identifies complementary pai
 
 ## analyze_reference
 
-Extract structured data from reference images to guide pixel art creation. Performs k-means palette extraction, brightness/edge detection, and composition analysis. Returns palette sorted by hue/lightness, brightness map with quantized levels, edge map with major contours, composition guides (rule of thirds, focal points), and suggested dithering zones.
+Extract structured data from PNG, JPEG, GIF, BMP, or Aseprite reference images to guide pixel art creation. GIF uses the first decoded image; Aseprite uses the visible composite of frame 1. BMP and Aseprite require the configured supported Aseprite runtime. The reference is not modified. Performs k-means palette extraction, brightness/edge detection, and composition analysis. Returns palette sorted by hue/lightness, brightness map with quantized levels, edge map with major contours, composition guides (rule of thirds, focal points), and suggested dithering zones.
 
 ### Input
 
 | Field | Type | Required | Meaning |
 |---|---|---|---|
-| `reference_path` | string | yes | Path to reference image (.jpg, .png, .gif, .bmp, .aseprite) |
+| `reference_path` | string | yes | Path to PNG, JPEG, GIF, BMP, or Aseprite (.ase/.aseprite) reference; analyzes the first frame only |
 | `target_width` | integer | yes | Pixel art target width (1-65535) |
 | `target_height` | integer | yes | Pixel art target height (1-65535) |
 | `palette_size` | integer | no | Number of colors to extract (5-32, default: 16) |
@@ -666,14 +666,14 @@ Duplicate an existing frame and insert it at the specified position.
 
 ## export_sprite
 
-Export sprite to common image formats (PNG, GIF, JPG, BMP).
+Export sprite to PNG, GIF, JPG, or BMP. All-frame PNG/JPG/BMP exports use numbered files (stem_0001.ext etc.) and return files in frame order. exported_path and file_size identify the first real file. Single-frame exports and animated GIF retain a single output path. The output extension must match format.
 
 ### Input
 
 | Field | Type | Required | Meaning |
 |---|---|---|---|
 | `sprite_path` | string | yes | Path to the Aseprite sprite file |
-| `output_path` | string | yes | Output file path for exported image |
+| `output_path` | string | yes | Output file path; multi-frame PNG/JPG/BMP uses stem_0001.ext, stem_0002.ext, etc. |
 | `format` | string | yes | Export format: png, gif, jpg, bmp |
 | `frame_number` | integer | yes | Specific frame to export (0 = all frames, 1-based) |
 
@@ -681,8 +681,12 @@ Export sprite to common image formats (PNG, GIF, JPG, BMP).
 
 | Field | Type | Required | Meaning |
 |---|---|---|---|
-| `exported_path` | string | yes | Path to the exported file |
-| `file_size` | integer | yes | Size of exported file in bytes |
+| `exported_path` | string | yes | Path to the exported file; first file for an image sequence |
+| `file_size` | integer | yes | Size of exported_path in bytes; first file only for a sequence |
+| `files` | null/array | no | All generated files in frame order for a multi-file image sequence; omitted for single-file exports |
+| `files[].path` | string | yes | Actual output file path |
+| `files[].file_size` | integer | yes | Size of this file in bytes |
+| `files[].frame_number` | integer | yes | Source frame number (1-based) |
 
 ## export_spritesheet
 

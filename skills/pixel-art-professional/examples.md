@@ -277,3 +277,11 @@ Recipe JSON uses `{source}` for an existing absolute sprite path, `{output}` for
 After successful calls, report optional `warnings` using [the shared warning rules](../../docs/MCP_WARNINGS.md). Preserve unknown codes and accept older responses without this field.
 
 Before adapting quantization calls, apply [single-frame, input-mode and actual-pixel validation rules](../../docs/MCP_COLOR_OPERATIONS.md). A returned palette size alone does not establish that the intended colors survived.
+
+## Native reference analysis
+
+Analyze visible frame 1 without editing the reference, using [reference-format semantics](../../docs/MCP_EXPORT_ANALYSIS.md).
+
+```mcp-example
+{"name":"analyze_reference","arguments":{"reference_path":"/work/reference.aseprite","target_width":16,"target_height":16}}
+```

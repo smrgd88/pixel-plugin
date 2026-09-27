@@ -4,7 +4,7 @@ The plugin launches `.mcp.json` → `bin/pixel-mcp` → a platform binary. A bui
 
 ## Pinned source
 
-[config/mcp-source.json](../config/mcp-source.json) pins the merged MCP #17 density/quantization revision at `a7ffa0fc61763685b195f41b90ba6d1f07fdeece`. All five bundled executables are built from that commit; [bin/mcp-build.json](../bin/mcp-build.json) records their SHA-256 hashes. The actual `tools/list` input/output schemas are in [config/mcp-contract.json](../config/mcp-contract.json).
+[config/mcp-source.json](../config/mcp-source.json) pins the merged MCP #20 export/analysis revision at `8d9bdde15c463b1c8227cfdb3a7d8cf65bfac966`. All five bundled executables are built from that commit; [bin/mcp-build.json](../bin/mcp-build.json) records their SHA-256 hashes. The actual `tools/list` input/output schemas are in [config/mcp-contract.json](../config/mcp-contract.json).
 
 The MCP protocol's `serverInfo.version` is still `0.1.0` in this source. It is not the plugin version or a reliable source identifier. `bin/pixel-mcp --version` in these builds reports the full source commit.
 
@@ -69,4 +69,8 @@ Run `python3 bin/test-mcp-warnings.py` for schema/client compatibility and add `
 
 This pin also includes MCP #13 capability checks and #14 single-file protection. `--health` returns JSON with version/API support status; tools/list startup alone does not probe Aseprite. File locking/staging does not replace pre-edit copy guidance, and does not provide undo or atomic publication of a spritesheet plus JSON. Run `python3 bin/test-mcp-color-operations.py --aseprite /absolute/path/to/aseprite` for exact-pixel, density and rejection regressions.
 
-Current execution evidence and review: [color sync validation](COLOR_SYNC_VALIDATION.md).
+Previous color sync execution evidence and review: [color sync validation](COLOR_SYNC_VALIDATION.md).
+
+Current [export/analysis contract](MCP_EXPORT_ANALYSIS.md) includes MCP #18 sequence output and #20 BMP/native reference support. Run `python3 bin/test-mcp-export-analysis.py --aseprite /absolute/path/to/aseprite` for actual file-list, frame pixel and reference analysis regressions.
+
+Current execution, before/after comparison and review: [export/analysis validation](EXPORT_ANALYSIS_VALIDATION.md).

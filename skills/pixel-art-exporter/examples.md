@@ -143,3 +143,17 @@ Recipe JSON uses `{source}` for an existing absolute sprite path, `{output}` for
 After successful calls, report optional `warnings` using [the shared warning rules](../../docs/MCP_WARNINGS.md). Preserve unknown codes and accept older responses without this field.
 
 Before adapting quantization calls, apply [single-frame, input-mode and actual-pixel validation rules](../../docs/MCP_COLOR_OPERATIONS.md). A returned palette size alone does not establish that the intended colors survived.
+
+## All-frame image sequence
+
+For a multi-frame sprite, report every returned `files` entry as described in [sequence handling](../../docs/MCP_EXPORT_ANALYSIS.md). `walk007.png` is a naming base, not the first output file.
+
+```mcp-example
+{"name":"export_sprite","arguments":{"sprite_path":"/work/walk.aseprite","output_path":"/work/walk007.png","format":"png","frame_number":0}}
+```
+
+## JPEG extension alias
+
+```mcp-example
+{"name":"export_sprite","arguments":{"sprite_path":"/work/walk.aseprite","output_path":"/work/walk.jpeg","format":"jpg","frame_number":1}}
+```

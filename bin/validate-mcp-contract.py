@@ -51,7 +51,7 @@ def validate_call(tools, call):
     for key in ['frame_number', 'source_frame', 'target_frame', 'from_frame', 'to_frame']:
         if key in args and args[key] < (0 if name == 'export_sprite' else 1):
             raise ValueError(f'{name}.{key}: invalid frame index')
-    if name == 'export_sprite' and Path(args['output_path']).suffix.lower() != '.' + args['format']:
+    if name == 'export_sprite' and Path(args['output_path']).suffix.lower() not in ({'.jpg', '.jpeg'} if args['format'] == 'jpg' else {'.' + args['format']}):
         raise ValueError('Export extension must match format')
 
 

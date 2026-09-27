@@ -4,14 +4,14 @@ See [validated examples](examples.md) and the [exact tool contract](../../docs/M
 
 | Output | MCP call | Behavior |
 |---|---|---|
-| Still PNG | `export_sprite`, `format: png`, `frame_number: 1` (or another one-based frame) | Preserve image transparency; specify a frame to avoid a sequence |
+| Still PNG | `export_sprite`, `format: png`, `frame_number: 1` (or another one-based frame) | Preserve image transparency; specify a frame for one file; frame_number=0 exports numbered files for a multi-frame sprite |
 | Animated GIF | `export_sprite`, `format: gif`, `frame_number: 0` | All frames with saved timing; GIF has palette and alpha limits |
 | JPG/BMP | `export_sprite`, matching `format` and extension | Use when that format is explicitly needed; verify transparency loss |
 | Spritesheet | `export_spritesheet` | All frames; horizontal, vertical, rows, columns, packed |
 | Metadata | sheet with `include_json: true` | Aseprite JSON alongside the texture; inspect before adapting to an engine |
 | Native copy | `save_as` | `.aseprite` or `.ase`, preserves editable structure |
 
-Format is validated as an argument but Aseprite selects its encoder using the file extension: keep them consistent. PNG with all frames may generate numbered files, so a zero `file_size` response is insufficient proof of export.
+The output extension must match format (`.jpeg` is also accepted for jpg). For all-frame PNG/JPG/BMP, read the optional ordered `files` array; the two legacy fields identify only its first file. Verify actual files and do not infer output names from the requested base.
 
 Spritesheet padding applies to border, shape and inner padding. Do not assume it is only the gap between frames or calculate final dimensions without reading the output. The MCP does not expose exact row/column counts, trimming, extrusion or alternate JSON formats.
 
@@ -35,4 +35,4 @@ Engine import guidance is separate from MCP export:
 
 The [copy-and-export recipe](examples.md#complete-export-recipe) demonstrates native-source preservation, 2× pixel scaling and real sheet metadata rather than an invented export option.
 
-In the pinned build, all-frame PNG output may fail because Aseprite emits numbered files while MCP stages a single requested output. Use a selected frame for PNG or GIF/spritesheet for animation; sequence-output repair is not included yet.
+See [sequence naming, compatibility and recovery boundaries](../../docs/MCP_EXPORT_ANALYSIS.md). Existing base files and old numbered files outside the returned list are not automatically deleted.
