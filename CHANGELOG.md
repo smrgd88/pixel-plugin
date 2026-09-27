@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### MCP export and reference analysis repairs
+- Pin MCP #20 `8d9bdde`, including #18 numbered PNG/JPG/BMP export with optional ordered files and BMP/native reference analysis.
+- Rebuild five bundles and update the exact 50-tool snapshot, generated reference, exporter/professional guidance and examples.
+- Verify all returned sequence paths, sizes and frame pixels; preserve legacy single-file responses and document first-frame analysis and rollback boundaries. See [validation and before/after results](docs/EXPORT_ANALYSIS_VALIDATION.md).
+
+
 ### MCP color-operation repairs
 - Pin MCP #17 `a7ffa0f`, including #16 quantization, #13 capability and #14 file-protection changes; refresh all five bundles and exact tool contracts.
 - Preserve explicit density endpoints and document pattern-dependent intermediate values, input-mode-preserving quantization and single-frame limits.

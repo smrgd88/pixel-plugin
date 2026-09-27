@@ -1,5 +1,5 @@
 {
-  "source_commit": "a7ffa0fc61763685b195f41b90ba6d1f07fdeece",
+  "source_commit": "8d9bdde15c463b1c8227cfdb3a7d8cf65bfac966",
   "tools": [
     {
       "description": "Add a new frame to an existing Aseprite sprite. Returns the frame number (1-based index).",
@@ -282,13 +282,13 @@
       }
     },
     {
-      "description": "Extract structured data from reference images to guide pixel art creation. Performs k-means palette extraction, brightness/edge detection, and composition analysis. Returns palette sorted by hue/lightness, brightness map with quantized levels, edge map with major contours, composition guides (rule of thirds, focal points), and suggested dithering zones.",
+      "description": "Extract structured data from PNG, JPEG, GIF, BMP, or Aseprite reference images to guide pixel art creation. GIF uses the first decoded image; Aseprite uses the visible composite of frame 1. BMP and Aseprite require the configured supported Aseprite runtime. The reference is not modified. Performs k-means palette extraction, brightness/edge detection, and composition analysis. Returns palette sorted by hue/lightness, brightness map with quantized levels, edge map with major contours, composition guides (rule of thirds, focal points), and suggested dithering zones.",
       "inputSchema": {
         "type": "object",
         "properties": {
           "reference_path": {
             "type": "string",
-            "description": "Path to reference image (.jpg, .png, .gif, .bmp, .aseprite)"
+            "description": "Path to PNG, JPEG, GIF, BMP, or Aseprite (.ase/.aseprite) reference; analyzes the first frame only"
           },
           "target_width": {
             "type": "integer",
@@ -1869,7 +1869,7 @@
       }
     },
     {
-      "description": "Export sprite to common image formats (PNG, GIF, JPG, BMP).",
+      "description": "Export sprite to PNG, GIF, JPG, or BMP. All-frame PNG/JPG/BMP exports use numbered files (stem_0001.ext etc.) and return files in frame order. exported_path and file_size identify the first real file. Single-frame exports and animated GIF retain a single output path. The output extension must match format.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -1879,7 +1879,7 @@
           },
           "output_path": {
             "type": "string",
-            "description": "Output file path for exported image"
+            "description": "Output file path; multi-frame PNG/JPG/BMP uses stem_0001.ext, stem_0002.ext, etc."
           },
           "format": {
             "type": "string",
@@ -1904,11 +1904,41 @@
         "properties": {
           "exported_path": {
             "type": "string",
-            "description": "Path to the exported file"
+            "description": "Path to the exported file; first file for an image sequence"
           },
           "file_size": {
             "type": "integer",
-            "description": "Size of exported file in bytes"
+            "description": "Size of exported_path in bytes; first file only for a sequence"
+          },
+          "files": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "description": "Actual output file path"
+                },
+                "file_size": {
+                  "type": "integer",
+                  "description": "Size of this file in bytes"
+                },
+                "frame_number": {
+                  "type": "integer",
+                  "description": "Source frame number (1-based)"
+                }
+              },
+              "required": [
+                "path",
+                "file_size",
+                "frame_number"
+              ],
+              "additionalProperties": false
+            },
+            "description": "All generated files in frame order for a multi-file image sequence; omitted for single-file exports"
           }
         },
         "required": [

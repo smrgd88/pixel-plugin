@@ -152,7 +152,9 @@ def main():
             p = sprite(); call('add_frame', sprite_path=p, duration_ms=100)
             reject('quantize_palette', p, target_colors=2, algorithm='median_cut', dither=True)
             output = out / 'sequence.png'; output.write_bytes(b'original-output-sentinel')
-            reject('export_sprite', p, output_path=str(output), format='png', frame_number=0)
+            sequence = call('export_sprite', sprite_path=p, output_path=str(output), format='png', frame_number=0)
+            assert [f['frame_number'] for f in sequence['files']] == [1, 2]
+            assert all(Path(f['path']).stat().st_size == f['file_size'] > 0 for f in sequence['files'])
             assert output.read_bytes() == b'original-output-sentinel'
             assert not list(out.glob('sequence[0-9]*.png'))
             p = sprite()
@@ -176,7 +178,7 @@ def main():
                 assert {l['name'] for l in inspect(p)['layers']} == {'Layer 1', 'One', 'Two'}
             finally:
                 peer.close()
-            print('PASS: animation/tilemap and PNG-sequence rejection, original/output preservation, hardlink refusal and concurrent writers', flush=True)
+            print('PASS: animation/tilemap rejection and PNG-sequence success, original/output preservation, hardlink refusal and concurrent writers', flush=True)
         finally:
             client.close()
             (out / 'calls.json').write_text(json.dumps(calls, indent=2))

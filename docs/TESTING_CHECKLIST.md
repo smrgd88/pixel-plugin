@@ -46,6 +46,10 @@ It always selects the bundled server; use `--output test-outputs/color-check` to
 It reopens native files and exported PNGs independently, requiring known source colors
 and coordinates to survive rather than merely checking `unique_colors <= target_colors`.
 It also exercises actual RGB remapping, transparency, density default/null/endpoints,
-invalid inputs, animation/tilemap rejection, unsupported PNG sequence output preservation,
+invalid inputs, animation/tilemap rejection, PNG sequence base-file preservation,
 hard-link refusal and simultaneous writes from two MCP processes.
 Run Aseprite suites sequentially to avoid unnecessary process contention.
+
+## Export/analysis regression gate
+
+`python3 bin/test-mcp-export-analysis.py` checks optional sequence output and legacy text/structured response compatibility without Aseprite (also in the default suite). Add `--aseprite /absolute/path/to/aseprite` for real output paths/sizes/frame pixels, naming, PNG/JPG/BMP/GIF cases, error/source preservation and first-frame BMP/native analysis.
