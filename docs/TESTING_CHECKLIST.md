@@ -53,3 +53,7 @@ Run Aseprite suites sequentially to avoid unnecessary process contention.
 ## Export/analysis regression gate
 
 `python3 bin/test-mcp-export-analysis.py` checks optional sequence output and legacy text/structured response compatibility without Aseprite (also in the default suite). Add `--aseprite /absolute/path/to/aseprite` for real output paths/sizes/frame pixels, naming, PNG/JPG/BMP/GIF cases, error/source preservation and first-frame BMP/native analysis.
+
+## Review-control regression gate
+
+`python3 bin/test-mcp-review-fixes.py` validates nullable threshold inputs in the default suite. Add `--aseprite /absolute/path/to/aseprite` to verify palette mask/pixels, actual thresholds, preview/apply, density profiles and deterministic rare-color usage against the bundled server. These numeric profiles use a controlled 8×8 fixture; they do not promise exact density ratios for arbitrary art.

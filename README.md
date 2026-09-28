@@ -4,15 +4,17 @@ Create, animate, and export pixel art using Aseprite through natural language an
 
 *Powered by [pixel-mcp](https://github.com/willibrandon/pixel-mcp) - a Model Context Protocol server for Aseprite.*
 
-## Current develop status
+## Current source status
 
-The bundled MCP is pinned to `8d9bdde15c463b1c8227cfdb3a7d8cf65bfac966` (50 tools).
+The bundled MCP is pinned to `bd13cdb64d071ab69e0f4d17fc710196e6506570` (50 tools).
 The original five reported bugs are fixed and integrated through plugin PR #7;
-additional MCP issues remain. See [fix status](docs/BUG_STATUS.md),
-[remaining issues](docs/KNOWN_ISSUES.md), and [new reproducible findings](docs/BUG_AUDIT.md).
+the subsequent palette/threshold findings and density improvements are now bundled from MCP #22.
+Known algorithm and validation boundaries remain. See [fix status](docs/BUG_STATUS.md),
+[remaining issues](docs/KNOWN_ISSUES.md), and [historical audit findings](docs/BUG_AUDIT.md).
 
-These are changes merged into this fork's develop branch, not a new published release
-or a guarantee that an upstream marketplace install contains them. The installation
+This describes the bundle in this checkout. Plugin integration is tracked separately
+from MCP merging; it is not a published release or a guarantee that an upstream
+marketplace install contains these changes. The installation
 instructions below describe the existing Claude plugin packaging. Actual Codex
 skill/MCP execution was verified through isolated CLI configuration; installed Codex
 plugin discovery and app GUI behavior were not verified.
@@ -232,7 +234,7 @@ Exports support still PNG, animated GIF and spritesheets with horizontal, vertic
 
 ## Local MCP development
 
-The bundled server and schemas are pinned to MCP export/reference revision `8d9bdde15c463b1c8227cfdb3a7d8cf65bfac966`. Build a local committed revision and select it through PIXEL_MCP_BINARY; no personal source paths are stored in the distribution. See [reproducible build and validation](docs/LOCAL_MCP.md), [tool contract](docs/MCP_TOOLS.md), [historical synchronization audit](docs/MCP_SYNC.md), and [current status](docs/BUG_STATUS.md).
+The bundled server and schemas are pinned to MCP review-repair revision `bd13cdb64d071ab69e0f4d17fc710196e6506570`. Build a local committed revision and select it through PIXEL_MCP_BINARY; no personal source paths are stored in the distribution. See [reproducible build and validation](docs/LOCAL_MCP.md), [tool contract](docs/MCP_TOOLS.md), [historical synchronization audit](docs/MCP_SYNC.md), and [current status](docs/BUG_STATUS.md).
 
 ## Documentation
 

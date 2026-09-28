@@ -1,5 +1,5 @@
 {
-  "source_commit": "8d9bdde15c463b1c8227cfdb3a7d8cf65bfac966",
+  "source_commit": "bd13cdb64d071ab69e0f4d17fc710196e6506570",
   "tools": [
     {
       "description": "Add a new frame to an existing Aseprite sprite. Returns the frame number (1-based index).",
@@ -307,8 +307,11 @@
             "description": "Quantize brightness into N levels (2-10, default: 5)"
           },
           "edge_threshold": {
-            "type": "integer",
-            "description": "Edge detection sensitivity (0-255, default: 30)"
+            "type": [
+              "null",
+              "integer"
+            ],
+            "description": "Sobel edge threshold (0-255); omitted or null defaults to 30, explicit zero is preserved"
           }
         },
         "required": [
@@ -1738,7 +1741,7 @@
       }
     },
     {
-      "description": "Fill a region with one of 16 ordered, texture, or Floyd-Steinberg dithering patterns. Omitted or null density defaults to 0.5; explicit 0 fills color1 and 1 fills color2. Interior density values select a matrix threshold, so texture coverage need not equal the density or be 50/50. For floyd_steinberg, interior values retain the existing horizontal color1-to-color2 gradient and do not adjust its density.",
+      "description": "Fill a region with one of 16 ordered, texture, or Floyd-Steinberg dithering patterns. Omitted or null density defaults to 0.5; explicit 0 fills color1 and 1 fills color2. Interior density values control ordered matrix thresholds or ranked texture coverage. Texture .5 preserves the legacy pattern, not necessarily a 50/50 ratio. Floyd density biases a horizontal gradient toward color2; .5 preserves the legacy gradient for widths greater than one. Exact rendered color ratios are not guaranteed.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -1800,7 +1803,7 @@
               "null",
               "number"
             ],
-            "description": "Density threshold in [0,1]; omitted or null defaults to 0.5, 0 fills color1, 1 fills color2. Interior values depend on the pattern"
+            "description": "Density threshold in [0,1]; omitted or null defaults to 0.5, 0 fills color1, 1 fills color2. Interior values bias the Floyd gradient or select ordered texture ranks; .5 retains the legacy pattern, coverage is pattern-dependent"
           }
         },
         "required": [
@@ -3239,8 +3242,11 @@
             "additionalProperties": false
           },
           "threshold": {
-            "type": "integer",
-            "description": "Edge detection sensitivity 0-255 (default: 128)"
+            "type": [
+              "null",
+              "integer"
+            ],
+            "description": "Minimum edge contrast: max premultiplied RGBA channel difference must exceed this value (0-255); omitted or null defaults to 128"
           },
           "auto_apply": {
             "type": "boolean",

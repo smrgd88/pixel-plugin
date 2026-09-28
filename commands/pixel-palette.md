@@ -27,4 +27,4 @@ Examples: `/pixel-palette set gameboy`, `/pixel-palette optimize 16 dither=true`
 
 Report returned success `warnings` according to [the shared warning rules](../docs/MCP_WARNINGS.md), including unknown codes. These describe completed effects; do not retry or request approval because of a warning.
 
-Known indexed-palette issue: shortening the palette with `set_palette` can make an in-use color transparent. Keep a native copy and avoid shrinking indexed palettes this way; editing existing entries without reducing length avoids the reproduced trigger. Do not silently substitute quantization for a requested custom palette. See [audit evidence](../docs/BUG_AUDIT.md).
+The pinned server now preserves the indexed transparent mask across `set_palette` and `add_palette_color` resizing. Keep native copies and inspect pixels: removing an in-use ordinary palette index is not an automatically remapped edit. Do not silently substitute quantization for custom palette replacement. See [repaired controls](../docs/MCP_REVIEW_CONTROLS.md); the previous transparency-loss reproduction is retained as [historical evidence](../docs/BUG_AUDIT.md).

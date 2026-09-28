@@ -14,7 +14,7 @@ Check MCP `isError` before reading `structuredContent` (or JSON text content). R
 
 Read and apply [completed-operation warning handling](../../docs/MCP_WARNINGS.md): report every returned `warnings` message, including unknown codes, with the successful result. Warnings do not request approval, retry or undo; absent warnings do not guarantee lossless processing.
 
-Before indexed palette resizing or sensitivity tuning, read [remaining MCP issues](../../docs/KNOWN_ISSUES.md). Avoid shortening indexed palettes through `set_palette`: it can make opaque pixels transparent. `analyze_reference` currently treats edge_threshold=0 as 30, and `suggest_antialiasing` threshold does not tune detection. Do not describe these as working controls.
+Before palette resizing, sensitivity tuning or dithering, read [the repaired control contracts](../../docs/MCP_REVIEW_CONTROLS.md). Palette resizing now preserves the indexed transparent mask. Explicit edge_threshold=0 is honored; AA threshold filters candidate contrast. Explain the actual settings and inspect pixels/results rather than promising exact density ratios or lossless arbitrary palette edits.
 
 ## Workflow
 

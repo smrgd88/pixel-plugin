@@ -1,5 +1,7 @@
 # 추가 버그 집중 조사 — 2026-09-27
 
+> Historical reproduction against MCP 8d9bdde. The three confirmed defects below are fixed by merged MCP #22 and included in the current bd13cdb bundle. “미수정” below records the audit-time state, not the current status. See [current status](BUG_STATUS.md) and [repaired controls](MCP_REVIEW_CONTROLS.md).
+
 대상: 플러그인 develop `5294bc264469f59fd3271720179b46bd8937f7c7`, 내장 MCP
 `8d9bdde15c463b1c8227cfdb3a7d8cf65bfac966`, macOS arm64 / Aseprite 1.3.18.2 API 41.
 `bin/pixel-mcp` → 실제 MCP → Aseprite로 **38회 호출**했습니다.
