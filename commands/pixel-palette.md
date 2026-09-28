@@ -26,3 +26,5 @@ Quantization modifies artwork and normally converts it to indexed color. Its dit
 Examples: `/pixel-palette set gameboy`, `/pixel-palette optimize 16 dither=true`, `/pixel-palette edit 1 #884422`, `/pixel-palette export palette.gpl`.
 
 Report returned success `warnings` according to [the shared warning rules](../docs/MCP_WARNINGS.md), including unknown codes. These describe completed effects; do not retry or request approval because of a warning.
+
+Known indexed-palette issue: shortening the palette with `set_palette` can make an in-use color transparent. Keep a native copy and avoid shrinking indexed palettes this way; editing existing entries without reducing length avoids the reproduced trigger. Do not silently substitute quantization for a requested custom palette. See [audit evidence](../docs/BUG_AUDIT.md).

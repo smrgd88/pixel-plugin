@@ -2,6 +2,35 @@
 
 These notes apply to the MCP develop source pinned in [mcp-source.json](../config/mcp-source.json). Plugin version is recorded in [.claude-plugin/plugin.json](../.claude-plugin/plugin.json).
 
+## Fix status
+
+The original BUG-01–05 reports are fixed in the current bundle and integrated through
+plugin PR #7. That does not mean all defects are resolved. See [the dated status ledger](BUG_STATUS.md)
+for source/PR links and [the latest focused audit](BUG_AUDIT.md) for reproduction evidence.
+
+## Confirmed remaining MCP defects
+
+| ID | Effect | Current usage guidance |
+|---|---|---|
+| MCP-AUDIT-01 (P1) | Shrinking an indexed palette can move the transparent mask onto an in-use opaque color; a 32-pixel blue region became transparent with Success=true | Avoid shortening indexed palettes with set_palette. Preserve a native copy and edit entries without reducing length; use quantization only when color reduction is actually intended |
+| MCP-AUDIT-02 (P2) | analyze_reference edge_threshold=0 is replaced with default 30 | Use an explicit positive threshold; 1 is not a promise of true zero-threshold behavior |
+| MCP-AUDIT-03 (P2) | suggest_antialiasing threshold is advertised as sensitivity but ignored by detection | Do not promise sensitivity tuning with this argument; inspect suggestions and adjust pixels manually |
+
+These are investigation IDs, not upstream issue numbers. The runtime fixes belong in
+MCP; this plugin documents the behavior and preserves the server response.
+
+## Documented implementation limits
+
+Floyd–Steinberg interior density values currently produce the same horizontal gradient
+(DITHER-01). Binary texture matrices have coarse coverage steps (DITHER-02). Both are
+upstream follow-up work, distinct from the repaired 0/1 endpoints. In an 8×8 audit,
+Floyd .25/.5/.75 each yielded red32/blue32; checkerboard yielded 32/32, 32/32, 0/64.
+Bayer 4×4 responded with 48/16, 32/32, 16/48. Current guidance does not promise an exact
+ratio for every pattern. Palette extraction quality/determinism needs further review;
+it is not counted as a newly confirmed defect here.
+
+## Contract boundaries
+
 - The server operates on files through batch Aseprite processes. It does not inspect the GUI's current unsaved document, control playback, or expose arbitrary Aseprite Lua execution.
 - `get_sprite_info` has no tags, durations or cel-link identity fields. Native link targets must have no cel; `add_frame` may copy content. Use the [animator's construction workflow](../skills/pixel-art-animator/SKILL.md).
 - Export inputs have no scale, FPS, loop, layer, tag or range selector. Scaling/retiming/filtering is a separate workflow on a native copy. There is no standalone JSON or engine-specific metadata exporter. See [export formats](../skills/pixel-art-exporter/export-formats.md).

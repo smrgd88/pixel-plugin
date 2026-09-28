@@ -34,3 +34,5 @@ A practical refinement pass is: organize the palette → decide light direction 
 - **Floating objects:** a few carefully placed darker contact pixels under a chin, foot or overlapping part can help. There is no dedicated ambient-occlusion tool; use explicit pixels.
 
 For manual AA, sample the actual edge/background colors and place intermediate colors only where useful. `suggest_antialiasing` is a preview/apply option, not a substitute for a visual quality check. See [material and manual-pattern recipes](examples.md#complete-refinement-recipes).
+
+Current [focused audit](../../docs/BUG_AUDIT.md) reproduces indexed palette-shrink transparency loss and reference edge_threshold=0 defaulting. Keep palette lengths when editing indexed colors and preserve a native copy; exact zero edge sensitivity is unavailable through that input in the pinned server.

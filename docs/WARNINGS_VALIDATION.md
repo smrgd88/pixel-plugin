@@ -1,5 +1,7 @@
 # MCP warnings validation — 2026-09-21
 
+> Historical execution record for the source/candidate named below. See [current fix and merge status](BUG_STATUS.md) for the present bundle and remaining issues.
+
 These results were executed for this update. Earlier REPAIR_VALIDATION.md results
 refer to the previous source and are not evidence of this run.
 

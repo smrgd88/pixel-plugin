@@ -1,5 +1,7 @@
 # Export/reference sync validation — 2026-09-27
 
+> Historical execution record for the source/candidate named below. See [current fix and merge status](BUG_STATUS.md) for the present bundle and remaining issues.
+
 Task: **[SHARED][FIX] MCP 시퀀스 출력 및 참조 분석 반영**.
 This record contains new executions. Prior color/warnings validation documents
 remain historical and are not presented as runs of this candidate.

@@ -1,5 +1,7 @@
 # MCP color sync validation — 2026-09-27
 
+> Historical execution record for the source/candidate named below. See [current fix and merge status](BUG_STATUS.md) for the present bundle and remaining issues.
+
 Task: **[SHARED][FIX] MCP 감색 및 density 수정 반영**.
 This is a new execution record. WARNINGS_VALIDATION.md and REPAIR_VALIDATION.md
 remain historical records; their counts are not reused as this run's results.
