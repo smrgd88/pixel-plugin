@@ -1,6 +1,6 @@
 # MCP tool contract
 
-Generated from the actual `tools/list` response at MCP source commit `8d9bdde15c463b1c8227cfdb3a7d8cf65bfac966`.
+Generated from the actual `tools/list` response at MCP source commit `bd13cdb64d071ab69e0f4d17fc710196e6506570`.
 Regenerate with `python3 bin/render-mcp-reference.py` after reviewing a new snapshot.
 
 Read the tool section needed for the task. All tool names use the `mcp__aseprite__` prefix in skills/commands.
@@ -171,7 +171,7 @@ Extract structured data from PNG, JPEG, GIF, BMP, or Aseprite reference images t
 | `target_height` | integer | yes | Pixel art target height (1-65535) |
 | `palette_size` | integer | no | Number of colors to extract (5-32, default: 16) |
 | `brightness_levels` | integer | no | Quantize brightness into N levels (2-10, default: 5) |
-| `edge_threshold` | integer | no | Edge detection sensitivity (0-255, default: 30) |
+| `edge_threshold` | null/integer | no | Sobel edge threshold (0-255); omitted or null defaults to 30, explicit zero is preserved |
 
 ### Output
 
@@ -621,7 +621,7 @@ Draw a rectangle with specified position, size, color, and fill option.
 
 ## draw_with_dither
 
-Fill a region with one of 16 ordered, texture, or Floyd-Steinberg dithering patterns. Omitted or null density defaults to 0.5; explicit 0 fills color1 and 1 fills color2. Interior density values select a matrix threshold, so texture coverage need not equal the density or be 50/50. For floyd_steinberg, interior values retain the existing horizontal color1-to-color2 gradient and do not adjust its density.
+Fill a region with one of 16 ordered, texture, or Floyd-Steinberg dithering patterns. Omitted or null density defaults to 0.5; explicit 0 fills color1 and 1 fills color2. Interior density values control ordered matrix thresholds or ranked texture coverage. Texture .5 preserves the legacy pattern, not necessarily a 50/50 ratio. Floyd density biases a horizontal gradient toward color2; .5 preserves the legacy gradient for widths greater than one. Exact rendered color ratios are not guaranteed.
 
 ### Input
 
@@ -638,7 +638,7 @@ Fill a region with one of 16 ordered, texture, or Floyd-Steinberg dithering patt
 | `color1` | string | yes | First color (hex #RRGGBB or #RRGGBBAA) |
 | `color2` | string | yes | Second color (hex #RRGGBB or #RRGGBBAA) |
 | `pattern` | string | yes | Dithering pattern: bayer_2x2\|bayer_4x4\|bayer_8x8\|checkerboard\|floyd_steinberg\|grass\|water\|stone\|cloud\|brick\|dots\|diagonal\|cross\|noise\|horizontal_lines\|vertical_lines |
-| `density` | null/number | no | Density threshold in [0,1]; omitted or null defaults to 0.5, 0 fills color1, 1 fills color2. Interior values depend on the pattern |
+| `density` | null/number | no | Density threshold in [0,1]; omitted or null defaults to 0.5, 0 fills color1, 1 fills color2. Interior values bias the Floyd gradient or select ordered texture ranks; .5 retains the legacy pattern, coverage is pattern-dependent |
 
 ### Output
 
@@ -1173,7 +1173,7 @@ Analyze pixel art for jagged diagonal edges and suggest intermediate colors to s
 | `region.y` | integer | yes | Y coordinate of top-left corner |
 | `region.width` | integer | yes | Width of region |
 | `region.height` | integer | yes | Height of region |
-| `threshold` | integer | no | Edge detection sensitivity 0-255 (default: 128) |
+| `threshold` | null/integer | no | Minimum edge contrast: max premultiplied RGBA channel difference must exceed this value (0-255); omitted or null defaults to 128 |
 | `auto_apply` | boolean | no | If true applies smoothing automatically (default: false) |
 | `use_palette` | boolean | no | If true snaps intermediate colors to palette (default: false) |
 

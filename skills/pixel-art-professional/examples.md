@@ -285,3 +285,19 @@ Analyze visible frame 1 without editing the reference, using [reference-format s
 ```mcp-example
 {"name":"analyze_reference","arguments":{"reference_path":"/work/reference.aseprite","target_width":16,"target_height":16}}
 ```
+
+## Explicit zero reference threshold
+
+Zero requests actual Sobel threshold 0; omitted/null selects 30.
+
+```mcp-example
+{"name":"analyze_reference","arguments":{"reference_path":"/work/reference.png","target_width":8,"target_height":8,"edge_threshold":0}}
+```
+
+## AA preview with the default threshold
+
+Null is equivalent to omitting threshold (128). See [contrast semantics](../../docs/MCP_REVIEW_CONTROLS.md) before changing it.
+
+```mcp-example
+{"name":"suggest_antialiasing","arguments":{"sprite_path":"/work/hero.aseprite","layer_name":"Ink","frame_number":1,"threshold":null,"auto_apply":false}}
+```

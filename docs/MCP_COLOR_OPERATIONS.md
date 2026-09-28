@@ -26,10 +26,11 @@ exactly target_colors unique pixels: fewer source colors, transparency and layer
 blending make that inference invalid.
 
 `draw_with_dither` accepts omitted/null density as 0.5, 0 fills color1, and 1 fills
-color2. Intermediate ordered/texture thresholds are not exact pixel ratios. For
-Floyd–Steinberg, intermediate density retains the existing horizontal gradient;
-it does not adjust that gradient's density. These fill operations differ from
-quantizing an existing image.
+color2. Intermediate ordered/texture thresholds are not exact pixel ratios. Texture values
+now select finer deterministic ranks while preserving the legacy 0.5 pattern.
+Floyd intermediate density biases the gradient mean; 0.5 retains the old gradient
+for width > 1. See [repaired controls](MCP_REVIEW_CONTROLS.md). These fill operations
+differ from quantizing an existing image.
 
 The source pin also adds capability checks (Aseprite 1.3.17.2+ / API 39+) and
 single-file staging/locking. A capability failure happens before editing. A failed

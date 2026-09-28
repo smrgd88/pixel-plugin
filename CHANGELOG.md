@@ -8,8 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 These entries describe cumulative develop changes, not a newly published release.
-The active bundled source is `8d9bdde15c463b1c8227cfdb3a7d8cf65bfac966`; earlier pin
+The active bundled source is `bd13cdb64d071ab69e0f4d17fc710196e6506570`; earlier pin
 entries below record their respective updates. See [current fix status](docs/BUG_STATUS.md).
+
+### MCP review repairs bundled
+- Pin merged MCP #22 `bd13cdb` and refresh all five binaries, hashes and exact 50-tool reference.
+- Consume indexed mask preservation, explicit zero/null threshold handling, effective AA contrast filtering, intermediate Floyd/texture density and deterministic reference palette initialization.
+- Update professional/palette guidance and mark the audited issues as included in this bundle. Historical audit evidence remains available.
+- Add nullable-threshold contract and real Aseprite regression gates; record numeric comparisons and verification in [the sync report](docs/REVIEW_SYNC_VALIDATION.md).
 
 ### Documentation and remaining-issue audit
 - Record merged fixes for the original five bugs and distinguish remaining implementation limits from unverified platforms/client installation.
