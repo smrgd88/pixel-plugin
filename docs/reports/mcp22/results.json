@@ -1,0 +1,1325 @@
+{
+  "before": {
+    "palette": {
+      "start": {
+        "pixels": {
+          "0,0": "#FF0000FF",
+          "0,1": "#FF0000FF",
+          "0,2": "#FF0000FF",
+          "0,3": "#FF0000FF",
+          "0,4": "#FF0000FF",
+          "0,5": "#FF0000FF",
+          "0,6": "#FF0000FF",
+          "0,7": "#FF0000FF",
+          "1,0": "#FF0000FF",
+          "1,1": "#FF0000FF",
+          "1,2": "#FF0000FF",
+          "1,3": "#FF0000FF",
+          "1,4": "#FF0000FF",
+          "1,5": "#FF0000FF",
+          "1,6": "#FF0000FF",
+          "1,7": "#FF0000FF",
+          "2,0": "#FF0000FF",
+          "2,1": "#FF0000FF",
+          "2,2": "#FF0000FF",
+          "2,3": "#FF0000FF",
+          "2,4": "#FF0000FF",
+          "2,5": "#FF0000FF",
+          "2,6": "#FF0000FF",
+          "2,7": "#FF0000FF",
+          "3,0": "#FF0000FF",
+          "3,1": "#FF0000FF",
+          "3,2": "#FF0000FF",
+          "3,3": "#FF0000FF",
+          "3,4": "#FF0000FF",
+          "3,5": "#FF0000FF",
+          "3,6": "#FF0000FF",
+          "3,7": "#FF0000FF",
+          "4,0": "#0000FFFF",
+          "4,1": "#0000FFFF",
+          "4,2": "#0000FFFF",
+          "4,3": "#0000FFFF",
+          "4,4": "#0000FFFF",
+          "4,5": "#0000FFFF",
+          "4,6": "#0000FFFF",
+          "4,7": "#0000FFFF",
+          "5,0": "#0000FFFF",
+          "5,1": "#0000FFFF",
+          "5,2": "#0000FFFF",
+          "5,3": "#0000FFFF",
+          "5,4": "#0000FFFF",
+          "5,5": "#0000FFFF",
+          "5,6": "#0000FFFF",
+          "5,7": "#0000FFFF",
+          "6,0": "#0000FFFF",
+          "6,1": "#0000FFFF",
+          "6,2": "#0000FFFF",
+          "6,3": "#0000FFFF",
+          "6,4": "#0000FFFF",
+          "6,5": "#0000FFFF",
+          "6,6": "#0000FFFF",
+          "6,7": "#0000FFFF",
+          "7,0": "#0000FFFF",
+          "7,1": "#0000FFFF",
+          "7,2": "#0000FFFF",
+          "7,3": "#0000FFFF",
+          "7,4": "#0000FFFF",
+          "7,5": "#0000FFFF",
+          "7,6": "#0000FFFF",
+          "7,7": "#0000FFFF"
+        },
+        "counts": {
+          "#FF0000FF": 32,
+          "#0000FFFF": 32
+        },
+        "mask": 3
+      },
+      "end": {
+        "pixels": {
+          "0,0": "#FF0000FF",
+          "0,1": "#FF0000FF",
+          "0,2": "#FF0000FF",
+          "0,3": "#FF0000FF",
+          "0,4": "#FF0000FF",
+          "0,5": "#FF0000FF",
+          "0,6": "#FF0000FF",
+          "0,7": "#FF0000FF",
+          "1,0": "#FF0000FF",
+          "1,1": "#FF0000FF",
+          "1,2": "#FF0000FF",
+          "1,3": "#FF0000FF",
+          "1,4": "#FF0000FF",
+          "1,5": "#FF0000FF",
+          "1,6": "#FF0000FF",
+          "1,7": "#FF0000FF",
+          "2,0": "#FF0000FF",
+          "2,1": "#FF0000FF",
+          "2,2": "#FF0000FF",
+          "2,3": "#FF0000FF",
+          "2,4": "#FF0000FF",
+          "2,5": "#FF0000FF",
+          "2,6": "#FF0000FF",
+          "2,7": "#FF0000FF",
+          "3,0": "#FF0000FF",
+          "3,1": "#FF0000FF",
+          "3,2": "#FF0000FF",
+          "3,3": "#FF0000FF",
+          "3,4": "#FF0000FF",
+          "3,5": "#FF0000FF",
+          "3,6": "#FF0000FF",
+          "3,7": "#FF0000FF"
+        },
+        "counts": {
+          "#FF0000FF": 32
+        },
+        "mask": 1
+      }
+    },
+    "edge": {
+      "0": 0,
+      "1": 12,
+      "30": 0
+    },
+    "aa": {
+      "0": 5,
+      "1": 5,
+      "63": 5,
+      "64": 5,
+      "128": 5,
+      "255": 5
+    },
+    "dither": {
+      "floyd_steinberg": {
+        "0.25": {
+          "counts": {
+            "#FF0000FF": 32,
+            "#0000FFFF": 32
+          },
+          "pixel_hash": "05048a9f2796050104b211d2016c76af1ade2968d8663a46bd4156383e415300"
+        },
+        "0.5": {
+          "counts": {
+            "#FF0000FF": 32,
+            "#0000FFFF": 32
+          },
+          "pixel_hash": "05048a9f2796050104b211d2016c76af1ade2968d8663a46bd4156383e415300"
+        },
+        "0.75": {
+          "counts": {
+            "#FF0000FF": 32,
+            "#0000FFFF": 32
+          },
+          "pixel_hash": "05048a9f2796050104b211d2016c76af1ade2968d8663a46bd4156383e415300"
+        }
+      },
+      "checkerboard": {
+        "0.25": {
+          "counts": {
+            "#0000FFFF": 32,
+            "#FF0000FF": 32
+          },
+          "pixel_hash": "71cff04708c36e3403988149a09a689bc66fe784f9552f19e126f67f46065dff"
+        },
+        "0.5": {
+          "counts": {
+            "#0000FFFF": 32,
+            "#FF0000FF": 32
+          },
+          "pixel_hash": "71cff04708c36e3403988149a09a689bc66fe784f9552f19e126f67f46065dff"
+        },
+        "0.75": {
+          "counts": {
+            "#0000FFFF": 64
+          },
+          "pixel_hash": "ba517fa8fd8d8aa3c807eb72f3c6c854d3f6025a75a2181aa8c31fd9e4745e1f"
+        }
+      },
+      "dots": {
+        "0.25": {
+          "counts": {
+            "#FF0000FF": 8,
+            "#0000FFFF": 56
+          },
+          "pixel_hash": "9d7a2ccc22c7c018b2750f93699b5dc47615c05180c0e8155a9b8f18c53301bb"
+        },
+        "0.5": {
+          "counts": {
+            "#FF0000FF": 8,
+            "#0000FFFF": 56
+          },
+          "pixel_hash": "9d7a2ccc22c7c018b2750f93699b5dc47615c05180c0e8155a9b8f18c53301bb"
+        },
+        "0.75": {
+          "counts": {
+            "#0000FFFF": 64
+          },
+          "pixel_hash": "ba517fa8fd8d8aa3c807eb72f3c6c854d3f6025a75a2181aa8c31fd9e4745e1f"
+        }
+      },
+      "bayer_4x4": {
+        "0.25": {
+          "counts": {
+            "#0000FFFF": 16,
+            "#FF0000FF": 48
+          },
+          "pixel_hash": "dbe246f149ddc9efcf0982a6b91df3f8e0aac1b0d4d7f68389f52f0d8c844f92"
+        },
+        "0.5": {
+          "counts": {
+            "#0000FFFF": 32,
+            "#FF0000FF": 32
+          },
+          "pixel_hash": "71cff04708c36e3403988149a09a689bc66fe784f9552f19e126f67f46065dff"
+        },
+        "0.75": {
+          "counts": {
+            "#0000FFFF": 48,
+            "#FF0000FF": 16
+          },
+          "pixel_hash": "70b5fc078fb95fb4a0126397bdc0b4ae863fcba7593ae97af42fc642e16c01bb"
+        }
+      }
+    },
+    "rare": [
+      [
+        {
+          "color": "#FF0000",
+          "hue": 0,
+          "lightness": 50,
+          "role": "dark_shadow",
+          "saturation": 100,
+          "usage_percent": 100
+        },
+        {
+          "color": "#FF0000",
+          "hue": 0,
+          "lightness": 50,
+          "role": "dark_shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#FF0000",
+          "hue": 0,
+          "lightness": 50,
+          "role": "dark_shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#FF0000",
+          "hue": 0,
+          "lightness": 50,
+          "role": "dark_shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#FF0000",
+          "hue": 0,
+          "lightness": 50,
+          "role": "dark_shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        }
+      ],
+      [
+        {
+          "color": "#FF0000",
+          "hue": 0,
+          "lightness": 50,
+          "role": "dark_shadow",
+          "saturation": 100,
+          "usage_percent": 100
+        },
+        {
+          "color": "#FF0000",
+          "hue": 0,
+          "lightness": 50,
+          "role": "dark_shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#FF0000",
+          "hue": 0,
+          "lightness": 50,
+          "role": "dark_shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#FF0000",
+          "hue": 0,
+          "lightness": 50,
+          "role": "dark_shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#FF0000",
+          "hue": 0,
+          "lightness": 50,
+          "role": "dark_shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        }
+      ],
+      [
+        {
+          "color": "#FF0000",
+          "hue": 0,
+          "lightness": 50,
+          "role": "dark_shadow",
+          "saturation": 100,
+          "usage_percent": 100
+        },
+        {
+          "color": "#FF0000",
+          "hue": 0,
+          "lightness": 50,
+          "role": "dark_shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#FF0000",
+          "hue": 0,
+          "lightness": 50,
+          "role": "dark_shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#FF0000",
+          "hue": 0,
+          "lightness": 50,
+          "role": "dark_shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#FF0000",
+          "hue": 0,
+          "lightness": 50,
+          "role": "dark_shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        }
+      ],
+      [
+        {
+          "color": "#FF0000",
+          "hue": 0,
+          "lightness": 50,
+          "role": "dark_shadow",
+          "saturation": 100,
+          "usage_percent": 100
+        },
+        {
+          "color": "#FF0000",
+          "hue": 0,
+          "lightness": 50,
+          "role": "dark_shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#FF0000",
+          "hue": 0,
+          "lightness": 50,
+          "role": "dark_shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#FF0000",
+          "hue": 0,
+          "lightness": 50,
+          "role": "dark_shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#FF0000",
+          "hue": 0,
+          "lightness": 50,
+          "role": "dark_shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        }
+      ],
+      [
+        {
+          "color": "#FF0000",
+          "hue": 0,
+          "lightness": 50,
+          "role": "dark_shadow",
+          "saturation": 100,
+          "usage_percent": 100
+        },
+        {
+          "color": "#FF0000",
+          "hue": 0,
+          "lightness": 50,
+          "role": "dark_shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#FF0000",
+          "hue": 0,
+          "lightness": 50,
+          "role": "dark_shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#FF0000",
+          "hue": 0,
+          "lightness": 50,
+          "role": "dark_shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#FF0000",
+          "hue": 0,
+          "lightness": 50,
+          "role": "dark_shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        }
+      ],
+      [
+        {
+          "color": "#FF0000",
+          "hue": 0,
+          "lightness": 50,
+          "role": "dark_shadow",
+          "saturation": 100,
+          "usage_percent": 100
+        },
+        {
+          "color": "#FF0000",
+          "hue": 0,
+          "lightness": 50,
+          "role": "dark_shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#FF0000",
+          "hue": 0,
+          "lightness": 50,
+          "role": "dark_shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#FF0000",
+          "hue": 0,
+          "lightness": 50,
+          "role": "dark_shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#FF0000",
+          "hue": 0,
+          "lightness": 50,
+          "role": "dark_shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        }
+      ],
+      [
+        {
+          "color": "#FF0000",
+          "hue": 0,
+          "lightness": 50,
+          "role": "dark_shadow",
+          "saturation": 100,
+          "usage_percent": 100
+        },
+        {
+          "color": "#FF0000",
+          "hue": 0,
+          "lightness": 50,
+          "role": "dark_shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#FF0000",
+          "hue": 0,
+          "lightness": 50,
+          "role": "dark_shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#FF0000",
+          "hue": 0,
+          "lightness": 50,
+          "role": "dark_shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#FF0000",
+          "hue": 0,
+          "lightness": 50,
+          "role": "dark_shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        }
+      ],
+      [
+        {
+          "color": "#FF0000",
+          "hue": 0,
+          "lightness": 50,
+          "role": "dark_shadow",
+          "saturation": 100,
+          "usage_percent": 100
+        },
+        {
+          "color": "#FF0000",
+          "hue": 0,
+          "lightness": 50,
+          "role": "dark_shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#FF0000",
+          "hue": 0,
+          "lightness": 50,
+          "role": "dark_shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#FF0000",
+          "hue": 0,
+          "lightness": 50,
+          "role": "dark_shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#FF0000",
+          "hue": 0,
+          "lightness": 50,
+          "role": "dark_shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        }
+      ],
+      [
+        {
+          "color": "#FF0000",
+          "hue": 0,
+          "lightness": 50,
+          "role": "dark_shadow",
+          "saturation": 100,
+          "usage_percent": 100
+        },
+        {
+          "color": "#FF0000",
+          "hue": 0,
+          "lightness": 50,
+          "role": "dark_shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#FF0000",
+          "hue": 0,
+          "lightness": 50,
+          "role": "dark_shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#FF0000",
+          "hue": 0,
+          "lightness": 50,
+          "role": "dark_shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#FF0000",
+          "hue": 0,
+          "lightness": 50,
+          "role": "dark_shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        }
+      ],
+      [
+        {
+          "color": "#FF0000",
+          "hue": 0,
+          "lightness": 50,
+          "role": "dark_shadow",
+          "saturation": 100,
+          "usage_percent": 100
+        },
+        {
+          "color": "#FF0000",
+          "hue": 0,
+          "lightness": 50,
+          "role": "dark_shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#FF0000",
+          "hue": 0,
+          "lightness": 50,
+          "role": "dark_shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#FF0000",
+          "hue": 0,
+          "lightness": 50,
+          "role": "dark_shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#FF0000",
+          "hue": 0,
+          "lightness": 50,
+          "role": "dark_shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        }
+      ]
+    ]
+  },
+  "after": {
+    "palette": {
+      "start": {
+        "pixels": {
+          "0,0": "#FF0000FF",
+          "0,1": "#FF0000FF",
+          "0,2": "#FF0000FF",
+          "0,3": "#FF0000FF",
+          "0,4": "#FF0000FF",
+          "0,5": "#FF0000FF",
+          "0,6": "#FF0000FF",
+          "0,7": "#FF0000FF",
+          "1,0": "#FF0000FF",
+          "1,1": "#FF0000FF",
+          "1,2": "#FF0000FF",
+          "1,3": "#FF0000FF",
+          "1,4": "#FF0000FF",
+          "1,5": "#FF0000FF",
+          "1,6": "#FF0000FF",
+          "1,7": "#FF0000FF",
+          "2,0": "#FF0000FF",
+          "2,1": "#FF0000FF",
+          "2,2": "#FF0000FF",
+          "2,3": "#FF0000FF",
+          "2,4": "#FF0000FF",
+          "2,5": "#FF0000FF",
+          "2,6": "#FF0000FF",
+          "2,7": "#FF0000FF",
+          "3,0": "#FF0000FF",
+          "3,1": "#FF0000FF",
+          "3,2": "#FF0000FF",
+          "3,3": "#FF0000FF",
+          "3,4": "#FF0000FF",
+          "3,5": "#FF0000FF",
+          "3,6": "#FF0000FF",
+          "3,7": "#FF0000FF",
+          "4,0": "#0000FFFF",
+          "4,1": "#0000FFFF",
+          "4,2": "#0000FFFF",
+          "4,3": "#0000FFFF",
+          "4,4": "#0000FFFF",
+          "4,5": "#0000FFFF",
+          "4,6": "#0000FFFF",
+          "4,7": "#0000FFFF",
+          "5,0": "#0000FFFF",
+          "5,1": "#0000FFFF",
+          "5,2": "#0000FFFF",
+          "5,3": "#0000FFFF",
+          "5,4": "#0000FFFF",
+          "5,5": "#0000FFFF",
+          "5,6": "#0000FFFF",
+          "5,7": "#0000FFFF",
+          "6,0": "#0000FFFF",
+          "6,1": "#0000FFFF",
+          "6,2": "#0000FFFF",
+          "6,3": "#0000FFFF",
+          "6,4": "#0000FFFF",
+          "6,5": "#0000FFFF",
+          "6,6": "#0000FFFF",
+          "6,7": "#0000FFFF",
+          "7,0": "#0000FFFF",
+          "7,1": "#0000FFFF",
+          "7,2": "#0000FFFF",
+          "7,3": "#0000FFFF",
+          "7,4": "#0000FFFF",
+          "7,5": "#0000FFFF",
+          "7,6": "#0000FFFF",
+          "7,7": "#0000FFFF"
+        },
+        "counts": {
+          "#FF0000FF": 32,
+          "#0000FFFF": 32
+        },
+        "mask": 255
+      },
+      "end": {
+        "pixels": {
+          "0,0": "#FF0000FF",
+          "0,1": "#FF0000FF",
+          "0,2": "#FF0000FF",
+          "0,3": "#FF0000FF",
+          "0,4": "#FF0000FF",
+          "0,5": "#FF0000FF",
+          "0,6": "#FF0000FF",
+          "0,7": "#FF0000FF",
+          "1,0": "#FF0000FF",
+          "1,1": "#FF0000FF",
+          "1,2": "#FF0000FF",
+          "1,3": "#FF0000FF",
+          "1,4": "#FF0000FF",
+          "1,5": "#FF0000FF",
+          "1,6": "#FF0000FF",
+          "1,7": "#FF0000FF",
+          "2,0": "#FF0000FF",
+          "2,1": "#FF0000FF",
+          "2,2": "#FF0000FF",
+          "2,3": "#FF0000FF",
+          "2,4": "#FF0000FF",
+          "2,5": "#FF0000FF",
+          "2,6": "#FF0000FF",
+          "2,7": "#FF0000FF",
+          "3,0": "#FF0000FF",
+          "3,1": "#FF0000FF",
+          "3,2": "#FF0000FF",
+          "3,3": "#FF0000FF",
+          "3,4": "#FF0000FF",
+          "3,5": "#FF0000FF",
+          "3,6": "#FF0000FF",
+          "3,7": "#FF0000FF",
+          "4,0": "#0000FFFF",
+          "4,1": "#0000FFFF",
+          "4,2": "#0000FFFF",
+          "4,3": "#0000FFFF",
+          "4,4": "#0000FFFF",
+          "4,5": "#0000FFFF",
+          "4,6": "#0000FFFF",
+          "4,7": "#0000FFFF",
+          "5,0": "#0000FFFF",
+          "5,1": "#0000FFFF",
+          "5,2": "#0000FFFF",
+          "5,3": "#0000FFFF",
+          "5,4": "#0000FFFF",
+          "5,5": "#0000FFFF",
+          "5,6": "#0000FFFF",
+          "5,7": "#0000FFFF",
+          "6,0": "#0000FFFF",
+          "6,1": "#0000FFFF",
+          "6,2": "#0000FFFF",
+          "6,3": "#0000FFFF",
+          "6,4": "#0000FFFF",
+          "6,5": "#0000FFFF",
+          "6,6": "#0000FFFF",
+          "6,7": "#0000FFFF",
+          "7,0": "#0000FFFF",
+          "7,1": "#0000FFFF",
+          "7,2": "#0000FFFF",
+          "7,3": "#0000FFFF",
+          "7,4": "#0000FFFF",
+          "7,5": "#0000FFFF",
+          "7,6": "#0000FFFF",
+          "7,7": "#0000FFFF"
+        },
+        "counts": {
+          "#FF0000FF": 32,
+          "#0000FFFF": 32
+        },
+        "mask": 255
+      }
+    },
+    "edge": {
+      "0": 12,
+      "1": 12,
+      "30": 0
+    },
+    "aa": {
+      "0": 5,
+      "1": 5,
+      "63": 5,
+      "64": 0,
+      "128": 0,
+      "255": 0
+    },
+    "dither": {
+      "floyd_steinberg": {
+        "0.25": {
+          "counts": {
+            "#FF0000FF": 48,
+            "#0000FFFF": 16
+          },
+          "pixel_hash": "7063a530846ff5606d2f48eeb523c14e9a22275473271882cd8ca3f8a61a114f"
+        },
+        "0.5": {
+          "counts": {
+            "#FF0000FF": 32,
+            "#0000FFFF": 32
+          },
+          "pixel_hash": "05048a9f2796050104b211d2016c76af1ade2968d8663a46bd4156383e415300"
+        },
+        "0.75": {
+          "counts": {
+            "#0000FFFF": 49,
+            "#FF0000FF": 15
+          },
+          "pixel_hash": "f03b267993c4352d3045424892d13b1311b65ccd026caf90c838b2f0ea09d982"
+        }
+      },
+      "checkerboard": {
+        "0.25": {
+          "counts": {
+            "#0000FFFF": 16,
+            "#FF0000FF": 48
+          },
+          "pixel_hash": "dbe246f149ddc9efcf0982a6b91df3f8e0aac1b0d4d7f68389f52f0d8c844f92"
+        },
+        "0.5": {
+          "counts": {
+            "#0000FFFF": 32,
+            "#FF0000FF": 32
+          },
+          "pixel_hash": "71cff04708c36e3403988149a09a689bc66fe784f9552f19e126f67f46065dff"
+        },
+        "0.75": {
+          "counts": {
+            "#0000FFFF": 48,
+            "#FF0000FF": 16
+          },
+          "pixel_hash": "70b5fc078fb95fb4a0126397bdc0b4ae863fcba7593ae97af42fc642e16c01bb"
+        }
+      },
+      "dots": {
+        "0.25": {
+          "counts": {
+            "#FF0000FF": 36,
+            "#0000FFFF": 28
+          },
+          "pixel_hash": "fc41da55800f24f0aa613107ddd7769bf2712e387da49672e7cddd58b23c39fd"
+        },
+        "0.5": {
+          "counts": {
+            "#FF0000FF": 8,
+            "#0000FFFF": 56
+          },
+          "pixel_hash": "9d7a2ccc22c7c018b2750f93699b5dc47615c05180c0e8155a9b8f18c53301bb"
+        },
+        "0.75": {
+          "counts": {
+            "#0000FFFF": 60,
+            "#FF0000FF": 4
+          },
+          "pixel_hash": "a2d8049fc10affc8216d78188d9d48e093a96d4c5e1cc8ab95d2a4caf389bed5"
+        }
+      },
+      "bayer_4x4": {
+        "0.25": {
+          "counts": {
+            "#0000FFFF": 16,
+            "#FF0000FF": 48
+          },
+          "pixel_hash": "dbe246f149ddc9efcf0982a6b91df3f8e0aac1b0d4d7f68389f52f0d8c844f92"
+        },
+        "0.5": {
+          "counts": {
+            "#0000FFFF": 32,
+            "#FF0000FF": 32
+          },
+          "pixel_hash": "71cff04708c36e3403988149a09a689bc66fe784f9552f19e126f67f46065dff"
+        },
+        "0.75": {
+          "counts": {
+            "#0000FFFF": 48,
+            "#FF0000FF": 16
+          },
+          "pixel_hash": "70b5fc078fb95fb4a0126397bdc0b4ae863fcba7593ae97af42fc642e16c01bb"
+        }
+      }
+    },
+    "rare": [
+      [
+        {
+          "color": "#FF0000",
+          "hue": 5.214957021446585e-13,
+          "lightness": 49.99999999999999,
+          "role": "shadow",
+          "saturation": 100,
+          "usage_percent": 98.4375
+        },
+        {
+          "color": "#FF0000",
+          "hue": 5.214957021446585e-13,
+          "lightness": 49.99999999999999,
+          "role": "shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#FF0000",
+          "hue": 5.214957021446585e-13,
+          "lightness": 49.99999999999999,
+          "role": "shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#FF0000",
+          "hue": 5.214957021446585e-13,
+          "lightness": 49.99999999999999,
+          "role": "shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#00FF00",
+          "hue": 120.00000000000016,
+          "lightness": 49.999999999999815,
+          "role": "dark_shadow",
+          "saturation": 100.00000000000071,
+          "usage_percent": 1.5625
+        }
+      ],
+      [
+        {
+          "color": "#FF0000",
+          "hue": 5.214957021446585e-13,
+          "lightness": 49.99999999999999,
+          "role": "shadow",
+          "saturation": 100,
+          "usage_percent": 98.4375
+        },
+        {
+          "color": "#FF0000",
+          "hue": 5.214957021446585e-13,
+          "lightness": 49.99999999999999,
+          "role": "shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#FF0000",
+          "hue": 5.214957021446585e-13,
+          "lightness": 49.99999999999999,
+          "role": "shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#FF0000",
+          "hue": 5.214957021446585e-13,
+          "lightness": 49.99999999999999,
+          "role": "shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#00FF00",
+          "hue": 120.00000000000016,
+          "lightness": 49.999999999999815,
+          "role": "dark_shadow",
+          "saturation": 100.00000000000071,
+          "usage_percent": 1.5625
+        }
+      ],
+      [
+        {
+          "color": "#FF0000",
+          "hue": 5.214957021446585e-13,
+          "lightness": 49.99999999999999,
+          "role": "shadow",
+          "saturation": 100,
+          "usage_percent": 98.4375
+        },
+        {
+          "color": "#FF0000",
+          "hue": 5.214957021446585e-13,
+          "lightness": 49.99999999999999,
+          "role": "shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#FF0000",
+          "hue": 5.214957021446585e-13,
+          "lightness": 49.99999999999999,
+          "role": "shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#FF0000",
+          "hue": 5.214957021446585e-13,
+          "lightness": 49.99999999999999,
+          "role": "shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#00FF00",
+          "hue": 120.00000000000016,
+          "lightness": 49.999999999999815,
+          "role": "dark_shadow",
+          "saturation": 100.00000000000071,
+          "usage_percent": 1.5625
+        }
+      ],
+      [
+        {
+          "color": "#FF0000",
+          "hue": 5.214957021446585e-13,
+          "lightness": 49.99999999999999,
+          "role": "shadow",
+          "saturation": 100,
+          "usage_percent": 98.4375
+        },
+        {
+          "color": "#FF0000",
+          "hue": 5.214957021446585e-13,
+          "lightness": 49.99999999999999,
+          "role": "shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#FF0000",
+          "hue": 5.214957021446585e-13,
+          "lightness": 49.99999999999999,
+          "role": "shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#FF0000",
+          "hue": 5.214957021446585e-13,
+          "lightness": 49.99999999999999,
+          "role": "shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#00FF00",
+          "hue": 120.00000000000016,
+          "lightness": 49.999999999999815,
+          "role": "dark_shadow",
+          "saturation": 100.00000000000071,
+          "usage_percent": 1.5625
+        }
+      ],
+      [
+        {
+          "color": "#FF0000",
+          "hue": 5.214957021446585e-13,
+          "lightness": 49.99999999999999,
+          "role": "shadow",
+          "saturation": 100,
+          "usage_percent": 98.4375
+        },
+        {
+          "color": "#FF0000",
+          "hue": 5.214957021446585e-13,
+          "lightness": 49.99999999999999,
+          "role": "shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#FF0000",
+          "hue": 5.214957021446585e-13,
+          "lightness": 49.99999999999999,
+          "role": "shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#FF0000",
+          "hue": 5.214957021446585e-13,
+          "lightness": 49.99999999999999,
+          "role": "shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#00FF00",
+          "hue": 120.00000000000016,
+          "lightness": 49.999999999999815,
+          "role": "dark_shadow",
+          "saturation": 100.00000000000071,
+          "usage_percent": 1.5625
+        }
+      ],
+      [
+        {
+          "color": "#FF0000",
+          "hue": 5.214957021446585e-13,
+          "lightness": 49.99999999999999,
+          "role": "shadow",
+          "saturation": 100,
+          "usage_percent": 98.4375
+        },
+        {
+          "color": "#FF0000",
+          "hue": 5.214957021446585e-13,
+          "lightness": 49.99999999999999,
+          "role": "shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#FF0000",
+          "hue": 5.214957021446585e-13,
+          "lightness": 49.99999999999999,
+          "role": "shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#FF0000",
+          "hue": 5.214957021446585e-13,
+          "lightness": 49.99999999999999,
+          "role": "shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#00FF00",
+          "hue": 120.00000000000016,
+          "lightness": 49.999999999999815,
+          "role": "dark_shadow",
+          "saturation": 100.00000000000071,
+          "usage_percent": 1.5625
+        }
+      ],
+      [
+        {
+          "color": "#FF0000",
+          "hue": 5.214957021446585e-13,
+          "lightness": 49.99999999999999,
+          "role": "shadow",
+          "saturation": 100,
+          "usage_percent": 98.4375
+        },
+        {
+          "color": "#FF0000",
+          "hue": 5.214957021446585e-13,
+          "lightness": 49.99999999999999,
+          "role": "shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#FF0000",
+          "hue": 5.214957021446585e-13,
+          "lightness": 49.99999999999999,
+          "role": "shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#FF0000",
+          "hue": 5.214957021446585e-13,
+          "lightness": 49.99999999999999,
+          "role": "shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#00FF00",
+          "hue": 120.00000000000016,
+          "lightness": 49.999999999999815,
+          "role": "dark_shadow",
+          "saturation": 100.00000000000071,
+          "usage_percent": 1.5625
+        }
+      ],
+      [
+        {
+          "color": "#FF0000",
+          "hue": 5.214957021446585e-13,
+          "lightness": 49.99999999999999,
+          "role": "shadow",
+          "saturation": 100,
+          "usage_percent": 98.4375
+        },
+        {
+          "color": "#FF0000",
+          "hue": 5.214957021446585e-13,
+          "lightness": 49.99999999999999,
+          "role": "shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#FF0000",
+          "hue": 5.214957021446585e-13,
+          "lightness": 49.99999999999999,
+          "role": "shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#FF0000",
+          "hue": 5.214957021446585e-13,
+          "lightness": 49.99999999999999,
+          "role": "shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#00FF00",
+          "hue": 120.00000000000016,
+          "lightness": 49.999999999999815,
+          "role": "dark_shadow",
+          "saturation": 100.00000000000071,
+          "usage_percent": 1.5625
+        }
+      ],
+      [
+        {
+          "color": "#FF0000",
+          "hue": 5.214957021446585e-13,
+          "lightness": 49.99999999999999,
+          "role": "shadow",
+          "saturation": 100,
+          "usage_percent": 98.4375
+        },
+        {
+          "color": "#FF0000",
+          "hue": 5.214957021446585e-13,
+          "lightness": 49.99999999999999,
+          "role": "shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#FF0000",
+          "hue": 5.214957021446585e-13,
+          "lightness": 49.99999999999999,
+          "role": "shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#FF0000",
+          "hue": 5.214957021446585e-13,
+          "lightness": 49.99999999999999,
+          "role": "shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#00FF00",
+          "hue": 120.00000000000016,
+          "lightness": 49.999999999999815,
+          "role": "dark_shadow",
+          "saturation": 100.00000000000071,
+          "usage_percent": 1.5625
+        }
+      ],
+      [
+        {
+          "color": "#FF0000",
+          "hue": 5.214957021446585e-13,
+          "lightness": 49.99999999999999,
+          "role": "shadow",
+          "saturation": 100,
+          "usage_percent": 98.4375
+        },
+        {
+          "color": "#FF0000",
+          "hue": 5.214957021446585e-13,
+          "lightness": 49.99999999999999,
+          "role": "shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#FF0000",
+          "hue": 5.214957021446585e-13,
+          "lightness": 49.99999999999999,
+          "role": "shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#FF0000",
+          "hue": 5.214957021446585e-13,
+          "lightness": 49.99999999999999,
+          "role": "shadow",
+          "saturation": 100,
+          "usage_percent": 0
+        },
+        {
+          "color": "#00FF00",
+          "hue": 120.00000000000016,
+          "lightness": 49.999999999999815,
+          "role": "dark_shadow",
+          "saturation": 100.00000000000071,
+          "usage_percent": 1.5625
+        }
+      ]
+    ]
+  }
+}

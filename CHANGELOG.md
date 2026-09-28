@@ -11,6 +11,11 @@ These entries describe cumulative develop changes, not a newly published release
 The active bundled source is `bd13cdb64d071ab69e0f4d17fc710196e6506570`; earlier pin
 entries below record their respective updates. See [current fix status](docs/BUG_STATUS.md).
 
+### Merge status and comparison evidence
+- Record plugin #9 merged into develop at `55c5697`, identical to verified candidate `8066c09`.
+- Archive the additional 112-call before/after comparison with pixel images, portable evidence and standalone HTML. See [report](docs/reports/mcp22/REPORT.md).
+- Track merged MCP #21 dry-run as pending plugin integration; no runtime/source pin change in this documentation update. See [next work](docs/NEXT_STEPS.md).
+
 ### MCP review repairs bundled
 - Pin merged MCP #22 `bd13cdb` and refresh all five binaries, hashes and exact 50-tool reference.
 - Consume indexed mask preservation, explicit zero/null threshold handling, effective AA contrast filtering, intermediate Floyd/texture density and deterministic reference palette initialization.
@@ -19,7 +24,7 @@ entries below record their respective updates. See [current fix status](docs/BUG
 
 ### Documentation and remaining-issue audit
 - Record merged fixes for the original five bugs and distinguish remaining implementation limits from unverified platforms/client installation.
-- Reproduce indexed palette-shrink transparency loss, reference edge-threshold zero defaulting, and the inactive AA threshold in the current bundle; document safe usage and MCP ownership without claiming runtime repairs.
+- Reproduce indexed palette-shrink transparency loss, reference edge-threshold zero defaulting, and the inactive AA threshold in the then-current `8d9bdde` bundle; document safe usage and MCP ownership without claiming runtime repairs.
 - Correct the stale README source pin and consolidate the Unreleased heading. See [audit evidence](docs/BUG_AUDIT.md).
 
 ### MCP export and reference analysis repairs

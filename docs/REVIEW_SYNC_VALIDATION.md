@@ -5,7 +5,12 @@
 새 pin은 `bd13cdb64d071ab69e0f4d17fc710196e6506570`입니다.
 [MCP #22](https://github.com/smrgd88/pixel-mcp/pull/22)는 2026-09-28 11:06:41 KST 병합됐습니다.
 최종 리뷰 head `349e98d`와 merge `bd13cdb`의 직접 tree diff는 비어 있습니다.
-MCP 병합과 플러그인 PR 병합/릴리스 배포는 별도입니다.
+플러그인 [PR #9](https://github.com/smrgd88/pixel-plugin/pull/9)는 2026-09-28 13:30:39 KST 병합됐습니다.
+병합55c5697과 검증 후보8066c09의 tree는 동일합니다. 릴리스 배포와 앱 갱신은 별도입니다.
+
+후속으로 이전/현재 번들 각각56회(총112회)를 새로 비교했습니다.
+[설명·이미지·수치 보고서](reports/mcp22/REPORT.md) / [HTML](reports/mcp22/REPORT.html).
+아래 본문은 PR #9 구현 당시 검증 기록으로 보존하며 후속 실행과 혼동하지 않습니다.
 
 ## 변경 및 계약
 
@@ -62,7 +67,6 @@ threshold0 apply는5개를 적용해 파일이 바뀌었습니다. 단순히 인
 | test-mcp-behavior.py --aseprite | 105/105 시나리오 통과 |
 | test-skill-workflows.py --aseprite | 8/8 레시피 통과 |
 | examples/apple/generate.py + demo/test-engine.cjs | 실제 MCP231회·3애니메이션 및 엔진 회귀 통과 |
-
 | test-mcp-export-analysis.py --aseprite | 28회 호출; PNG/BMP/JPG sequence, 실패·원본 보호, native/BMP 분석 회귀 통과 |
 
 ## 실제 Codex 스킬 사용 시험
@@ -114,7 +118,7 @@ closure1회, 독립 fresh-discovery 전체범위 검토1회: 총4 review pass.
 최종 후보는 HEAD881028f와 로컬 `final-candidate.json`의25파일 변경
 (이 검증 보고서는 reporting-only로 제외)이며, 경로/내용 hash 집합 digest는
 `66580b2bce981195586df5f589562329c2650c54200287a063f09495fa9c4fbc`입니다.
-후보 선정 후 관련 파일 mutation/무효화0회. 커밋 직전에 동일성 재확인합니다.
+후보 선정 후 관련 파일 mutation/무효화0회. 커밋8066c09 직전에 동일성을 재확인했습니다.
 미검증 native 플랫폼과 설치 GUI, 알고리즘상 비율/희귀색 보장 범위는 남는 제약입니다.
 
 **판정: PASS_WITH_NOTES.**

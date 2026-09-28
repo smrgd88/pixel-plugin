@@ -8,7 +8,10 @@ Create, animate, and export pixel art using Aseprite through natural language an
 
 The bundled MCP is pinned to `bd13cdb64d071ab69e0f4d17fc710196e6506570` (50 tools).
 The original five reported bugs are fixed and integrated through plugin PR #7;
-the subsequent palette/threshold findings and density improvements are now bundled from MCP #22.
+the subsequent palette/threshold findings and density improvements from MCP #22 were integrated
+through [plugin PR #9](https://github.com/smrgd88/pixel-plugin/pull/9) at `55c5697`.
+See the [illustrated before/after report](docs/reports/mcp22/REPORT.md),
+[standalone HTML](docs/reports/mcp22/REPORT.html), and [next work](docs/NEXT_STEPS.md).
 Known algorithm and validation boundaries remain. See [fix status](docs/BUG_STATUS.md),
 [remaining issues](docs/KNOWN_ISSUES.md), and [historical audit findings](docs/BUG_AUDIT.md).
 

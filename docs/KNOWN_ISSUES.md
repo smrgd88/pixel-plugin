@@ -10,7 +10,7 @@ for source/PR links and [the latest focused audit](BUG_AUDIT.md) for reproductio
 
 ## Audited defects now included in the bundle
 
-MCP #22 is merged and pinned as bd13cdb. MCP-AUDIT-01 (indexed mask resize),
+MCP #22 is merged and pinned as bd13cdb, integrated through plugin PR #9. MCP-AUDIT-01 (indexed mask resize),
 MCP-AUDIT-02 (explicit edge_threshold=0), and MCP-AUDIT-03 (inactive AA threshold)
 are fixed in this bundle. The [original audit](BUG_AUDIT.md) records old behavior;
 [current status](BUG_STATUS.md) and [control semantics](MCP_REVIEW_CONTROLS.md)
@@ -45,3 +45,6 @@ The bundled source includes the separately reviewed MCP behavior repairs describ
 Quantization now remaps pixels without dithering/indexed conversion and preserves distinct opaque colors when converting to indexed. See [color-operation limits](MCP_COLOR_OPERATIONS.md) for single-frame/raster, transparency, palette-size and pixel-validation constraints. The included capability check requires Aseprite 1.3.17.2+ / API 39+. File protection stages single-file writes; it is not undo, a backup, or multi-artifact atomic publishing.
 
 See [export and analysis contracts](MCP_EXPORT_ANALYSIS.md). Sequence exports stage all outputs and attempt rollback for ordinary failures, but the set is not OS/crash-atomic and external writers or rollback failure can require recovery from retained backups. Spritesheet texture+JSON atomic publication remains separate.
+
+Merged MCP #21 dry-run is not included in this pin. It is pending plugin integration,
+not an available bundled feature. See [next work and completion criteria](NEXT_STEPS.md).
