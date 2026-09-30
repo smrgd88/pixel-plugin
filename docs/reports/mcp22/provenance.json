@@ -1,0 +1,7 @@
+{
+  "before_plugin": "881028fb850eff575ef8f18aa3fc8a40c6d06ed8",
+  "after_plugin": "8066c094068054c2d3a92a1d7f600dac000bca1d",
+  "before_mcp": "8d9bdde15c463b1c8227cfdb3a7d8cf65bfac966",
+  "after_mcp": "bd13cdb64d071ab69e0f4d17fc710196e6506570",
+  "before_binary_sha256": "f4ddf899e8397d1b9ae6033941daa548d3d1862cb2b7c7ec16d77b334a57cbf7"
+}
