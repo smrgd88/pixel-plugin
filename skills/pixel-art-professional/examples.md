@@ -301,3 +301,35 @@ Null is equivalent to omitting threshold (128). See [contrast semantics](../../d
 ```mcp-example
 {"name":"suggest_antialiasing","arguments":{"sprite_path":"/work/hero.aseprite","layer_name":"Ink","frame_number":1,"threshold":null,"auto_apply":false}}
 ```
+
+## Preview and saved-file recovery calls
+
+These are independent call shapes, not an automatic sequence. Replace illustrative UUIDs with actual returned IDs. A preview stops without applying unless application is requested; restore/delete/undo require the corresponding user intent. Follow [shared recovery rules](../../docs/MCP_SAFETY.md).
+
+```mcp-example
+{"name": "quantize_palette", "arguments": {"sprite_path": "/work/hero.aseprite", "target_colors": 4, "algorithm": "kmeans", "dither": false, "dry_run": true}}
+```
+
+```mcp-example
+{"name": "create_snapshot", "arguments": {"sprite_path": "/work/hero.aseprite", "label": "before palette edit"}}
+```
+
+```mcp-example
+{"name": "list_snapshots", "arguments": {"sprite_path": "/work/hero.aseprite"}}
+```
+
+```mcp-example
+{"name": "restore_snapshot", "arguments": {"sprite_path": "/work/hero.aseprite", "snapshot_id": "11111111-1111-4111-8111-111111111111"}}
+```
+
+```mcp-example
+{"name": "delete_snapshot", "arguments": {"snapshot_id": "11111111-1111-4111-8111-111111111111"}}
+```
+
+```mcp-example
+{"name": "list_operation_history", "arguments": {"sprite_path": "/work/hero.aseprite"}}
+```
+
+```mcp-example
+{"name": "undo_last_operation", "arguments": {"sprite_path": "/work/hero.aseprite", "expected_operation_id": "22222222-2222-4222-8222-222222222222"}}
+```

@@ -19,5 +19,7 @@
     "aseprite_path_windows": "C:\\Program Files\\Aseprite\\Aseprite.exe",
     "temp_dir_example": "/tmp/pixel-mcp",
     "log_file_example": "/tmp/pixel-mcp.log"
-  }
+  },
+  "snapshot_dir": "",
+  "enable_history": false
 }

@@ -17,7 +17,9 @@ The default is not APPDATA or XDG_CONFIG_HOME. Neither `CONFIG_PATH` nor `ASEPRI
   "timeout": 30,
   "log_level": "info",
   "log_file": "",
-  "enable_timing": false
+  "enable_timing": false,
+  "snapshot_dir": "",
+  "enable_history": false
 }
 ```
 
@@ -37,3 +39,5 @@ bin/pixel-mcp --config /absolute/path/config.json --health
 ```
 
 Health checks execute Aseprite to read its version and check the temporary directory. This is not a drawing test. For actual MCP calls and selecting a local server build, see [local development](../docs/LOCAL_MCP.md).
+
+Optional `snapshot_dir` is an absolute durable private store path; empty uses os.UserConfigDir()/pixel-mcp/snapshots, separate from the legacy config directory and temp_dir. `enable_history` defaults false. Enable it only when the user requests automatic saved-file history; it adds backup costs and quota-dependent edit failures. Preserve both settings when configuring Aseprite and reconnect after changes. Read [preview/recovery limits](../docs/MCP_SAFETY.md).

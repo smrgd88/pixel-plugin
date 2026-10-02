@@ -57,3 +57,7 @@ Run Aseprite suites sequentially to avoid unnecessary process contention.
 ## Review-control regression gate
 
 `python3 bin/test-mcp-review-fixes.py` validates nullable threshold inputs in the default suite. Add `--aseprite /absolute/path/to/aseprite` to verify palette mask/pixels, actual thresholds, preview/apply, density profiles and deterministic rare-color usage against the bundled server. These numeric profiles use a controlled 8×8 fixture; they do not promise exact density ratios for arbitrary art.
+
+## Preview/recovery regression gate
+
+`python3 bin/test-mcp-safety.py` checks legacy/preview schema and text/structured client handling. Add `--aseprite /absolute/path/to/aseprite --output test-outputs/safety/focused` for actual source preservation, apply parity, restart recovery and guarded undo. It uses an isolated snapshot store with recording both off and on.

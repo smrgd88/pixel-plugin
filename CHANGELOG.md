@@ -8,8 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 These entries describe cumulative develop changes, not a newly published release.
-The active bundled source is `bd13cdb64d071ab69e0f4d17fc710196e6506570`; earlier pin
+The active bundled source is `7f439a0df1ec0d2d24ef6dabba6de4d30c2484f9`; earlier pin
 entries below record their respective updates. See [current fix status](docs/BUG_STATUS.md).
+
+### Preview, snapshots and recorded undo
+- Bundle merged MCP #21/#23/#24 at 7f439a0 with five rebuilt executables and56-tool live contract.
+- Document dry_run warnings as potential apply effects, persistent saved-file snapshot recovery and opt-in history with guarded undo. Keep enable_history false by default.
+- Add real preview/apply, restart/restore and history conflict regressions plus legacy client/schema checks. See [validation](docs/SAFETY_SYNC_VALIDATION.md).
 
 ### Merge status and comparison evidence
 - Record plugin #9 merged into develop at `55c5697`, identical to verified candidate `8066c09`.

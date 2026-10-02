@@ -10,7 +10,7 @@ for source/PR links and [the latest focused audit](BUG_AUDIT.md) for reproductio
 
 ## Audited defects now included in the bundle
 
-MCP #22 is merged and pinned as bd13cdb, integrated through plugin PR #9. MCP-AUDIT-01 (indexed mask resize),
+MCP #22 repairs remain included in the newer 7f439a0 pin; their first plugin integration was PR #9. MCP-AUDIT-01 (indexed mask resize),
 MCP-AUDIT-02 (explicit edge_threshold=0), and MCP-AUDIT-03 (inactive AA threshold)
 are fixed in this bundle. The [original audit](BUG_AUDIT.md) records old behavior;
 [current status](BUG_STATUS.md) and [control semantics](MCP_REVIEW_CONTROLS.md)
@@ -46,5 +46,6 @@ Quantization now remaps pixels without dithering/indexed conversion and preserve
 
 See [export and analysis contracts](MCP_EXPORT_ANALYSIS.md). Sequence exports stage all outputs and attempt rollback for ordinary failures, but the set is not OS/crash-atomic and external writers or rollback failure can require recovery from retained backups. Spritesheet texture+JSON atomic publication remains separate.
 
-Merged MCP #21 dry-run is not included in this pin. It is pending plugin integration,
-not an available bundled feature. See [next work and completion criteria](NEXT_STEPS.md).
+MCP #21/#23/#24 are included in this checkout: [dry-run, snapshots and recorded undo](MCP_SAFETY.md).
+Preview is limited to three tools; undo requires recorded history, defaults off and shares snapshot TTL/quota.
+This does not provide native GUI undo, redo or permanent backups. See [next work](NEXT_STEPS.md).
