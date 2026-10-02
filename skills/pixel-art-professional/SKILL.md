@@ -1,7 +1,7 @@
 ---
 name: pixel-art-professional
 description: Apply dithering, palette editing and quantization, automatic or palette-based shading, reference analysis and antialiasing to pixel art.
-allowed-tools: Read, Bash, mcp__aseprite__get_sprite_info, mcp__aseprite__get_pixels, mcp__aseprite__draw_pixels, mcp__aseprite__get_palette, mcp__aseprite__set_palette, mcp__aseprite__set_palette_color, mcp__aseprite__add_palette_color, mcp__aseprite__sort_palette, mcp__aseprite__analyze_palette_harmonies, mcp__aseprite__analyze_reference, mcp__aseprite__draw_with_dither, mcp__aseprite__apply_shading, mcp__aseprite__apply_auto_shading, mcp__aseprite__quantize_palette, mcp__aseprite__suggest_antialiasing, mcp__aseprite__save_as
+allowed-tools: Read, Bash, mcp__aseprite__get_sprite_info, mcp__aseprite__get_pixels, mcp__aseprite__draw_pixels, mcp__aseprite__get_palette, mcp__aseprite__set_palette, mcp__aseprite__set_palette_color, mcp__aseprite__add_palette_color, mcp__aseprite__sort_palette, mcp__aseprite__analyze_palette_harmonies, mcp__aseprite__analyze_reference, mcp__aseprite__draw_with_dither, mcp__aseprite__apply_shading, mcp__aseprite__apply_auto_shading, mcp__aseprite__quantize_palette, mcp__aseprite__suggest_antialiasing, mcp__aseprite__save_as, mcp__aseprite__create_snapshot, mcp__aseprite__list_snapshots, mcp__aseprite__restore_snapshot, mcp__aseprite__delete_snapshot, mcp__aseprite__list_operation_history, mcp__aseprite__undo_last_operation
 ---
 
 # Pixel Art Professional
@@ -12,9 +12,11 @@ Operations act on files, not the Aseprite GUI's current document. Keep the absol
 
 Check MCP `isError` before reading `structuredContent` (or JSON text content). Responses are tool-specific: some legacy palette/shading tools return uppercase `Success`. Report actual returned values and inspect the affected pixels or output file before claiming success.
 
-Read and apply [completed-operation warning handling](../../docs/MCP_WARNINGS.md): report every returned `warnings` message, including unknown codes, with the successful result. Warnings do not request approval, retry or undo; absent warnings do not guarantee lossless processing.
+Read and apply [operation warning handling](../../docs/MCP_WARNINGS.md): report every returned `warnings` message, including unknown codes, with the successful result. For `dry_run:true`, describe potential apply effects and say the original is unchanged. Warnings do not request approval, retry or undo; absent warnings do not guarantee lossless processing.
 
 Before palette resizing, sensitivity tuning or dithering, read [the repaired control contracts](../../docs/MCP_REVIEW_CONTROLS.md). Palette resizing now preserves the indexed transparent mask. Explicit edge_threshold=0 is honored; AA threshold filters candidate contrast. Explain the actual settings and inspect pixels/results rather than promising exact density ratios or lossless arbitrary palette edits.
+
+Read [preview, snapshot and recorded undo rules](../../docs/MCP_SAFETY.md) before preview or recovery. Use actual returned IDs. History recording is opt-in and must not be enabled silently; a preview-only request must not become an applied edit.
 
 ## Workflow
 

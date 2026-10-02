@@ -11,7 +11,7 @@ def module(n,p):
  spec=importlib.util.spec_from_file_location(n,p);m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m);return m
 clientmod=module('client',ROOT/'bin/mcp-client.py')
 from jsonschema import Draft202012Validator
-config=RUN/'config.json';config.write_text(json.dumps({'aseprite_path':ASE,'temp_dir':str(RUN/'sprites'),'log_level':'error'}))
+config=RUN/'config.json';config.write_text(json.dumps({'aseprite_path':ASE,'temp_dir':str(RUN/'sprites'),'snapshot_dir':str(RUN/'snapshots'),'log_level':'error'}))
 env=dict(os.environ,PIXEL_MCP_CONFIG=str(config))
 version=subprocess.check_output([str(ROOT/'bin/pixel-mcp'),'--version'],env=env,text=True).strip()
 
@@ -52,8 +52,26 @@ def case(name,fn,variant='basic'):
   results.append({'tool':name,'variant':variant,'status':'FAIL','error':str(e),'traceback':traceback.format_exc()});print('FAIL',focus,str(e)[:250],flush=True)
  (RUN/'results.json').write_text(json.dumps(results,indent=2))
 def basic(name):
+ global c
  p=sprite();s={'sprite_path':p};d={**s,'layer_name':'Layer 1','frame_number':1}
  if name=='create_canvas':assert inspect(p)['width']==16 and len(inspect(p)['frames'])==1
+ elif name in ['create_snapshot','list_snapshots','restore_snapshot','delete_snapshot']:
+  draw(p);before=Path(p).read_bytes();saved=call('create_snapshot',**s,label='sweep')['snapshot'];sid=saved['snapshot_id']
+  assert Path(p).read_bytes()==before
+  assert sid in [x['snapshot_id'] for x in call('list_snapshots',**s)['snapshots']]
+  if name=='restore_snapshot':
+   draw(p,5,5,'#00FF00');edited=Path(p).read_bytes();restored=call(name,**s,snapshot_id=sid);assert Path(p).read_bytes()==before
+   call(name,**s,snapshot_id=restored['backup_snapshot']['snapshot_id']);assert Path(p).read_bytes()==edited
+  if name=='delete_snapshot':
+   call(name,snapshot_id=sid);assert sid not in [x['snapshot_id'] for x in call('list_snapshots',**s)['snapshots']]
+ elif name=='list_operation_history':assert call(name,**s)=={'operations':[],'recording_enabled':False}
+ elif name=='undo_last_operation':
+  before=Path(p).read_bytes();cfg=RUN/'history-config.json';cfg.write_text(json.dumps({'aseprite_path':ASE,'temp_dir':str(RUN/'sprites'),'snapshot_dir':str(RUN/'history-store'),'enable_history':True,'log_level':'error'}))
+  previous=c;c=clientmod.Client([str(ROOT/'bin/pixel-mcp')],dict(env,PIXEL_MCP_CONFIG=str(cfg)))
+  try:
+   draw(p);entry=call('list_operation_history',**s)['operations'][0]
+   result=call(name,**s,expected_operation_id=entry['operation_id']);assert result['operation']['state']=='undone' and Path(p).read_bytes()==before
+  finally:c.close();c=previous
  elif name=='get_sprite_info':
   r=call(name,**s);q=inspect(p);assert r['width']==q['width'] and r['frame_count']==len(q['frames']) and r['layers']==[l['name'] for l in q['layers']]
  elif name=='add_layer':call(name,**s,layer_name='Ink');assert 'Ink' in [l['name'] for l in inspect(p)['layers']]

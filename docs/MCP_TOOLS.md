@@ -1,6 +1,6 @@
 # MCP tool contract
 
-Generated from the actual `tools/list` response at MCP source commit `bd13cdb64d071ab69e0f4d17fc710196e6506570`.
+Generated from the actual `tools/list` response at MCP source commit `7f439a0df1ec0d2d24ef6dabba6de4d30c2484f9`.
 Regenerate with `python3 bin/render-mcp-reference.py` after reviewing a new snapshot.
 
 Read the tool section needed for the task. All tool names use the `mcp__aseprite__` prefix in skills/commands.
@@ -26,11 +26,13 @@ Report optional success `warnings` according to [completed-operation warning han
 - [apply_shading](#apply_shading)
 - [copy_selection](#copy_selection)
 - [create_canvas](#create_canvas)
+- [create_snapshot](#create_snapshot)
 - [create_tag](#create_tag)
 - [crop_sprite](#crop_sprite)
 - [cut_selection](#cut_selection)
 - [delete_frame](#delete_frame)
 - [delete_layer](#delete_layer)
+- [delete_snapshot](#delete_snapshot)
 - [delete_tag](#delete_tag)
 - [deselect](#deselect)
 - [downsample_image](#downsample_image)
@@ -51,10 +53,13 @@ Report optional success `warnings` according to [completed-operation warning han
 - [get_sprite_info](#get_sprite_info)
 - [import_image](#import_image)
 - [link_cel](#link_cel)
+- [list_operation_history](#list_operation_history)
+- [list_snapshots](#list_snapshots)
 - [move_selection](#move_selection)
 - [paste_clipboard](#paste_clipboard)
 - [quantize_palette](#quantize_palette)
 - [resize_canvas](#resize_canvas)
+- [restore_snapshot](#restore_snapshot)
 - [rotate_sprite](#rotate_sprite)
 - [save_as](#save_as)
 - [scale_sprite](#scale_sprite)
@@ -66,6 +71,7 @@ Report optional success `warnings` according to [completed-operation warning han
 - [set_palette_color](#set_palette_color)
 - [sort_palette](#sort_palette)
 - [suggest_antialiasing](#suggest_antialiasing)
+- [undo_last_operation](#undo_last_operation)
 
 ## add_frame
 
@@ -243,12 +249,13 @@ Extract structured data from PNG, JPEG, GIF, BMP, or Aseprite reference images t
 
 ## apply_auto_shading
 
-Automatically add shading to sprite based on light direction. Analyzes sprite geometry to identify surfaces/regions, determines which surfaces face toward/away from light, generates shadow and highlight colors for each base color (with optional hue shifting), and applies shading pixels with smooth transitions. Supports three styles: cell (hard-edged 2-3 bands), smooth (gradient with dithering), soft (subtle gradient). Indexed sprites preserve existing palette indices and the transparent index; distinct generated colors are appended when capacity allows, otherwise non-exact shades retain the original pixel index.
+Automatically add shading to sprite based on light direction. Analyzes sprite geometry to identify surfaces/regions, determines which surfaces face toward/away from light, generates shadow and highlight colors for each base color (with optional hue shifting), and applies shading pixels with smooth transitions. Supports three styles: cell (hard-edged 2-3 bands), smooth (gradient with dithering), soft (subtle gradient). Indexed sprites preserve existing palette indices and the transparent index; distinct generated colors are appended when capacity allows, otherwise non-exact shades retain the original pixel index. Use dry_run=true to simulate on a disposable copy and return a before/after preview without modifying the source.
 
 ### Input
 
 | Field | Type | Required | Meaning |
 |---|---|---|---|
+| `dry_run` | boolean | no | Simulate on a disposable copy without modifying the source (default: false) |
 | `sprite_path` | string | yes | Path to .aseprite file |
 | `layer_name` | string | yes | Layer to apply shading to |
 | `frame_number` | integer | yes | Frame number (1-based) |
@@ -261,6 +268,23 @@ Automatically add shading to sprite based on light direction. Analyzes sprite ge
 
 | Field | Type | Required | Meaning |
 |---|---|---|---|
+| `dry_run` | boolean | no | True when only a temporary copy was modified |
+| `preview` | null/object | no | Before/after state for a completed dry-run; omitted for actual edits |
+| `preview.before` | object | yes | State of the temporary sprite before the operation |
+| `preview.before.width` | integer | yes |  |
+| `preview.before.height` | integer | yes |  |
+| `preview.before.color_mode` | string | yes |  |
+| `preview.before.frame_count` | integer | yes |  |
+| `preview.before.layer_count` | integer | yes | All layer nodes including groups and hidden layers |
+| `preview.before.palette_size` | integer | yes | Number of entries in the first palette |
+| `preview.after` | object | yes | State after simulating the operation |
+| `preview.after.width` | integer | yes |  |
+| `preview.after.height` | integer | yes |  |
+| `preview.after.color_mode` | string | yes |  |
+| `preview.after.frame_count` | integer | yes |  |
+| `preview.after.layer_count` | integer | yes | All layer nodes including groups and hidden layers |
+| `preview.after.palette_size` | integer | yes | Number of entries in the first palette |
+| `preview.would_change_file` | boolean | yes | Whether the simulated file bytes changed; not a semantic pixel comparison |
 | `success` | boolean | yes | Whether the operation succeeded |
 | `colors_added` | integer | yes | Number of colors added to palette |
 | `palette` | null/array | yes | Final palette after shading |
@@ -348,6 +372,39 @@ Create a new Aseprite sprite with specified dimensions and color mode. Returns t
 | Field | Type | Required | Meaning |
 |---|---|---|---|
 | `file_path` | string | yes | Absolute path to the created Aseprite file |
+
+## create_snapshot
+
+Save a byte-exact recovery copy of a saved sprite. Persists across server restarts for 7 days; store limit 100 snapshots / 512 MiB. Does not capture unsaved editor changes.
+
+### Input
+
+| Field | Type | Required | Meaning |
+|---|---|---|---|
+| `sprite_path` | string | yes | Path of the saved sprite to copy byte-for-byte; unsaved editor changes are not included |
+| `label` | string | no | Optional label, at most 256 UTF-8 bytes |
+
+### Output
+
+| Field | Type | Required | Meaning |
+|---|---|---|---|
+| `success` | boolean | yes |  |
+| `snapshot` | object | yes |  |
+| `snapshot.operation` | null/object | no |  |
+| `snapshot.operation.operation_id` | string | yes |  |
+| `snapshot.operation.tool` | string | yes |  |
+| `snapshot.operation.sequence` | integer | yes |  |
+| `snapshot.operation.created_at` | string | yes |  |
+| `snapshot.operation.state` | string | yes |  |
+| `snapshot.operation.before_sha256` | string | yes |  |
+| `snapshot.operation.after_sha256` | string | yes |  |
+| `snapshot.snapshot_id` | string | yes |  |
+| `snapshot.sprite_path` | string | yes |  |
+| `snapshot.created_at` | string | yes |  |
+| `snapshot.expires_at` | string | yes |  |
+| `snapshot.size_bytes` | integer | yes |  |
+| `snapshot.sha256` | string | yes |  |
+| `snapshot.label` | string | no |  |
 
 ## create_tag
 
@@ -440,6 +497,23 @@ Delete a layer from an existing sprite. Cannot delete the last remaining layer.
 | Field | Type | Required | Meaning |
 |---|---|---|---|
 | `success` | boolean | yes | Whether the layer was deleted successfully |
+
+## delete_snapshot
+
+Permanently delete one recovery copy by UUID. Does not change the original sprite. Unknown IDs return an error.
+
+### Input
+
+| Field | Type | Required | Meaning |
+|---|---|---|---|
+| `snapshot_id` | string | yes | UUID of the snapshot to permanently delete |
+
+### Output
+
+| Field | Type | Required | Meaning |
+|---|---|---|---|
+| `success` | boolean | yes |  |
+| `snapshot_id` | string | yes |  |
 
 ## delete_tag
 
@@ -735,18 +809,36 @@ Flood fill from a starting point with specified color (paint bucket tool).
 
 ## flatten_layers
 
-Flatten all layers in a sprite into a single layer.
+Flatten all layers in a sprite into a single layer. Use dry_run=true to simulate on a disposable copy and return a before/after preview without modifying the source.
 
 ### Input
 
 | Field | Type | Required | Meaning |
 |---|---|---|---|
+| `dry_run` | boolean | no | Simulate on a disposable copy without modifying the source (default: false) |
 | `sprite_path` | string | yes | Path to the Aseprite sprite file |
 
 ### Output
 
 | Field | Type | Required | Meaning |
 |---|---|---|---|
+| `dry_run` | boolean | no | True when only a temporary copy was modified |
+| `preview` | null/object | no | Before/after state for a completed dry-run; omitted for actual edits |
+| `preview.before` | object | yes | State of the temporary sprite before the operation |
+| `preview.before.width` | integer | yes |  |
+| `preview.before.height` | integer | yes |  |
+| `preview.before.color_mode` | string | yes |  |
+| `preview.before.frame_count` | integer | yes |  |
+| `preview.before.layer_count` | integer | yes | All layer nodes including groups and hidden layers |
+| `preview.before.palette_size` | integer | yes | Number of entries in the first palette |
+| `preview.after` | object | yes | State after simulating the operation |
+| `preview.after.width` | integer | yes |  |
+| `preview.after.height` | integer | yes |  |
+| `preview.after.color_mode` | string | yes |  |
+| `preview.after.frame_count` | integer | yes |  |
+| `preview.after.layer_count` | integer | yes | All layer nodes including groups and hidden layers |
+| `preview.after.palette_size` | integer | yes | Number of entries in the first palette |
+| `preview.would_change_file` | boolean | yes | Whether the simulated file bytes changed; not a semantic pixel comparison |
 | `warnings` | null/array | no | Potentially destructive effects of this completed operation; omitted when none apply |
 | `warnings[].code` | string | yes | Stable warning code |
 | `warnings[].message` | string | yes | Human-readable description of the operation's potential effect |
@@ -880,6 +972,63 @@ Create a linked cel that references another cel's image data, useful for animati
 |---|---|---|---|
 | `success` | boolean | yes | Whether the cel was linked successfully |
 
+## list_operation_history
+
+List confirmed saved-file edits newest first, including undone entries. Automatic recording requires enable_history=true. History expires or disappears when its snapshot is expired or deleted. May reconcile a pending journal without modifying the sprite.
+
+### Input
+
+| Field | Type | Required | Meaning |
+|---|---|---|---|
+| `sprite_path` | string | yes | Original sprite path whose confirmed edit history to list |
+
+### Output
+
+| Field | Type | Required | Meaning |
+|---|---|---|---|
+| `operations` | null/array | yes |  |
+| `operations[].operation_id` | string | yes |  |
+| `operations[].tool` | string | yes |  |
+| `operations[].sequence` | integer | yes |  |
+| `operations[].created_at` | string | yes |  |
+| `operations[].state` | string | yes |  |
+| `operations[].before_sha256` | string | yes |  |
+| `operations[].after_sha256` | string | yes |  |
+| `operations[].snapshot_id` | string | yes |  |
+| `operations[].expires_at` | string | yes |  |
+| `recording_enabled` | boolean | yes |  |
+
+## list_snapshots
+
+List unexpired recovery copies, oldest first. Performs lazy expiry cleanup. Optionally filter by original sprite path.
+
+### Input
+
+| Field | Type | Required | Meaning |
+|---|---|---|---|
+| `sprite_path` | string | no | Optional original sprite path filter; omit to list all unexpired snapshots |
+
+### Output
+
+| Field | Type | Required | Meaning |
+|---|---|---|---|
+| `snapshots` | null/array | yes |  |
+| `snapshots[].operation` | null/object | no |  |
+| `snapshots[].operation.operation_id` | string | yes |  |
+| `snapshots[].operation.tool` | string | yes |  |
+| `snapshots[].operation.sequence` | integer | yes |  |
+| `snapshots[].operation.created_at` | string | yes |  |
+| `snapshots[].operation.state` | string | yes |  |
+| `snapshots[].operation.before_sha256` | string | yes |  |
+| `snapshots[].operation.after_sha256` | string | yes |  |
+| `snapshots[].snapshot_id` | string | yes |  |
+| `snapshots[].sprite_path` | string | yes |  |
+| `snapshots[].created_at` | string | yes |  |
+| `snapshots[].expires_at` | string | yes |  |
+| `snapshots[].size_bytes` | integer | yes |  |
+| `snapshots[].sha256` | string | yes |  |
+| `snapshots[].label` | string | no |  |
+
 ## move_selection
 
 Move the current selection by a specified offset. Does not move the pixel content, only the selection bounds. Requires an active selection.
@@ -920,12 +1069,13 @@ Paste clipboard content onto the specified layer and frame. Optionally specify p
 
 ## quantize_palette
 
-Reduce pixels to a quantized palette in single-frame sprites (tilemap layers are unsupported). Supports three algorithms: median_cut (fast, balanced quality), kmeans (highest quality, slower), octree (very fast, good for photos). Can apply Floyd-Steinberg dithering for smoother gradients. Always remaps pixels, even without dithering or indexed conversion. Non-dithered remapping preserves layers; dithering flattens them. Disabling indexed conversion preserves the input color mode. Palette size does not bound colors created by layer blending.
+Reduce pixels to a quantized palette in single-frame sprites (tilemap layers are unsupported). Supports three algorithms: median_cut (fast, balanced quality), kmeans (highest quality, slower), octree (very fast, good for photos). Can apply Floyd-Steinberg dithering for smoother gradients. Always remaps pixels, even without dithering or indexed conversion. Non-dithered remapping preserves layers; dithering flattens them. Disabling indexed conversion preserves the input color mode. Palette size does not bound colors created by layer blending. Use dry_run=true to simulate on a disposable copy and return a before/after preview without modifying the source.
 
 ### Input
 
 | Field | Type | Required | Meaning |
 |---|---|---|---|
+| `dry_run` | boolean | no | Simulate on a disposable copy without modifying the source (default: false) |
 | `sprite_path` | string | yes | Path to source .aseprite file |
 | `target_colors` | integer | yes | Maximum palette entries (2-256); indexed output reserves a transparent index and supports at most 255 opaque entries |
 | `algorithm` | string | yes | Quantization algorithm: median_cut (default), kmeans, or octree |
@@ -937,6 +1087,23 @@ Reduce pixels to a quantized palette in single-frame sprites (tilemap layers are
 
 | Field | Type | Required | Meaning |
 |---|---|---|---|
+| `dry_run` | boolean | no | True when only a temporary copy was modified |
+| `preview` | null/object | no | Before/after state for a completed dry-run; omitted for actual edits |
+| `preview.before` | object | yes | State of the temporary sprite before the operation |
+| `preview.before.width` | integer | yes |  |
+| `preview.before.height` | integer | yes |  |
+| `preview.before.color_mode` | string | yes |  |
+| `preview.before.frame_count` | integer | yes |  |
+| `preview.before.layer_count` | integer | yes | All layer nodes including groups and hidden layers |
+| `preview.before.palette_size` | integer | yes | Number of entries in the first palette |
+| `preview.after` | object | yes | State after simulating the operation |
+| `preview.after.width` | integer | yes |  |
+| `preview.after.height` | integer | yes |  |
+| `preview.after.color_mode` | string | yes |  |
+| `preview.after.frame_count` | integer | yes |  |
+| `preview.after.layer_count` | integer | yes | All layer nodes including groups and hidden layers |
+| `preview.after.palette_size` | integer | yes | Number of entries in the first palette |
+| `preview.would_change_file` | boolean | yes | Whether the simulated file bytes changed; not a semantic pixel comparison |
 | `warnings` | null/array | no | Potentially destructive effects of this completed operation; omitted when none apply |
 | `warnings[].code` | string | yes | Stable warning code |
 | `warnings[].message` | string | yes | Human-readable description of the operation's potential effect |
@@ -966,6 +1133,40 @@ Resize the canvas without scaling content. Content is positioned according to th
 | Field | Type | Required | Meaning |
 |---|---|---|---|
 | `success` | boolean | yes |  |
+
+## restore_snapshot
+
+Replace the existing original sprite with verified snapshot bytes using atomic replacement. First creates a recovery snapshot of the current file; fails without replacing the source if backup capacity is unavailable. Unsaved editor changes are not included.
+
+### Input
+
+| Field | Type | Required | Meaning |
+|---|---|---|---|
+| `sprite_path` | string | yes | Existing writable original sprite path; must match the snapshot source |
+| `snapshot_id` | string | yes | UUID returned by create_snapshot or list_snapshots |
+
+### Output
+
+| Field | Type | Required | Meaning |
+|---|---|---|---|
+| `success` | boolean | yes |  |
+| `snapshot_id` | string | yes |  |
+| `backup_snapshot` | object | yes | Pre-restore bytes, subject to the same expiry and storage limits |
+| `backup_snapshot.operation` | null/object | no |  |
+| `backup_snapshot.operation.operation_id` | string | yes |  |
+| `backup_snapshot.operation.tool` | string | yes |  |
+| `backup_snapshot.operation.sequence` | integer | yes |  |
+| `backup_snapshot.operation.created_at` | string | yes |  |
+| `backup_snapshot.operation.state` | string | yes |  |
+| `backup_snapshot.operation.before_sha256` | string | yes |  |
+| `backup_snapshot.operation.after_sha256` | string | yes |  |
+| `backup_snapshot.snapshot_id` | string | yes |  |
+| `backup_snapshot.sprite_path` | string | yes |  |
+| `backup_snapshot.created_at` | string | yes |  |
+| `backup_snapshot.expires_at` | string | yes |  |
+| `backup_snapshot.size_bytes` | integer | yes |  |
+| `backup_snapshot.sha256` | string | yes |  |
+| `backup_snapshot.label` | string | no |  |
 
 ## rotate_sprite
 
@@ -1190,3 +1391,46 @@ Analyze pixel art for jagged diagonal edges and suggest intermediate colors to s
 | `suggestions[].direction` | string | yes |  |
 | `applied` | boolean | yes |  |
 | `total_edges` | integer | yes |  |
+
+## undo_last_operation
+
+Undo the latest still-applied recorded edit by expected operation ID. Refuses external changes, missing/expired snapshots, and stale IDs. Creates a pre-undo snapshot subject to the same capacity and expiry policy; only saved-file changes are included.
+
+### Input
+
+| Field | Type | Required | Meaning |
+|---|---|---|---|
+| `sprite_path` | string | yes | Existing writable original sprite |
+| `expected_operation_id` | string | yes | Latest applied operation_id from list_operation_history; guards retries and concurrent edits |
+
+### Output
+
+| Field | Type | Required | Meaning |
+|---|---|---|---|
+| `success` | boolean | yes |  |
+| `operation` | object | yes |  |
+| `operation.operation_id` | string | yes |  |
+| `operation.tool` | string | yes |  |
+| `operation.sequence` | integer | yes |  |
+| `operation.created_at` | string | yes |  |
+| `operation.state` | string | yes |  |
+| `operation.before_sha256` | string | yes |  |
+| `operation.after_sha256` | string | yes |  |
+| `operation.snapshot_id` | string | yes |  |
+| `operation.expires_at` | string | yes |  |
+| `backup_snapshot` | object | yes |  |
+| `backup_snapshot.operation` | null/object | no |  |
+| `backup_snapshot.operation.operation_id` | string | yes |  |
+| `backup_snapshot.operation.tool` | string | yes |  |
+| `backup_snapshot.operation.sequence` | integer | yes |  |
+| `backup_snapshot.operation.created_at` | string | yes |  |
+| `backup_snapshot.operation.state` | string | yes |  |
+| `backup_snapshot.operation.before_sha256` | string | yes |  |
+| `backup_snapshot.operation.after_sha256` | string | yes |  |
+| `backup_snapshot.snapshot_id` | string | yes |  |
+| `backup_snapshot.sprite_path` | string | yes |  |
+| `backup_snapshot.created_at` | string | yes |  |
+| `backup_snapshot.expires_at` | string | yes |  |
+| `backup_snapshot.size_bytes` | integer | yes |  |
+| `backup_snapshot.sha256` | string | yes |  |
+| `backup_snapshot.label` | string | no |  |

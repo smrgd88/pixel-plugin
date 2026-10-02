@@ -1,7 +1,7 @@
 ---
 name: pixel-art-creator
 description: Create and edit pixel art sprites, layers, shapes, selections and transforms. Use for new sprites, drawing, importing reference images, cropping, scaling or adding outlines.
-allowed-tools: Read, Bash, mcp__aseprite__create_canvas, mcp__aseprite__add_layer, mcp__aseprite__delete_layer, mcp__aseprite__flatten_layers, mcp__aseprite__get_sprite_info, mcp__aseprite__draw_pixels, mcp__aseprite__draw_line, mcp__aseprite__draw_contour, mcp__aseprite__draw_rectangle, mcp__aseprite__draw_circle, mcp__aseprite__fill_area, mcp__aseprite__get_pixels, mcp__aseprite__set_palette, mcp__aseprite__get_palette, mcp__aseprite__import_image, mcp__aseprite__save_as, mcp__aseprite__downsample_image, mcp__aseprite__flip_sprite, mcp__aseprite__rotate_sprite, mcp__aseprite__scale_sprite, mcp__aseprite__crop_sprite, mcp__aseprite__resize_canvas, mcp__aseprite__apply_outline, mcp__aseprite__select_rectangle, mcp__aseprite__select_ellipse, mcp__aseprite__select_all, mcp__aseprite__deselect, mcp__aseprite__move_selection, mcp__aseprite__cut_selection, mcp__aseprite__copy_selection, mcp__aseprite__paste_clipboard
+allowed-tools: Read, Bash, mcp__aseprite__create_canvas, mcp__aseprite__add_layer, mcp__aseprite__delete_layer, mcp__aseprite__flatten_layers, mcp__aseprite__get_sprite_info, mcp__aseprite__draw_pixels, mcp__aseprite__draw_line, mcp__aseprite__draw_contour, mcp__aseprite__draw_rectangle, mcp__aseprite__draw_circle, mcp__aseprite__fill_area, mcp__aseprite__get_pixels, mcp__aseprite__set_palette, mcp__aseprite__get_palette, mcp__aseprite__import_image, mcp__aseprite__save_as, mcp__aseprite__downsample_image, mcp__aseprite__flip_sprite, mcp__aseprite__rotate_sprite, mcp__aseprite__scale_sprite, mcp__aseprite__crop_sprite, mcp__aseprite__resize_canvas, mcp__aseprite__apply_outline, mcp__aseprite__select_rectangle, mcp__aseprite__select_ellipse, mcp__aseprite__select_all, mcp__aseprite__deselect, mcp__aseprite__move_selection, mcp__aseprite__cut_selection, mcp__aseprite__copy_selection, mcp__aseprite__paste_clipboard, mcp__aseprite__create_snapshot, mcp__aseprite__list_snapshots, mcp__aseprite__restore_snapshot, mcp__aseprite__delete_snapshot, mcp__aseprite__list_operation_history, mcp__aseprite__undo_last_operation
 ---
 
 # Pixel Art Creator
@@ -12,7 +12,9 @@ Operations act on files, not the Aseprite GUI's current document. Keep the absol
 
 Check MCP `isError` before reading `structuredContent` (or JSON text content). Responses are tool-specific: some legacy palette/shading tools return uppercase `Success`. Report actual returned values and inspect the affected pixels or output file before claiming success.
 
-Read and apply [completed-operation warning handling](../../docs/MCP_WARNINGS.md): report every returned `warnings` message, including unknown codes, with the successful result. Warnings do not request approval, retry or undo; absent warnings do not guarantee lossless processing.
+Read and apply [operation warning handling](../../docs/MCP_WARNINGS.md): report every returned `warnings` message, including unknown codes, with the successful result. For `dry_run:true`, describe potential apply effects and say the original is unchanged. Warnings do not request approval, retry or undo; absent warnings do not guarantee lossless processing.
+
+Read [preview, snapshot and recorded undo rules](../../docs/MCP_SAFETY.md) before preview or recovery. Use actual returned IDs. History recording is opt-in and must not be enabled silently; a preview-only request must not become an applied edit.
 
 ## Workflow
 

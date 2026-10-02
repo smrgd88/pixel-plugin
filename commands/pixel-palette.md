@@ -25,6 +25,8 @@ Quantization modifies artwork and normally converts it to indexed color. Its dit
 
 Examples: `/pixel-palette set gameboy`, `/pixel-palette optimize 16 dither=true`, `/pixel-palette edit 1 #884422`, `/pixel-palette export palette.gpl`.
 
-Report returned success `warnings` according to [the shared warning rules](../docs/MCP_WARNINGS.md), including unknown codes. These describe completed effects; do not retry or request approval because of a warning.
+Report returned success `warnings` according to [the shared warning rules](../docs/MCP_WARNINGS.md), including unknown codes. For dry_run:true these describe potential apply effects with the original unchanged; otherwise they describe completed edit effects; do not retry or request approval because of a warning.
 
 The pinned server now preserves the indexed transparent mask across `set_palette` and `add_palette_color` resizing. Keep native copies and inspect pixels: removing an in-use ordinary palette index is not an automatically remapped edit. Do not silently substitute quantization for custom palette replacement. See [repaired controls](../docs/MCP_REVIEW_CONTROLS.md); the previous transparency-loss reproduction is retained as [historical evidence](../docs/BUG_AUDIT.md).
+
+Use [preview and recovery rules](../docs/MCP_SAFETY.md) for requested previews or undo; do not invent dry_run support on other tools.
