@@ -4,7 +4,7 @@ The plugin launches `.mcp.json` → `bin/pixel-mcp` → a platform binary. A bui
 
 ## Pinned source
 
-[config/mcp-source.json](../config/mcp-source.json) pins the merged MCP #22 review-repair revision at `bd13cdb64d071ab69e0f4d17fc710196e6506570`. All five bundled executables are built from that commit; [bin/mcp-build.json](../bin/mcp-build.json) records their SHA-256 hashes. The actual `tools/list` input/output schemas are in [config/mcp-contract.json](../config/mcp-contract.json).
+[config/mcp-source.json](../config/mcp-source.json) pins the merged MCP #24 safety revision at `7f439a0df1ec0d2d24ef6dabba6de4d30c2484f9`. All five bundled executables are built from that commit; [bin/mcp-build.json](../bin/mcp-build.json) records their SHA-256 hashes. The actual `tools/list` input/output schemas are in [config/mcp-contract.json](../config/mcp-contract.json).
 
 The MCP protocol's `serverInfo.version` is still `0.1.0` in this source. It is not the plugin version or a reliable source identifier. `bin/pixel-mcp --version` in these builds reports the full source commit.
 
@@ -73,10 +73,16 @@ Previous color sync execution evidence and review: [color sync validation](COLOR
 
 Current [export/analysis contract](MCP_EXPORT_ANALYSIS.md) includes MCP #18 sequence output and #20 BMP/native reference support. Run `python3 bin/test-mcp-export-analysis.py --aseprite /absolute/path/to/aseprite` for actual file-list, frame pixel and reference analysis regressions.
 
-Current execution, before/after comparison and review: [export/analysis validation](EXPORT_ANALYSIS_VALIDATION.md).
+Historical execution, before/after comparison and review: [export/analysis validation](EXPORT_ANALYSIS_VALIDATION.md).
 
 For merged fixes, confirmed remaining defects and unreleased work, use [the status ledger](BUG_STATUS.md) and [focused audit](BUG_AUDIT.md). The binary pin in this file is unchanged by that documentation-only audit.
 
 The latest bundle verification, numeric comparisons and review scope are recorded in
-[the MCP #22 sync validation](REVIEW_SYNC_VALIDATION.md). Earlier validation reports
-retain the source pins and execution dates from their original runs.
+[the safety sync validation](SAFETY_SYNC_VALIDATION.md). The earlier
+[MCP #22 sync validation](REVIEW_SYNC_VALIDATION.md) retains its original source pin
+and execution date.
+
+The current source includes dry-run, snapshot/restore and opt-in history/undo. These are
+separate from file staging: read [safety contracts](MCP_SAFETY.md). Verify with
+`python3 bin/test-mcp-safety.py --aseprite /absolute/path/to/aseprite`. Test configs
+must set an isolated absolute snapshot_dir and must not change the user’s history setting.

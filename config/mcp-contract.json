@@ -1,5 +1,5 @@
 {
-  "source_commit": "bd13cdb64d071ab69e0f4d17fc710196e6506570",
+  "source_commit": "7f439a0df1ec0d2d24ef6dabba6de4d30c2484f9",
   "tools": [
     {
       "description": "Add a new frame to an existing Aseprite sprite. Returns the frame number (1-based index).",
@@ -731,10 +731,14 @@
       }
     },
     {
-      "description": "Automatically add shading to sprite based on light direction. Analyzes sprite geometry to identify surfaces/regions, determines which surfaces face toward/away from light, generates shadow and highlight colors for each base color (with optional hue shifting), and applies shading pixels with smooth transitions. Supports three styles: cell (hard-edged 2-3 bands), smooth (gradient with dithering), soft (subtle gradient). Indexed sprites preserve existing palette indices and the transparent index; distinct generated colors are appended when capacity allows, otherwise non-exact shades retain the original pixel index.",
+      "description": "Automatically add shading to sprite based on light direction. Analyzes sprite geometry to identify surfaces/regions, determines which surfaces face toward/away from light, generates shadow and highlight colors for each base color (with optional hue shifting), and applies shading pixels with smooth transitions. Supports three styles: cell (hard-edged 2-3 bands), smooth (gradient with dithering), soft (subtle gradient). Indexed sprites preserve existing palette indices and the transparent index; distinct generated colors are appended when capacity allows, otherwise non-exact shades retain the original pixel index. Use dry_run=true to simulate on a disposable copy and return a before/after preview without modifying the source.",
       "inputSchema": {
         "type": "object",
         "properties": {
+          "dry_run": {
+            "type": "boolean",
+            "description": "Simulate on a disposable copy without modifying the source (default: false)"
+          },
           "sprite_path": {
             "type": "string",
             "description": "Path to .aseprite file"
@@ -779,6 +783,99 @@
       "outputSchema": {
         "type": "object",
         "properties": {
+          "dry_run": {
+            "type": "boolean",
+            "description": "True when only a temporary copy was modified"
+          },
+          "preview": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "properties": {
+              "before": {
+                "type": "object",
+                "properties": {
+                  "width": {
+                    "type": "integer"
+                  },
+                  "height": {
+                    "type": "integer"
+                  },
+                  "color_mode": {
+                    "type": "string"
+                  },
+                  "frame_count": {
+                    "type": "integer"
+                  },
+                  "layer_count": {
+                    "type": "integer",
+                    "description": "All layer nodes including groups and hidden layers"
+                  },
+                  "palette_size": {
+                    "type": "integer",
+                    "description": "Number of entries in the first palette"
+                  }
+                },
+                "description": "State of the temporary sprite before the operation",
+                "required": [
+                  "width",
+                  "height",
+                  "color_mode",
+                  "frame_count",
+                  "layer_count",
+                  "palette_size"
+                ],
+                "additionalProperties": false
+              },
+              "after": {
+                "type": "object",
+                "properties": {
+                  "width": {
+                    "type": "integer"
+                  },
+                  "height": {
+                    "type": "integer"
+                  },
+                  "color_mode": {
+                    "type": "string"
+                  },
+                  "frame_count": {
+                    "type": "integer"
+                  },
+                  "layer_count": {
+                    "type": "integer",
+                    "description": "All layer nodes including groups and hidden layers"
+                  },
+                  "palette_size": {
+                    "type": "integer",
+                    "description": "Number of entries in the first palette"
+                  }
+                },
+                "description": "State after simulating the operation",
+                "required": [
+                  "width",
+                  "height",
+                  "color_mode",
+                  "frame_count",
+                  "layer_count",
+                  "palette_size"
+                ],
+                "additionalProperties": false
+              },
+              "would_change_file": {
+                "type": "boolean",
+                "description": "Whether the simulated file bytes changed; not a semantic pixel comparison"
+              }
+            },
+            "description": "Before/after state for a completed dry-run; omitted for actual edits",
+            "required": [
+              "before",
+              "after",
+              "would_change_file"
+            ],
+            "additionalProperties": false
+          },
           "success": {
             "type": "boolean",
             "description": "Whether the operation succeeded"
@@ -1026,6 +1123,114 @@
       }
     },
     {
+      "description": "Save a byte-exact recovery copy of a saved sprite. Persists across server restarts for 7 days; store limit 100 snapshots / 512 MiB. Does not capture unsaved editor changes.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sprite_path": {
+            "type": "string",
+            "description": "Path of the saved sprite to copy byte-for-byte; unsaved editor changes are not included"
+          },
+          "label": {
+            "type": "string",
+            "description": "Optional label, at most 256 UTF-8 bytes"
+          }
+        },
+        "required": [
+          "sprite_path"
+        ],
+        "additionalProperties": false
+      },
+      "name": "create_snapshot",
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "snapshot": {
+            "type": "object",
+            "properties": {
+              "operation": {
+                "type": [
+                  "null",
+                  "object"
+                ],
+                "properties": {
+                  "operation_id": {
+                    "type": "string"
+                  },
+                  "tool": {
+                    "type": "string"
+                  },
+                  "sequence": {
+                    "type": "integer"
+                  },
+                  "created_at": {
+                    "type": "string"
+                  },
+                  "state": {
+                    "type": "string"
+                  },
+                  "before_sha256": {
+                    "type": "string"
+                  },
+                  "after_sha256": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "operation_id",
+                  "tool",
+                  "sequence",
+                  "created_at",
+                  "state",
+                  "before_sha256",
+                  "after_sha256"
+                ],
+                "additionalProperties": false
+              },
+              "snapshot_id": {
+                "type": "string"
+              },
+              "sprite_path": {
+                "type": "string"
+              },
+              "created_at": {
+                "type": "string"
+              },
+              "expires_at": {
+                "type": "string"
+              },
+              "size_bytes": {
+                "type": "integer"
+              },
+              "sha256": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "snapshot_id",
+              "sprite_path",
+              "created_at",
+              "expires_at",
+              "size_bytes",
+              "sha256"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "success",
+          "snapshot"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
       "description": "Create an animation tag to define a named frame range with playback direction.",
       "inputSchema": {
         "type": "object",
@@ -1230,6 +1435,39 @@
         },
         "required": [
           "success"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "description": "Permanently delete one recovery copy by UUID. Does not change the original sprite. Unknown IDs return an error.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "snapshot_id": {
+            "type": "string",
+            "description": "UUID of the snapshot to permanently delete"
+          }
+        },
+        "required": [
+          "snapshot_id"
+        ],
+        "additionalProperties": false
+      },
+      "name": "delete_snapshot",
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "snapshot_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "success",
+          "snapshot_id"
         ],
         "additionalProperties": false
       }
@@ -2078,10 +2316,14 @@
       }
     },
     {
-      "description": "Flatten all layers in a sprite into a single layer.",
+      "description": "Flatten all layers in a sprite into a single layer. Use dry_run=true to simulate on a disposable copy and return a before/after preview without modifying the source.",
       "inputSchema": {
         "type": "object",
         "properties": {
+          "dry_run": {
+            "type": "boolean",
+            "description": "Simulate on a disposable copy without modifying the source (default: false)"
+          },
           "sprite_path": {
             "type": "string",
             "description": "Path to the Aseprite sprite file"
@@ -2096,6 +2338,99 @@
       "outputSchema": {
         "type": "object",
         "properties": {
+          "dry_run": {
+            "type": "boolean",
+            "description": "True when only a temporary copy was modified"
+          },
+          "preview": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "properties": {
+              "before": {
+                "type": "object",
+                "properties": {
+                  "width": {
+                    "type": "integer"
+                  },
+                  "height": {
+                    "type": "integer"
+                  },
+                  "color_mode": {
+                    "type": "string"
+                  },
+                  "frame_count": {
+                    "type": "integer"
+                  },
+                  "layer_count": {
+                    "type": "integer",
+                    "description": "All layer nodes including groups and hidden layers"
+                  },
+                  "palette_size": {
+                    "type": "integer",
+                    "description": "Number of entries in the first palette"
+                  }
+                },
+                "description": "State of the temporary sprite before the operation",
+                "required": [
+                  "width",
+                  "height",
+                  "color_mode",
+                  "frame_count",
+                  "layer_count",
+                  "palette_size"
+                ],
+                "additionalProperties": false
+              },
+              "after": {
+                "type": "object",
+                "properties": {
+                  "width": {
+                    "type": "integer"
+                  },
+                  "height": {
+                    "type": "integer"
+                  },
+                  "color_mode": {
+                    "type": "string"
+                  },
+                  "frame_count": {
+                    "type": "integer"
+                  },
+                  "layer_count": {
+                    "type": "integer",
+                    "description": "All layer nodes including groups and hidden layers"
+                  },
+                  "palette_size": {
+                    "type": "integer",
+                    "description": "Number of entries in the first palette"
+                  }
+                },
+                "description": "State after simulating the operation",
+                "required": [
+                  "width",
+                  "height",
+                  "color_mode",
+                  "frame_count",
+                  "layer_count",
+                  "palette_size"
+                ],
+                "additionalProperties": false
+              },
+              "would_change_file": {
+                "type": "boolean",
+                "description": "Whether the simulated file bytes changed; not a semantic pixel comparison"
+              }
+            },
+            "description": "Before/after state for a completed dry-run; omitted for actual edits",
+            "required": [
+              "before",
+              "after",
+              "would_change_file"
+            ],
+            "additionalProperties": false
+          },
           "warnings": {
             "type": [
               "null",
@@ -2484,6 +2819,189 @@
       }
     },
     {
+      "description": "List confirmed saved-file edits newest first, including undone entries. Automatic recording requires enable_history=true. History expires or disappears when its snapshot is expired or deleted. May reconcile a pending journal without modifying the sprite.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sprite_path": {
+            "type": "string",
+            "description": "Original sprite path whose confirmed edit history to list"
+          }
+        },
+        "required": [
+          "sprite_path"
+        ],
+        "additionalProperties": false
+      },
+      "name": "list_operation_history",
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "operations": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "object",
+              "properties": {
+                "operation_id": {
+                  "type": "string"
+                },
+                "tool": {
+                  "type": "string"
+                },
+                "sequence": {
+                  "type": "integer"
+                },
+                "created_at": {
+                  "type": "string"
+                },
+                "state": {
+                  "type": "string"
+                },
+                "before_sha256": {
+                  "type": "string"
+                },
+                "after_sha256": {
+                  "type": "string"
+                },
+                "snapshot_id": {
+                  "type": "string"
+                },
+                "expires_at": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "operation_id",
+                "tool",
+                "sequence",
+                "created_at",
+                "state",
+                "before_sha256",
+                "after_sha256",
+                "snapshot_id",
+                "expires_at"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "recording_enabled": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "operations",
+          "recording_enabled"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "description": "List unexpired recovery copies, oldest first. Performs lazy expiry cleanup. Optionally filter by original sprite path.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sprite_path": {
+            "type": "string",
+            "description": "Optional original sprite path filter; omit to list all unexpired snapshots"
+          }
+        },
+        "additionalProperties": false
+      },
+      "name": "list_snapshots",
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "snapshots": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "object",
+              "properties": {
+                "operation": {
+                  "type": [
+                    "null",
+                    "object"
+                  ],
+                  "properties": {
+                    "operation_id": {
+                      "type": "string"
+                    },
+                    "tool": {
+                      "type": "string"
+                    },
+                    "sequence": {
+                      "type": "integer"
+                    },
+                    "created_at": {
+                      "type": "string"
+                    },
+                    "state": {
+                      "type": "string"
+                    },
+                    "before_sha256": {
+                      "type": "string"
+                    },
+                    "after_sha256": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "operation_id",
+                    "tool",
+                    "sequence",
+                    "created_at",
+                    "state",
+                    "before_sha256",
+                    "after_sha256"
+                  ],
+                  "additionalProperties": false
+                },
+                "snapshot_id": {
+                  "type": "string"
+                },
+                "sprite_path": {
+                  "type": "string"
+                },
+                "created_at": {
+                  "type": "string"
+                },
+                "expires_at": {
+                  "type": "string"
+                },
+                "size_bytes": {
+                  "type": "integer"
+                },
+                "sha256": {
+                  "type": "string"
+                },
+                "label": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "snapshot_id",
+                "sprite_path",
+                "created_at",
+                "expires_at",
+                "size_bytes",
+                "sha256"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "snapshots"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
       "description": "Move the current selection by a specified offset. Does not move the pixel content, only the selection bounds. Requires an active selection.",
       "inputSchema": {
         "type": "object",
@@ -2578,10 +3096,14 @@
       }
     },
     {
-      "description": "Reduce pixels to a quantized palette in single-frame sprites (tilemap layers are unsupported). Supports three algorithms: median_cut (fast, balanced quality), kmeans (highest quality, slower), octree (very fast, good for photos). Can apply Floyd-Steinberg dithering for smoother gradients. Always remaps pixels, even without dithering or indexed conversion. Non-dithered remapping preserves layers; dithering flattens them. Disabling indexed conversion preserves the input color mode. Palette size does not bound colors created by layer blending.",
+      "description": "Reduce pixels to a quantized palette in single-frame sprites (tilemap layers are unsupported). Supports three algorithms: median_cut (fast, balanced quality), kmeans (highest quality, slower), octree (very fast, good for photos). Can apply Floyd-Steinberg dithering for smoother gradients. Always remaps pixels, even without dithering or indexed conversion. Non-dithered remapping preserves layers; dithering flattens them. Disabling indexed conversion preserves the input color mode. Palette size does not bound colors created by layer blending. Use dry_run=true to simulate on a disposable copy and return a before/after preview without modifying the source.",
       "inputSchema": {
         "type": "object",
         "properties": {
+          "dry_run": {
+            "type": "boolean",
+            "description": "Simulate on a disposable copy without modifying the source (default: false)"
+          },
           "sprite_path": {
             "type": "string",
             "description": "Path to source .aseprite file"
@@ -2625,6 +3147,99 @@
       "outputSchema": {
         "type": "object",
         "properties": {
+          "dry_run": {
+            "type": "boolean",
+            "description": "True when only a temporary copy was modified"
+          },
+          "preview": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "properties": {
+              "before": {
+                "type": "object",
+                "properties": {
+                  "width": {
+                    "type": "integer"
+                  },
+                  "height": {
+                    "type": "integer"
+                  },
+                  "color_mode": {
+                    "type": "string"
+                  },
+                  "frame_count": {
+                    "type": "integer"
+                  },
+                  "layer_count": {
+                    "type": "integer",
+                    "description": "All layer nodes including groups and hidden layers"
+                  },
+                  "palette_size": {
+                    "type": "integer",
+                    "description": "Number of entries in the first palette"
+                  }
+                },
+                "description": "State of the temporary sprite before the operation",
+                "required": [
+                  "width",
+                  "height",
+                  "color_mode",
+                  "frame_count",
+                  "layer_count",
+                  "palette_size"
+                ],
+                "additionalProperties": false
+              },
+              "after": {
+                "type": "object",
+                "properties": {
+                  "width": {
+                    "type": "integer"
+                  },
+                  "height": {
+                    "type": "integer"
+                  },
+                  "color_mode": {
+                    "type": "string"
+                  },
+                  "frame_count": {
+                    "type": "integer"
+                  },
+                  "layer_count": {
+                    "type": "integer",
+                    "description": "All layer nodes including groups and hidden layers"
+                  },
+                  "palette_size": {
+                    "type": "integer",
+                    "description": "Number of entries in the first palette"
+                  }
+                },
+                "description": "State after simulating the operation",
+                "required": [
+                  "width",
+                  "height",
+                  "color_mode",
+                  "frame_count",
+                  "layer_count",
+                  "palette_size"
+                ],
+                "additionalProperties": false
+              },
+              "would_change_file": {
+                "type": "boolean",
+                "description": "Whether the simulated file bytes changed; not a semantic pixel comparison"
+              }
+            },
+            "description": "Before/after state for a completed dry-run; omitted for actual edits",
+            "required": [
+              "before",
+              "after",
+              "would_change_file"
+            ],
+            "additionalProperties": false
+          },
           "warnings": {
             "type": [
               "null",
@@ -2732,6 +3347,120 @@
         },
         "required": [
           "success"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "description": "Replace the existing original sprite with verified snapshot bytes using atomic replacement. First creates a recovery snapshot of the current file; fails without replacing the source if backup capacity is unavailable. Unsaved editor changes are not included.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sprite_path": {
+            "type": "string",
+            "description": "Existing writable original sprite path; must match the snapshot source"
+          },
+          "snapshot_id": {
+            "type": "string",
+            "description": "UUID returned by create_snapshot or list_snapshots"
+          }
+        },
+        "required": [
+          "sprite_path",
+          "snapshot_id"
+        ],
+        "additionalProperties": false
+      },
+      "name": "restore_snapshot",
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "snapshot_id": {
+            "type": "string"
+          },
+          "backup_snapshot": {
+            "type": "object",
+            "properties": {
+              "operation": {
+                "type": [
+                  "null",
+                  "object"
+                ],
+                "properties": {
+                  "operation_id": {
+                    "type": "string"
+                  },
+                  "tool": {
+                    "type": "string"
+                  },
+                  "sequence": {
+                    "type": "integer"
+                  },
+                  "created_at": {
+                    "type": "string"
+                  },
+                  "state": {
+                    "type": "string"
+                  },
+                  "before_sha256": {
+                    "type": "string"
+                  },
+                  "after_sha256": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "operation_id",
+                  "tool",
+                  "sequence",
+                  "created_at",
+                  "state",
+                  "before_sha256",
+                  "after_sha256"
+                ],
+                "additionalProperties": false
+              },
+              "snapshot_id": {
+                "type": "string"
+              },
+              "sprite_path": {
+                "type": "string"
+              },
+              "created_at": {
+                "type": "string"
+              },
+              "expires_at": {
+                "type": "string"
+              },
+              "size_bytes": {
+                "type": "integer"
+              },
+              "sha256": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              }
+            },
+            "description": "Pre-restore bytes, subject to the same expiry and storage limits",
+            "required": [
+              "snapshot_id",
+              "sprite_path",
+              "created_at",
+              "expires_at",
+              "size_bytes",
+              "sha256"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "success",
+          "snapshot_id",
+          "backup_snapshot"
         ],
         "additionalProperties": false
       }
@@ -3317,6 +4046,160 @@
           "suggestions",
           "applied",
           "total_edges"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "description": "Undo the latest still-applied recorded edit by expected operation ID. Refuses external changes, missing/expired snapshots, and stale IDs. Creates a pre-undo snapshot subject to the same capacity and expiry policy; only saved-file changes are included.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sprite_path": {
+            "type": "string",
+            "description": "Existing writable original sprite"
+          },
+          "expected_operation_id": {
+            "type": "string",
+            "description": "Latest applied operation_id from list_operation_history; guards retries and concurrent edits"
+          }
+        },
+        "required": [
+          "sprite_path",
+          "expected_operation_id"
+        ],
+        "additionalProperties": false
+      },
+      "name": "undo_last_operation",
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "operation": {
+            "type": "object",
+            "properties": {
+              "operation_id": {
+                "type": "string"
+              },
+              "tool": {
+                "type": "string"
+              },
+              "sequence": {
+                "type": "integer"
+              },
+              "created_at": {
+                "type": "string"
+              },
+              "state": {
+                "type": "string"
+              },
+              "before_sha256": {
+                "type": "string"
+              },
+              "after_sha256": {
+                "type": "string"
+              },
+              "snapshot_id": {
+                "type": "string"
+              },
+              "expires_at": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "operation_id",
+              "tool",
+              "sequence",
+              "created_at",
+              "state",
+              "before_sha256",
+              "after_sha256",
+              "snapshot_id",
+              "expires_at"
+            ],
+            "additionalProperties": false
+          },
+          "backup_snapshot": {
+            "type": "object",
+            "properties": {
+              "operation": {
+                "type": [
+                  "null",
+                  "object"
+                ],
+                "properties": {
+                  "operation_id": {
+                    "type": "string"
+                  },
+                  "tool": {
+                    "type": "string"
+                  },
+                  "sequence": {
+                    "type": "integer"
+                  },
+                  "created_at": {
+                    "type": "string"
+                  },
+                  "state": {
+                    "type": "string"
+                  },
+                  "before_sha256": {
+                    "type": "string"
+                  },
+                  "after_sha256": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "operation_id",
+                  "tool",
+                  "sequence",
+                  "created_at",
+                  "state",
+                  "before_sha256",
+                  "after_sha256"
+                ],
+                "additionalProperties": false
+              },
+              "snapshot_id": {
+                "type": "string"
+              },
+              "sprite_path": {
+                "type": "string"
+              },
+              "created_at": {
+                "type": "string"
+              },
+              "expires_at": {
+                "type": "string"
+              },
+              "size_bytes": {
+                "type": "integer"
+              },
+              "sha256": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "snapshot_id",
+              "sprite_path",
+              "created_at",
+              "expires_at",
+              "size_bytes",
+              "sha256"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "success",
+          "operation",
+          "backup_snapshot"
         ],
         "additionalProperties": false
       }

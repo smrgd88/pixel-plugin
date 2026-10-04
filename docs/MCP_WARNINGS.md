@@ -1,14 +1,16 @@
-# Completed-operation warnings
+# Operation warnings
 
 After checking MCP `isError`, read the successful result's optional `warnings`
 array from `structuredContent`, or from JSON TextContent when structured content
 is unavailable. Each item has a stable `code` and a human-readable `message`.
-Report returned warnings alongside the completed operation and its actual output
-path/results. For example: “Palette optimization completed in indexed mode.
+First check the successful result’s `dry_run` flag. When true, report warnings as
+potential effects of applying the preview; the original was not edited. Otherwise,
+report returned warnings alongside the completed edit and its actual output path/results. For example: “Palette optimization completed in indexed mode.
 The server reported palette replacement and indexed color conversion; these may
 change color or transparency representation.” Only report effects actually returned.
 
-Warnings describe potential effects of an operation that has already completed.
+Warnings describe effects of the completed edit, or potential effects of the completed
+temporary-copy preview when `dry_run:true`. A preview must never be reported as an original edit.
 They are not errors or requests for pre-execution approval. Do not retry the tool,
 ask for retrospective approval, or claim cancellation/undo because a warning was
 returned. Existing copy/backup guidance still applies before a requested edit;
@@ -36,3 +38,5 @@ See [the generated wire contract](MCP_TOOLS.md), [creator examples](../skills/pi
 [professional examples](../skills/pixel-art-professional/examples.md), and
 [exporter examples](../skills/pixel-art-exporter/examples.md). The plugin test client
 already preserves the whole result; user-facing reporting is the consuming skill's responsibility.
+
+See [preview and recovery rules](MCP_SAFETY.md) before preview, snapshot, restore or recorded undo.

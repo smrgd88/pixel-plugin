@@ -1,7 +1,7 @@
 ---
 name: pixel-art-animator
 description: Create sprite animations with frames, timing, tags and native linked cels. Use for walk/run cycles, idle, attack/jump animations, frame timing or shared cel content.
-allowed-tools: Read, Bash, mcp__aseprite__add_layer, mcp__aseprite__create_canvas, mcp__aseprite__get_sprite_info, mcp__aseprite__add_frame, mcp__aseprite__delete_frame, mcp__aseprite__duplicate_frame, mcp__aseprite__set_frame_duration, mcp__aseprite__create_tag, mcp__aseprite__delete_tag, mcp__aseprite__link_cel, mcp__aseprite__draw_pixels, mcp__aseprite__get_pixels, mcp__aseprite__save_as
+allowed-tools: Read, Bash, mcp__aseprite__add_layer, mcp__aseprite__create_canvas, mcp__aseprite__get_sprite_info, mcp__aseprite__add_frame, mcp__aseprite__delete_frame, mcp__aseprite__duplicate_frame, mcp__aseprite__set_frame_duration, mcp__aseprite__create_tag, mcp__aseprite__delete_tag, mcp__aseprite__link_cel, mcp__aseprite__draw_pixels, mcp__aseprite__get_pixels, mcp__aseprite__save_as, mcp__aseprite__create_snapshot, mcp__aseprite__list_snapshots, mcp__aseprite__restore_snapshot, mcp__aseprite__delete_snapshot, mcp__aseprite__list_operation_history, mcp__aseprite__undo_last_operation
 ---
 
 # Pixel Art Animator
@@ -11,6 +11,8 @@ Read [the shared MCP contract](../../docs/MCP_TOOLS.md) for exact inputs and out
 Operations act on files, not the Aseprite GUI's current document. Keep the absolute `file_path` returned by canvas creation or save-as and pass it as `sprite_path`. Verify existing files with `get_sprite_info`; it returns dimensions, color mode, frame/layer counts and layer names, **not** frame durations or tags. Drawing coordinates are zero-based canvas coordinates. MCP frame numbers are one-based; only export's `frame_number: 0` means all frames. Include every required field, even when its description mentions a default.
 
 Check MCP `isError` before reading `structuredContent` (or JSON text content). Responses are tool-specific: some legacy palette/shading tools return uppercase `Success`. Report actual returned values and inspect the affected pixels or output file before claiming success.
+
+Read [preview, snapshot and recorded undo rules](../../docs/MCP_SAFETY.md) before preview or recovery. Use actual returned IDs. History recording is opt-in and must not be enabled silently; a preview-only request must not become an applied edit.
 
 ## Workflow
 

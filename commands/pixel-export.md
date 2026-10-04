@@ -27,6 +27,8 @@ When both scaling and timing changes are requested, create one separate native c
 
 Examples: `/pixel-export png hero.png frame=1 scale=4`, `/pixel-export png walk007.png frame=0`, `/pixel-export gif idle.gif fps=12`, `/pixel-export sheet hero.png layout=rows padding=1`.
 
-Report returned success `warnings` according to [the shared warning rules](../docs/MCP_WARNINGS.md), including unknown codes. These describe completed effects; do not retry or request approval because of a warning.
+Report returned success `warnings` according to [the shared warning rules](../docs/MCP_WARNINGS.md), including unknown codes. For dry_run:true these describe potential apply effects with the original unchanged; otherwise they describe completed edit effects; do not retry or request approval because of a warning.
 
 For an all-frame PNG sequence use `frame=0`. Follow [sequence output handling](../docs/MCP_EXPORT_ANALYSIS.md): report all actual `files[].path`, `files[].frame_number` and sizes, not only the first `exported_path`. Do not claim the requested base file was created. Keep single-file/older responses without `files` compatible.
+
+Use [preview and recovery rules](../docs/MCP_SAFETY.md) for requested previews or undo; do not invent dry_run support on other tools.
