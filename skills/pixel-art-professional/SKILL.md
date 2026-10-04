@@ -12,6 +12,8 @@ Operations act on files, not the Aseprite GUI's current document. Keep the absol
 
 Check MCP `isError` before reading `structuredContent` (or JSON text content). Responses are tool-specific: some legacy palette/shading tools return uppercase `Success`. Report actual returned values and inspect the affected pixels or output file before claiming success.
 
+Follow [error and request-tracing rules](../../docs/MCP_ERRORS.md) for failures. Report the returned code and request ID; retain every error.recovery entry. On file_rollback_failed, stop automatic retries and preserve backups for manual inspection.
+
 Read and apply [operation warning handling](../../docs/MCP_WARNINGS.md): report every returned `warnings` message, including unknown codes, with the successful result. For `dry_run:true`, describe potential apply effects and say the original is unchanged. Warnings do not request approval, retry or undo; absent warnings do not guarantee lossless processing.
 
 Before palette resizing, sensitivity tuning or dithering, read [the repaired control contracts](../../docs/MCP_REVIEW_CONTROLS.md). Palette resizing now preserves the indexed transparent mask. Explicit edge_threshold=0 is honored; AA threshold filters candidate contrast. Explain the actual settings and inspect pixels/results rather than promising exact density ratios or lossless arbitrary palette edits.

@@ -30,3 +30,5 @@ Report returned success `warnings` according to [the shared warning rules](../do
 The pinned server now preserves the indexed transparent mask across `set_palette` and `add_palette_color` resizing. Keep native copies and inspect pixels: removing an in-use ordinary palette index is not an automatically remapped edit. Do not silently substitute quantization for custom palette replacement. See [repaired controls](../docs/MCP_REVIEW_CONTROLS.md); the previous transparency-loss reproduction is retained as [historical evidence](../docs/BUG_AUDIT.md).
 
 Use [preview and recovery rules](../docs/MCP_SAFETY.md) for requested previews or undo; do not invent dry_run support on other tools.
+
+Follow [error and request-tracing rules](../docs/MCP_ERRORS.md): report error.code and request_id, preserve error.recovery, and never automatically retry file_rollback_failed or delete its retained backups.

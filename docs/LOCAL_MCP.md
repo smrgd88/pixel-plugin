@@ -4,7 +4,7 @@ The plugin launches `.mcp.json` → `bin/pixel-mcp` → a platform binary. A bui
 
 ## Pinned source
 
-[config/mcp-source.json](../config/mcp-source.json) pins the merged MCP #24 safety revision at `7f439a0df1ec0d2d24ef6dabba6de4d30c2484f9`. All five bundled executables are built from that commit; [bin/mcp-build.json](../bin/mcp-build.json) records their SHA-256 hashes. The actual `tools/list` input/output schemas are in [config/mcp-contract.json](../config/mcp-contract.json).
+[config/mcp-source.json](../config/mcp-source.json) pins the merged MCP #25 error/tracing revision at `65074051f5d3903124ead37367c7fc62d9e7e7f6`. All five bundled executables are built from that commit; [bin/mcp-build.json](../bin/mcp-build.json) records their SHA-256 hashes. The actual `tools/list` input/output schemas are in [config/mcp-contract.json](../config/mcp-contract.json).
 
 The MCP protocol's `serverInfo.version` is still `0.1.0` in this source. It is not the plugin version or a reliable source identifier. `bin/pixel-mcp --version` in these builds reports the full source commit.
 
@@ -77,7 +77,7 @@ Historical execution, before/after comparison and review: [export/analysis valid
 
 For merged fixes, confirmed remaining defects and unreleased work, use [the status ledger](BUG_STATUS.md) and [focused audit](BUG_AUDIT.md). The binary pin in this file is unchanged by that documentation-only audit.
 
-The latest bundle verification, numeric comparisons and review scope are recorded in
+The previous safety bundle verification is recorded in
 [the safety sync validation](SAFETY_SYNC_VALIDATION.md). The earlier
 [MCP #22 sync validation](REVIEW_SYNC_VALIDATION.md) retains its original source pin
 and execution date.
@@ -86,3 +86,7 @@ The current source includes dry-run, snapshot/restore and opt-in history/undo. T
 separate from file staging: read [safety contracts](MCP_SAFETY.md). Verify with
 `python3 bin/test-mcp-safety.py --aseprite /absolute/path/to/aseprite`. Test configs
 must set an isolated absolute snapshot_dir and must not change the user’s history setting.
+
+The current pin adds [error codes, request IDs and partial rollback recovery](MCP_ERRORS.md).
+Run `python3 bin/test-mcp-errors.py --aseprite /absolute/path/to/aseprite` with real Aseprite.
+Current execution and review evidence: [error/tracing validation](ERROR_TRACING_VALIDATION.md).

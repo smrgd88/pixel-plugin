@@ -7,6 +7,35 @@ import subprocess
 import threading
 
 
+class ProtocolError(RuntimeError):
+    """JSON-RPC failure with the original wire code and diagnostic data intact."""
+
+    def __init__(self, method, error):
+        self.error = error
+        self.code = error.get('code')
+        self.data = error.get('data')
+        super().__init__(f'{method}: {error}')
+
+
+class ToolError(RuntimeError):
+    """Tool failure retaining its envelope, request ID and recovery references."""
+
+    def __init__(self, name, result):
+        self.result = result
+        self.diagnostic = {}
+        try:
+            value = json.loads('\n'.join(x['text'] for x in result.get('content', []) if x['type'] == 'text'))
+            if isinstance(value, dict):
+                self.diagnostic = value
+        except (ValueError, KeyError, TypeError):
+            pass  # Keep legacy/non-JSON errors available in result and str(error).
+        self.request_id = self.diagnostic.get('request_id')
+        error = self.diagnostic.get('error', {})
+        self.code = error.get('code') if isinstance(error, dict) else None
+        self.recovery = error.get('recovery') if isinstance(error, dict) else None
+        super().__init__(f'{name}: {result}')
+
+
 class Client:
     def __init__(self, command, env=None):
         self.process = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
@@ -55,7 +84,7 @@ class Client:
             if response.get('id') != self.next_id:
                 continue
             if 'error' in response:
-                raise RuntimeError(f'{method}: {response["error"]}')
+                raise ProtocolError(method, response['error'])
             return response['result']
 
     def tools(self):
@@ -70,7 +99,7 @@ class Client:
     def call(self, name, arguments):
         result = self.request('tools/call', {'name': name, 'arguments': arguments})
         if result.get('isError'):
-            raise RuntimeError(f'{name}: {result}')
+            raise ToolError(name, result)
         if 'structuredContent' in result:
             return result['structuredContent']
         texts = [x['text'] for x in result.get('content', []) if x['type'] == 'text']

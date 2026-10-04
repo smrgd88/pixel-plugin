@@ -1,6 +1,6 @@
 # Preview, snapshots and recorded undo
 
-Bundled MCP 7f439a0 includes merged #21/#23/#24. Read the exact [tool schemas](MCP_TOOLS.md)
+Bundled MCP 6507405 includes merged #21/#23/#24. Read the exact [tool schemas](MCP_TOOLS.md)
 and [configuration](../config/README.md). These operations concern saved files, not unsaved GUI state.
 
 ## Dry-run: execute on a temporary copy
@@ -69,3 +69,10 @@ not necessarily the config file directory. Unix directories/files are private; i
 permissions can be rejected instead of silently changed. Metadata includes canonical source paths.
 Checksums validate integrity, not authenticity against same-user tampering. Cleanup/expiry and a
 pre-restore backup do not imply a multi-file transaction or crash-proof filesystem durability.
+
+## Failed edits and request tracing
+
+Follow [the error contract](MCP_ERRORS.md) for tool and JSON-RPC failures. Preserve request IDs and
+all error.recovery entries. file_rollback_failed outranks cancellation/timeout: some outputs can
+remain changed. Stop automatic retries, keep recovery folders/backups and inspect the original
+canonical output location. Do not equate file staging rollback with snapshot restore or history undo.

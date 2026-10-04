@@ -8,8 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 These entries describe cumulative develop changes, not a newly published release.
-The active bundled source is `7f439a0df1ec0d2d24ef6dabba6de4d30c2484f9`; earlier pin
+The active bundled source is `65074051f5d3903124ead37367c7fc62d9e7e7f6`; earlier pin
 entries below record their respective updates. See [current fix status](docs/BUG_STATUS.md).
+
+### Error codes and request tracing
+- Bundle merged MCP #25 at 6507405 with five rebuilt executables; retain all 56 tool schemas and success payloads.
+- Preserve request IDs, typed errors and partial rollback recovery in client exceptions, skills and commands; no automatic rollback retry.
+- Add error-envelope/client and real Aseprite tracing regressions. See [validation](docs/ERROR_TRACING_VALIDATION.md).
 
 ### Preview, snapshots and recorded undo
 - Bundle merged MCP #21/#23/#24 at 7f439a0 with five rebuilt executables and56-tool live contract.

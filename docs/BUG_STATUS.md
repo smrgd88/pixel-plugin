@@ -1,12 +1,12 @@
 # 버그 수정 및 반영 현황
 
-확인일: **2026-10-02**. 이전 런타임 반영은 [플러그인 PR #9](https://github.com/smrgd88/pixel-plugin/pull/9),
+확인일: **2026-10-04**. 이전 런타임 반영은 [플러그인 PR #9](https://github.com/smrgd88/pixel-plugin/pull/9),
 2026-09-28 13:30:39 KST develop 병합 커밋 `55c5697a4939fcae9e8026758b0d58895002a740`입니다.
 검증 후보8066c09와 병합 결과의 tree가 동일함을 확인했습니다.
 
 내장 MCP는 [mcp-source.json](../config/mcp-source.json)의
-이 작업에서 `7f439a0df1ec0d2d24ef6dabba6de4d30c2484f9`로 갱신했으며 도구 수는 56개입니다.
-작업 기준 develop은 문서 PR #10 병합 `b7f0a41`입니다. 이번 번들 변경과 플러그인 PR 병합은 별도입니다.
+이 작업에서 `65074051f5d3903124ead37367c7fc62d9e7e7f6`로 갱신했으며 도구 수는 56개입니다.
+작업 기준 develop은 `2114d77`입니다. 이번 번들 변경과 플러그인 PR 병합은 별도입니다.
 manifest 버전 0.5.0, MCP protocol serverInfo.version 0.1.0과 소스 커밋은 서로 다른 값입니다.
 **develop 병합은 새 릴리스 배포나 upstream marketplace 패키지 갱신을 뜻하지 않습니다.**
 
@@ -66,8 +66,15 @@ AA 후보 전체 재설계, palette 중복 항목 제거, 모든 희귀색 보�
 - 새 backend 변경은 MCP 병합 후 plugin pin·5개 binary·schema·스킬을 함께 갱신합니다.
 - 설치된 앱 플러그인의 자동 연결/GUI와 다른 OS native 검증은 기존 보류 상태입니다.
 
-## 안전 기능 동기화 — 이번 작업
+## 이전 안전 기능 동기화
 
 MCP #21/#23/#24는 모두 develop 병합을 확인했습니다. #24 최종7f439a0를 기준으로 합니다.
 상류 문서에 남은 “구현 브랜치/병합 대기” 표현보다 최종 소스와 실제 PR 상태를 우선합니다.
-새 실행 결과는 [안전 기능 검증](SAFETY_SYNC_VALIDATION.md)에 기록하며 과거 기록과 합산하지 않습니다.
+당시 실행 결과는 [안전 기능 검증](SAFETY_SYNC_VALIDATION.md)에 기록하며 과거 기록과 합산하지 않습니다.
+
+## 오류·요청 추적 — 이번 작업
+
+상류 [MCP #25](https://github.com/smrgd88/pixel-mcp/pull/25)는 `6507405`로 병합됐습니다.
+이 소스 변경은 해당 pin의 5개 번들·56개 도구 계약·요청 ID·오류 코드·rollback 복구 정보와
+스킬/명령을 동기화합니다. [계약](MCP_ERRORS.md) · [이번 검증](ERROR_TRACING_VALIDATION.md).
+플러그인 develop/main 병합·게시·사용자 설치 갱신은 수행하지 않았습니다.

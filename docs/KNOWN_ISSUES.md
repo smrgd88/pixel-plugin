@@ -10,7 +10,7 @@ for source/PR links and [the latest focused audit](BUG_AUDIT.md) for reproductio
 
 ## Audited defects now included in the bundle
 
-MCP #22 repairs remain included in the newer 7f439a0 pin; their first plugin integration was PR #9. MCP-AUDIT-01 (indexed mask resize),
+MCP #22 repairs remain included in the newer 6507405 pin; their first plugin integration was PR #9. MCP-AUDIT-01 (indexed mask resize),
 MCP-AUDIT-02 (explicit edge_threshold=0), and MCP-AUDIT-03 (inactive AA threshold)
 are fixed in this bundle. The [original audit](BUG_AUDIT.md) records old behavior;
 [current status](BUG_STATUS.md) and [control semantics](MCP_REVIEW_CONTROLS.md)

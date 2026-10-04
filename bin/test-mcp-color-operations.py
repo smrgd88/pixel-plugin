@@ -67,9 +67,9 @@ def main():
             before = Path(path).read_bytes()
             try:
                 wire = client.request('tools/call', {'name': name, 'arguments': dict(arguments, sprite_path=path)})
-            except RuntimeError as error:
+            except module.ProtocolError as error:
                 # Schema type failures are JSON-RPC invalid-params errors, not tool results.
-                if "'code': -32602" not in str(error):
+                if error.code != -32602:
                     raise
                 wire = {'isError': True, 'invalid_params': str(error)}
             calls.append({'name': name, 'arguments': dict(arguments, sprite_path=path), 'wire': wire})
@@ -165,7 +165,7 @@ def main():
                                    'assert(app.activeLayer.isTilemap);app.activeSprite:saveAs(app.activeSprite.filename)')
             subprocess.run([aseprite, '--batch', p, '--script', str(tile_script)], check=True, capture_output=True, timeout=30)
             error = reject('quantize_palette', p, target_colors=2, algorithm='median_cut', dither=True)
-            assert 'tilemap' in str(error)
+            assert json.loads(error['content'][0]['text'])['error']['code'] == 'lua_error'
             p = sprite(); alias = out / (Path(p).stem + '-hardlink.aseprite'); os.link(p, alias)
             reject('quantize_palette', p, target_colors=2, algorithm='median_cut', dither=True)
             p = sprite(); peer = module.Client([wrapper], env)

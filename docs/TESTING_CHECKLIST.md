@@ -35,7 +35,7 @@ Record the source commit, plugin commit, Go/Aseprite versions, platform and each
 
 ## Full behavior and restored recipes
 
-- `python3 bin/test-mcp-behavior.py --aseprite /absolute/path/to/aseprite`: all 50 tool basics plus named option/offset scenarios; independently reopen saved files with Aseprite. Failures are retained and produce a nonzero exit code.
+- `python3 bin/test-mcp-behavior.py --aseprite /absolute/path/to/aseprite`: all 56 tool basics plus named option/offset scenarios; independently reopen saved files with Aseprite. Failures are retained and produce a nonzero exit code.
 - `python3 bin/test-skill-workflows.py --aseprite /absolute/path/to/aseprite`: run the eight skill-owned workflows.json recipes, checking actual pixels, timing and original-source preservation.
 - Both tests use isolated generated files and caller-selected output directories. They do not mutate the user's artwork/configuration. The broad behavior test preserves its requests/responses and scenario ledger.
 
@@ -63,3 +63,13 @@ Run Aseprite suites sequentially to avoid unnecessary process contention.
 `python3 bin/test-mcp-safety.py` checks legacy/preview schema and text/structured client handling. Add `--aseprite /absolute/path/to/aseprite --output test-outputs/safety/focused` for actual source preservation, apply parity, restart recovery and guarded undo. It uses an isolated snapshot store with recording both off and on.
 
 Each safety run creates a unique `run-*` directory under `--output`, printed as `ARTIFACTS <path>`. The run contains its own sprites, snapshot store and calls.json; restarting the MCP inside that run reuses its store. Repeating the same command preserves prior runs without consuming their snapshot quota.
+
+## Error and tracing regression gate
+
+`python3 bin/test-mcp-errors.py` runs in the default suite. It checks legacy success compatibility,
+RuntimeError compatibility, preserved protocol data and rollback recovery entries without retries.
+Add `--aseprite /absolute/path/to/aseprite` for real UUID correlation with timing on/off, ignored
+client IDs, warnings, tool/schema/unknown errors, Lua rejection and non-debug redaction.
+The safety suite also checks typed snapshot/history errors. Use pinned upstream rollback failure
+injection and MCP boundary tests to verify recovery classification/serialization separately.
+See [current evidence and limits](ERROR_TRACING_VALIDATION.md).
