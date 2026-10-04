@@ -61,3 +61,5 @@ Run Aseprite suites sequentially to avoid unnecessary process contention.
 ## Preview/recovery regression gate
 
 `python3 bin/test-mcp-safety.py` checks legacy/preview schema and text/structured client handling. Add `--aseprite /absolute/path/to/aseprite --output test-outputs/safety/focused` for actual source preservation, apply parity, restart recovery and guarded undo. It uses an isolated snapshot store with recording both off and on.
+
+Each safety run creates a unique `run-*` directory under `--output`, printed as `ARTIFACTS <path>`. The run contains its own sprites, snapshot store and calls.json; restarting the MCP inside that run reuses its store. Repeating the same command preserves prior runs without consuming their snapshot quota.

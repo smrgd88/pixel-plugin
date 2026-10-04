@@ -109,3 +109,33 @@ P0/P1/P2 미해결0, accepted/out-of-scope finding0, 재오픈0. 추가 차단 �
 남는 제한은 설치 GUI 미검증, snapshot TTL/quota, 저장 파일에 한정된 undo 및 기존 empty-cel 조회 오류입니다.
 
 **판정: PASS_WITH_NOTES.**
+
+## 추가 셀프리뷰 수정 — 2026-10-04
+
+추가 review-only 검토 대상은 b7f0a41→20b9750(32파일)이었고 P2/P3 각각1건을 발견했습니다.
+이번 수정은20b9750을 초기 HEAD로 삼아 아래 두 항목과 직접 연결된 테스트/문서4파일에 한정했습니다.
+
+| ID | 상태 | 수정과 재검증 |
+|---|---|---|
+| TEST-P2-001 | VERIFIED | 동일 --output의 store 재사용으로 snapshot이 누적되던 문제. 매 실행 private run-* 하위 경로를 만들고 그 실행 내 서버 재시작만 같은 store를 공유하도록 변경 |
+| DOC-P3-002 | VERIFIED | LOCAL_MCP의 최신 검증 링크를 이 문서로 연결하고 이전 MCP #22/export 결과를 과거 이력으로 명시 |
+
+이미 유효 snapshot100개가 남은 `test-outputs/re-review/reused`를 같은 --output으로 지정해
+실제 safety suite를 연속2회 실행했습니다. 서로 다른 run-v7t7dx3n/run-xux8pz2s에 각각69회 호출
+(성공60·예상 거부9)이 통과했습니다. 두 번째 실행 전후에는 첫 번째 실행의 산출물도 포함해
+기존 파일 전체 SHA-256이 동일함을 확인했습니다. 기존 snapshot이나 로그를 지우지 않았습니다.
+기록: `test-outputs/re-review/{verify-repair.py,repair-1.log,repair-2.log,repair-results.json,repair-plugin.log}`.
+
+기본 suite7/7, 문서 링크/생성 문서/56도구 스키마/5개 binary checksum 검사도 다시 통과했습니다.
+제품 runtime·binary·schema·config·스킬은20b9750과 동일합니다. 따라서 전체111시나리오,
+Go 집중70건, Codex18회는 이번 수정에서는 반복하지 않았습니다. 설치 GUI 등의 기존 검증 한계도 유지합니다.
+
+수정 cycle1회, repair-diff 검토1회, closure1회, 최종 baseline-to-candidate fresh 전체범위 검토1회.
+직전 discovery1회를 포함한 해당 finding의 총 review pass4회. 최초 P2=1/P3=1 → VERIFIED2,
+P0/P1·신규·수정 유발·재오픈·미해결 finding0. 최종 후보 선정 후 관련 mutation/인증 무효화0회.
+Reviewed: 원래32파일 및 수정4파일(기존 범위 내). Context: client의 재연결/종료, snapshot quota/TTL,
+검증 명령과 로컬 증거. Changed during repair: safety test, LOCAL_MCP, TESTING_CHECKLIST, 이 보고서.
+Excluded: MCP backend 수정, 전역 설정, GUI/타OS native 추가 검증. 두 finding의 재현 조건이
+해소되고 기존 증거 보존 및 전체 계약 대조가 완료돼 종료했습니다.
+
+**추가 수정 판정: PASS_WITH_NOTES.**

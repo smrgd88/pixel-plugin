@@ -44,7 +44,10 @@ class Contracts(unittest.TestCase):
 
 def live(aseprite,output):
     with tempfile.TemporaryDirectory(prefix='pixel-safety-') as temp:
-        out=output.resolve() if output else Path(temp)/'out';out.mkdir(parents=True,exist_ok=True)
+        base=output.resolve() if output else Path(temp)/'out'
+        base.mkdir(parents=True,exist_ok=True)
+        # Keep restart checks in one store, but never share it across suite runs.
+        out=Path(tempfile.mkdtemp(prefix='run-',dir=base))
         config=Path(temp)/'config.json';calls=[];c=None
         def connect(enabled):
             nonlocal c
@@ -122,6 +125,7 @@ def live(aseprite,output):
         finally:
             if c:c.close()
             (out/'calls.json').write_text(json.dumps(calls,indent=2))
+            if output:print(f'ARTIFACTS {out}',flush=True)
         print(f'PASS: {len(calls)} calls ({sum("error" in x for x in calls)} expected rejections)',flush=True)
 
 if __name__=='__main__':
