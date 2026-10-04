@@ -1,5 +1,7 @@
 # Aseprite Pixel Art for Codex and Claude Code
 
+**English** | [한국어](README.ko.md)
+
 Create, animate, and export pixel art with Aseprite through natural-language requests.
 This repository provides four skill workflows, a bundled pixel-mcp server, and client guidance.
 Start with the [Codex setup](#quick-start-with-codex); existing Claude Code packaging is
