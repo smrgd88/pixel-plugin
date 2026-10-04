@@ -1,11 +1,11 @@
 # 플러그인 로드맵
 
-기준일: **2026-10-04** · 플러그인 기준: `develop@82d5edb` · MCP pin: `6507405` · 도구: 56개.
+기준일: **2026-10-04** · 플러그인 기준: `develop@1f52e24` · MCP pin: `6507405` · 도구: 56개.
 [현재 실행 순서](NEXT_STEPS.md) · [수정 현황](BUG_STATUS.md) · [제약](KNOWN_ISSUES.md).
 
 이 문서는 Aseprite 작업을 위한 스킬·클라이언트 연동·MCP 번들·배포의 계획입니다.
 아래 M0–M3는 저장소 문서의 단계 ID이며, GitHub에 등록된 마일스톤이나 확정 버전·일정이
-아닙니다. 확인 시점에 플러그인의 열린 이슈·PR과 등록된 GitHub 마일스톤은 없습니다.
+아닙니다. 등록된 GitHub 마일스톤은 없습니다. 진행 작업은 각각의 PR 상태를 따릅니다.
 새 작업의 시작·검증·병합에 맞춰 상태와 근거를 갱신합니다.
 
 ## 완료된 기반
@@ -24,23 +24,24 @@ manifest 버전은 0.5.0이며 누적 기능은 Unreleased입니다. 위 완료�
 
 | ID | 목적 | 현재 상태 | 완료 조건 | 의존 관계 |
 |---|---|---|---|---|
-| M0 | 현재 상태·다음 작업 정리 | 이번 문서 작업, 리뷰·병합 전 | 완료 PR과 남은 작업 구분, 소유 저장소·범위·검증 기준 명시, README 진입 링크·문서 검증 통과 후 develop 병합 | 없음 |
-| M1 | Codex 설치·연결 검증 | 격리 CLI SPIKE가 다음 후보; 앱 GUI 보류 | 선택한 설치 경로에서 스킬 탐색·참조 파일·MCP 실행·실제 결과를 검증하고 지원 클라이언트·제약을 기록 | M0 이후 범위 확정; 실제 Aseprite 필요 |
+| M0 | 현재 상태·다음 작업 정리 | [PR #14](https://github.com/smrgd88/pixel-plugin/pull/14) develop 병합 완료 | 완료 PR과 남은 작업 구분, 소유 저장소·범위·검증 기준 명시, README 진입 링크·문서 검증 통과 후 develop 병합 | 없음 |
+| M1 | Codex 설치·연결 검증 | CLI 범위 검증 완료: macOS 초기/모델, Linux Docker lifecycle; GUI 보류 | 선택한 설치 경로에서 스킬 탐색·참조 파일·MCP 실행·실제 결과를 검증하고 지원 클라이언트·제약을 기록 | M0 이후 범위 확정; 실제 Aseprite 필요 |
 | M2 | 정식 플러그인 릴리스 | 예정 | 릴리스 기준 커밋·버전·배포 대상 결정, 메타데이터·CHANGELOG·설치 경로 일치, 검증 증거 확보, 승인된 main 반영·태그·artifact 게시 확인 | 배포 대상 클라이언트의 M1 검증, 해당 플랫폼의 M3 검증 |
-| M3 | 플랫폼 실행 검증 확대 | 예정 | 선언한 OS/아키텍처에서 실제 Aseprite와 번들 launcher의 smoke·실패 경로 검증, CI/수동 증거·미지원 범위 기록 | M1과 병행 가능; 해당 실행 환경 필요 |
+| M3 | 플랫폼 실행 검증 확대 | macOS ARM·Linux amd64 Docker 일부 검증; 추가 환경 예정 | 선언한 OS/아키텍처에서 실제 Aseprite와 번들 launcher의 smoke·실패 경로 검증, CI/수동 증거·미지원 범위 기록 | M1과 병행 가능; 해당 실행 환경 필요 |
 
 M1은 CLI 경로만 검증했다면 CLI 지원 범위에 한해 완료할 수 있습니다. 기존에 보류한 Codex
 앱 GUI·자동 연결은 재개 요청 전까지 미검증으로 남깁니다. CLI 성공을 앱 GUI 성공으로
 표현하지 않습니다. M2에서 미검증 클라이언트나 플랫폼을 지원 대상으로 선언하지 않습니다.
 
-## 다음 구현 후보: M1 격리 CLI 설치 SPIKE
+## M1: CLI 설치 SPIKE와 잔여
 
-작업명 후보: `[SHARED][SPIKE] Codex 플러그인 설치 및 연결 검증`.
-브랜치 후보: `spike/shared-codex-plugin-install`.
+작업명: `[SHARED][SPIKE] Codex 플러그인 설치 및 연결 검증`.
+브랜치: `spike/shared-codex-plugin-install`.
 
 현재 README의 수동 MCP 연결 및 AGENTS.md 라우팅과 설치형 플러그인 동작을 구분합니다.
-먼저 지원 가능한 패키징·설치 경로를 조사하고 하나의 CLI 경로를 선택합니다. 새 manifest나
-설치 도구의 구현 여부는 조사 결과로 결정하며, 포맷을 추정해 미리 확정하지 않습니다.
+Codex 호환 manifest와 별도 stdio 설정을 추가하고 설치 cache 기반 CLI 경로를 검증했습니다.
+[실행 결과와 제한](CODEX_INSTALL_VALIDATION.md)을 따릅니다. 동일 ID의 명시적 설치/제거/재설치·업그레이드와 수동 MCP 충돌은 독립 Linux Docker 환경에서
+검증했습니다. M1의 CLI 범위를 완료하며 앱 GUI 및 추가 native 플랫폼 검증은 별도입니다.
 
 완료 증거:
 
@@ -73,7 +74,9 @@ M1은 CLI 경로만 검증했다면 CLI 지원 범위에 한해 완료할 수 �
 ## 플랫폼 검증 범위: M3
 
 번들 대상은 macOS amd64/arm64, Linux amd64/arm64, Windows amd64입니다.
-현재 플러그인의 최신 native 검증은 macOS arm64이며 나머지는 교차 빌드·체크섬 근거입니다.
+macOS arm64 실행과 Linux amd64 Docker의 CLI lifecycle/실제 Aseprite 실행을 검증했습니다.
+Linux Docker는 ARM 호스트에서 amd64 emulation을 사용했으며 물리 x86_64 검증과 구분합니다.
+나머지 대상은 교차 빌드·체크섬 근거입니다.
 각 대상의 실제 launcher→MCP→Aseprite 실행, 최소 버전/설정 경로, 출력 파일·오류 응답을
 확인해야 합니다. Windows Bash 래퍼 제약과 native launcher 필요성은 조사 후 별도 OPS 작업으로
 범위를 정합니다. 실행 환경이 없는 대상을 완료로 표시하지 않습니다.
