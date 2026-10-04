@@ -1,6 +1,6 @@
 # MCP tool contract
 
-Generated from the actual `tools/list` response at MCP source commit `7f439a0df1ec0d2d24ef6dabba6de4d30c2484f9`.
+Generated from the actual `tools/list` response at MCP source commit `65074051f5d3903124ead37367c7fc62d9e7e7f6`.
 Regenerate with `python3 bin/render-mcp-reference.py` after reviewing a new snapshot.
 
 Read the tool section needed for the task. All tool names use the `mcp__aseprite__` prefix in skills/commands.
@@ -13,6 +13,8 @@ MCP frame inputs start at 1, except export `frame_number: 0` (all frames) and du
 Use `structuredContent` after checking `isError`; clients exposing only text content must parse its JSON. `Success` and `success` are distinct response fields.
 
 Report optional success `warnings` according to [completed-operation warning handling](MCP_WARNINGS.md), including unknown codes. Missing warnings do not guarantee lossless processing.
+
+For tool/JSON-RPC failures, request IDs and partial rollback recovery, follow [the error contract](MCP_ERRORS.md). Error results have no successful output schema.
 
 ## Index
 

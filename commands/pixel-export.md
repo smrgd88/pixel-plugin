@@ -32,3 +32,5 @@ Report returned success `warnings` according to [the shared warning rules](../do
 For an all-frame PNG sequence use `frame=0`. Follow [sequence output handling](../docs/MCP_EXPORT_ANALYSIS.md): report all actual `files[].path`, `files[].frame_number` and sizes, not only the first `exported_path`. Do not claim the requested base file was created. Keep single-file/older responses without `files` compatible.
 
 Use [preview and recovery rules](../docs/MCP_SAFETY.md) for requested previews or undo; do not invent dry_run support on other tools.
+
+Follow [error and request-tracing rules](../docs/MCP_ERRORS.md): report error.code and request_id, preserve error.recovery, and never automatically retry file_rollback_failed or delete its retained backups.

@@ -6,7 +6,7 @@ Create, animate, and export pixel art using Aseprite through natural language an
 
 ## Current source status
 
-The bundled MCP is pinned to `7f439a0df1ec0d2d24ef6dabba6de4d30c2484f9` (56 tools).
+The bundled MCP is pinned to `65074051f5d3903124ead37367c7fc62d9e7e7f6` (56 tools). See [error codes, request IDs and recovery](docs/MCP_ERRORS.md).
 The original five reported bugs are fixed and integrated through plugin PR #7;
 the subsequent palette/threshold findings and density improvements from MCP #22 were integrated
 through [plugin PR #9](https://github.com/smrgd88/pixel-plugin/pull/9) at `55c5697`.
@@ -240,7 +240,7 @@ Exports support still PNG, animated GIF and spritesheets with horizontal, vertic
 
 ## Local MCP development
 
-The bundled server and schemas are pinned to MCP safety revision `7f439a0df1ec0d2d24ef6dabba6de4d30c2484f9`. Build a local committed revision and select it through PIXEL_MCP_BINARY; no personal source paths are stored in the distribution. See [reproducible build and validation](docs/LOCAL_MCP.md), [tool contract](docs/MCP_TOOLS.md), [historical synchronization audit](docs/MCP_SYNC.md), and [current status](docs/BUG_STATUS.md).
+The bundled server and schemas are pinned to MCP error/tracing revision `65074051f5d3903124ead37367c7fc62d9e7e7f6`. Build a local committed revision and select it through PIXEL_MCP_BINARY; no personal source paths are stored in the distribution. See [reproducible build and validation](docs/LOCAL_MCP.md), [tool contract](docs/MCP_TOOLS.md), [historical synchronization audit](docs/MCP_SYNC.md), and [current status](docs/BUG_STATUS.md).
 
 ## Documentation
 

@@ -23,7 +23,7 @@ The default is not APPDATA or XDG_CONFIG_HOME. Neither `CONFIG_PATH` nor `ASEPRI
 }
 ```
 
-`temp_dir` defaults to the OS temp directory plus `pixel-mcp`; the server creates it. `timeout` is seconds and defaults to 30 when omitted or zero; negative values fail. Logging levels are debug/info/warn/error. Empty log_file means stderr only. enable_timing logs operation timing; stdout is reserved for MCP JSON-RPC.
+`temp_dir` defaults to the OS temp directory plus `pixel-mcp`; the server creates it. `timeout` is seconds and defaults to 30 when omitted or zero; negative values fail. Logging levels are debug/info/warn/error. Empty log_file means stderr only. enable_timing logs operation timing; stdout is reserved for MCP JSON-RPC. [Request IDs](../docs/MCP_ERRORS.md) are assigned even when timing is off. Non-debug CLI logs redact sensitive values; explicitly enabled debug can include paths, inputs and process output.
 
 Example executable paths:
 

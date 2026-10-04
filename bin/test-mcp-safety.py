@@ -62,12 +62,18 @@ def live(aseprite,output):
             Draft202012Validator(TOOLS[name]['outputSchema']).validate(value);calls.append(dict(name=name,arguments=args,result=value));return value
         def unchanged(path):
             p=Path(path);s=p.stat();return (p.read_bytes(),s.st_ino,s.st_mode,s.st_mtime_ns)
-        def reject(name,path,**args):
+        def reject(name,path,expected_code,**args):
             before=unchanged(path)
             try:wire=c.request('tools/call',{'name':name,'arguments':args})
-            except RuntimeError as e:
-                assert "'code': -32602" in str(e);wire={'invalid_params':str(e)}
-            else:assert wire.get('isError'),wire
+            except module.ProtocolError as e:
+                assert e.code == -32602
+                diagnostic=e.data;wire={'jsonrpc_error':e.error}
+            else:
+                assert wire.get('isError') and 'structuredContent' not in wire,wire
+                diagnostic=json.loads(wire['content'][0]['text'])
+                assert diagnostic['error']==wire['_meta']['io.github.smrgd88.pixel-mcp/error']
+                assert diagnostic['request_id']==wire['_meta']['io.github.smrgd88.pixel-mcp/request_id']
+            assert diagnostic['error']['code']==expected_code,diagnostic
             calls.append(dict(name=name,arguments=args,error=wire));assert unchanged(path)==before
         def fixture():
             p=call('create_canvas',width=8,height=8,color_mode='rgb')['file_path']
@@ -81,7 +87,7 @@ def live(aseprite,output):
                 assert a==b and a['dry_run'] and unchanged(p)==before
                 assert a['preview']['would_change_file']
                 if name!='apply_auto_shading':assert a['warnings']
-                reject('scale_sprite',p,sprite_path=p,scale_x=2,scale_y=2,algorithm='nearest',dry_run=True)
+                reject('scale_sprite',p,'invalid_arguments',sprite_path=p,scale_x=2,scale_y=2,algorithm='nearest',dry_run=True)
                 actual=call(name,sprite_path=p,**args)
                 assert 'dry_run' not in actual and 'preview' not in actual
                 assert {k:v for k,v in a.items() if k not in ['dry_run','preview']}==actual
@@ -92,35 +98,35 @@ def live(aseprite,output):
             p=fixture();original=Path(p).read_bytes();snap=call('create_snapshot',sprite_path=p,label='baseline')['snapshot'];sid=snap['snapshot_id']
             call('flatten_layers',sprite_path=p);edited=Path(p).read_bytes();assert edited!=original
             connect(False);assert sid in [x['snapshot_id'] for x in call('list_snapshots',sprite_path=p)['snapshots']]
-            other=fixture();reject('restore_snapshot',other,sprite_path=other,snapshot_id=sid)
+            other=fixture();reject('restore_snapshot',other,'snapshot_source_mismatch',sprite_path=other,snapshot_id=sid)
             restored=call('restore_snapshot',sprite_path=p,snapshot_id=sid);assert Path(p).read_bytes()==original
             assert call('get_sprite_info',sprite_path=p)['layer_count']==2
             call('restore_snapshot',sprite_path=p,snapshot_id=restored['backup_snapshot']['snapshot_id']);assert Path(p).read_bytes()==edited
-            call('delete_snapshot',snapshot_id=sid);reject('restore_snapshot',p,sprite_path=p,snapshot_id=sid)
+            call('delete_snapshot',snapshot_id=sid);reject('restore_snapshot',p,'not_found',sprite_path=p,snapshot_id=sid)
             print('PASS: snapshot restart discovery, byte-exact restore/pre-restore backup, source mismatch and deleted-ID rejection',flush=True)
             p=fixture();original=Path(p).read_bytes();connect(True)
             assert call('list_operation_history',sprite_path=p)==dict(operations=[],recording_enabled=True)
             call('flatten_layers',sprite_path=p,dry_run=True);assert not call('list_operation_history',sprite_path=p)['operations']
-            reject('quantize_palette',p,sprite_path=p,target_colors=1,algorithm='kmeans',dither=False)
+            reject('quantize_palette',p,'invalid_arguments',sprite_path=p,target_colors=1,algorithm='kmeans',dither=False)
             assert not call('list_operation_history',sprite_path=p)['operations']
             call('flatten_layers',sprite_path=p);after1=Path(p).read_bytes()
             layer=call('get_sprite_info',sprite_path=p)['layers'][0]
             first=call('list_operation_history',sprite_path=p)['operations'][0]
             call('draw_pixels',sprite_path=p,layer_name=layer,frame_number=1,pixels=[dict(x=0,y=0,color='#FFFFFF')]);after2=Path(p).read_bytes()
             entries=call('list_operation_history',sprite_path=p)['operations'];assert len(entries)==2 and entries[0]['sequence']>entries[1]['sequence'];second=entries[0]
-            reject('undo_last_operation',p,sprite_path=p,expected_operation_id=first['operation_id'])
+            reject('undo_last_operation',p,'history_operation_mismatch',sprite_path=p,expected_operation_id=first['operation_id'])
             # Export/read/manual snapshot do not become edits.
             call('export_sprite',sprite_path=p,output_path=str(out/'history.png'),format='png',frame_number=1)
             call('create_snapshot',sprite_path=p,label='manual');assert len(call('list_operation_history',sprite_path=p)['operations'])==2
             connect(False);assert not call('list_operation_history',sprite_path=p)['recording_enabled']
             undone=call('undo_last_operation',sprite_path=p,expected_operation_id=second['operation_id']);assert undone['operation']['state']=='undone' and Path(p).read_bytes()==after1
-            reject('undo_last_operation',p,sprite_path=p,expected_operation_id=second['operation_id'])
+            reject('undo_last_operation',p,'history_operation_mismatch',sprite_path=p,expected_operation_id=second['operation_id'])
             call('undo_last_operation',sprite_path=p,expected_operation_id=first['operation_id']);assert Path(p).read_bytes()==original
             assert call('get_sprite_info',sprite_path=p)['layer_count']==2
             # A non-recording edit is an external change relative to a recorded after hash.
             connect(True);call('flatten_layers',sprite_path=p);entry=call('list_operation_history',sprite_path=p)['operations'][0]
             connect(False);call('draw_pixels',sprite_path=p,layer_name=call('get_sprite_info',sprite_path=p)['layers'][0],frame_number=1,pixels=[dict(x=0,y=0,color='#123456')])
-            reject('undo_last_operation',p,sprite_path=p,expected_operation_id=entry['operation_id'])
+            reject('undo_last_operation',p,'history_conflict',sprite_path=p,expected_operation_id=entry['operation_id'])
             print('PASS: opt-in recording, exclusions, reverse two-edit undo after restart/disable, stale/retry/external-change guards',flush=True)
         finally:
             if c:c.close()

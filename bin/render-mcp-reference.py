@@ -16,6 +16,7 @@ def render(contract):
              'MCP frame inputs start at 1, except export `frame_number: 0` (all frames) and duplicate `insert_after: 0` (append). Pixel coordinates and palette indices start at 0.', '',
              'Use `structuredContent` after checking `isError`; clients exposing only text content must parse its JSON. `Success` and `success` are distinct response fields.', '',
              'Report optional success `warnings` according to [completed-operation warning handling](MCP_WARNINGS.md), including unknown codes. Missing warnings do not guarantee lossless processing.', '',
+             'For tool/JSON-RPC failures, request IDs and partial rollback recovery, follow [the error contract](MCP_ERRORS.md). Error results have no successful output schema.', '',
              '## Index', '']
     for tool in contract['tools']:
         lines.append('- [' + tool['name'] + '](#' + tool['name'] + ')')

@@ -114,7 +114,7 @@ def live(aseprite):
                                ('scale_sprite', {'scale_x': 2, 'scale_y': 2, 'algorithm': 'bilinear'})]:
                 wire = client.request('tools/call', {'name': name, 'arguments': dict(args, sprite_path=str(Path(tmp) / 'missing.aseprite'))})
                 assert wire.get('isError') is True and not wire.get('structuredContent'), wire
-                assert 'sprite file not found' in str(wire['content'])
+                assert json.loads(wire['content'][0]['text'])['error']['code'] == 'not_found'
                 print('PASS:', name, 'failure remains error')
             print(f'PASS: {len(cases)} successful warning conditions and 3 real failure paths; text/structured equality')
         finally:

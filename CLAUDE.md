@@ -17,7 +17,7 @@ The plugin follows a layered architecture:
 
 1. **User Layer**: Natural language or slash commands in Claude Code
 2. **Plugin Layer**: Skills (model-invoked) and Commands (user-invoked)
-3. **MCP Layer**: pixel-mcp server (50 tools)
+3. **MCP Layer**: pixel-mcp server (56 tools)
 4. **Application Layer**: Aseprite CLI interactions
 
 **Key Integration Point:** The plugin bundles pre-compiled pixel-mcp binaries and provides a platform-detection wrapper (`bin/pixel-mcp`) that selects the correct binary for macOS, Linux, or Windows.
@@ -133,7 +133,7 @@ Can include bash execution: !`git status`
 
 `.mcp.json` launches `${CLAUDE_PLUGIN_ROOT}/bin/pixel-mcp`. The wrapper selects a bundled platform binary or an absolute PIXEL_MCP_BINARY override. It preserves PIXEL_MCP_CONFIG. Server config precedence is --config, PIXEL_MCP_CONFIG, then the user-home .config/pixel-mcp/config.json.
 
-See [MCP contract](docs/MCP_TOOLS.md) for exact input/output fields and [local build instructions](docs/LOCAL_MCP.md) for reproducible committed-source builds. Never assume a sibling source checkout is the running server.
+See [MCP contract](docs/MCP_TOOLS.md) for exact input/output fields and [local build instructions](docs/LOCAL_MCP.md) for reproducible committed-source builds. Never assume a sibling source checkout is the running server. Follow [error/request tracing](docs/MCP_ERRORS.md) for code-based failures and preserved rollback recovery information; do not automatically retry file_rollback_failed.
 
 ## Development Guidelines
 
@@ -228,7 +228,7 @@ bin/pixel-mcp --health            # May fail without Aseprite configured
 ## External Dependencies
 
 - **pixel-mcp**: Go-based MCP server pinned in `config/mcp-source.json`
-  - Provides 50 tools for pixel art operations
+  - Provides 56 tools for pixel art operations
   - Built with Go 1.25+
   - Communicates with Aseprite via CLI
 

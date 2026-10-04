@@ -63,8 +63,8 @@ def live(aseprite, output):
             try:
                 wire = c.request('tools/call', {'name': name, 'arguments': args})
                 assert wire.get('isError'), wire
-            except RuntimeError as error:
-                assert "'code': -32602" in str(error), error
+            except module.ProtocolError as error:
+                assert error.code == -32602, error
                 wire = {'invalid_params': str(error)}
             calls.append({'name': name, 'arguments': args, 'error': wire})
             assert Path(path).read_bytes() == before

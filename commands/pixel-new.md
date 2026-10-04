@@ -18,3 +18,5 @@ Read [palette definitions](../config/palettes.json). Supported palette names are
 Read [creator examples](../skills/pixel-art-creator/examples.md) for validated payloads and [the contract](../docs/MCP_TOOLS.md) for exact schemas.
 
 Examples: `/pixel-new`, `/pixel-new icon`, `/pixel-new 32x32 gameboy`, `/pixel-new tile pico8`.
+
+Follow [error and request-tracing rules](../docs/MCP_ERRORS.md): report error.code and request_id, preserve error.recovery, and never automatically retry file_rollback_failed or delete its retained backups.
