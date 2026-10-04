@@ -11,6 +11,11 @@ These entries describe cumulative develop changes, not a newly published release
 The active bundled source is `65074051f5d3903124ead37367c7fc62d9e7e7f6`; earlier pin
 entries below record their respective updates. See [current fix status](docs/BUG_STATUS.md).
 
+### Plugin roadmap and current integration status
+- Record plugin #11/#12/#13 as merged into develop and add scoped M0–M3 planning stages for Codex installation, release preparation, and native platform validation.
+- Keep Codex app GUI validation on hold, distinguish MCP-owned fixes/extensions from plugin integration, and exclude the separately backed-up Godot game from the plugin backlog.
+- Link both README languages to the roadmap; no runtime, binary, version, or deployment change.
+
 ### Error codes and request tracing
 - Bundle merged MCP #25 at 6507405 with five rebuilt executables; retain all 56 tool schemas and success payloads.
 - Preserve request IDs, typed errors and partial rollback recovery in client exceptions, skills and commands; no automatic rollback retry.

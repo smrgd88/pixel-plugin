@@ -1,14 +1,15 @@
 # 버그 수정 및 반영 현황
 
-확인일: **2026-10-04**. 이전 런타임 반영은 [플러그인 PR #9](https://github.com/smrgd88/pixel-plugin/pull/9),
-2026-09-28 13:30:39 KST develop 병합 커밋 `55c5697a4939fcae9e8026758b0d58895002a740`입니다.
-검증 후보8066c09와 병합 결과의 tree가 동일함을 확인했습니다.
+확인일: **2026-10-04** · 플러그인 기준 `develop@82d5edb`.
+현재 런타임 반영은 [플러그인 PR #12](https://github.com/smrgd88/pixel-plugin/pull/12)의
+`d96682876ec088723fe14d92e612fced0ab161f0`이며, 이후 Codex 안내는
+[PR #13](https://github.com/smrgd88/pixel-plugin/pull/13)의 `82d5edb`로 병합됐습니다.
 
 내장 MCP는 [mcp-source.json](../config/mcp-source.json)의
-이 작업에서 `65074051f5d3903124ead37367c7fc62d9e7e7f6`로 갱신했으며 도구 수는 56개입니다.
-작업 기준 develop은 `2114d77`입니다. 이번 번들 변경과 플러그인 PR 병합은 별도입니다.
+`65074051f5d3903124ead37367c7fc62d9e7e7f6`이며 도구 수는 56개입니다.
 manifest 버전 0.5.0, MCP protocol serverInfo.version 0.1.0과 소스 커밋은 서로 다른 값입니다.
 **develop 병합은 새 릴리스 배포나 upstream marketplace 패키지 갱신을 뜻하지 않습니다.**
+우선순위·소유 저장소·완료 조건은 [플러그인 로드맵](ROADMAP.md)을 따릅니다.
 
 ## 처음 보고한 5개 버그 — 수정 및 플러그인 반영 완료
 
@@ -62,7 +63,8 @@ AA 후보 전체 재설계, palette 중복 항목 제거, 모든 희귀색 보�
 
 - [MCP #21 dry-run](https://github.com/smrgd88/pixel-mcp/pull/21)은 2026-09-28 13:10:26 KST 병합됐습니다(`1c410b6`). 이 번들에는 #23 snapshot/restore 및 #24 history/undo와 함께 포함됩니다. [사용 계약](MCP_SAFETY.md).
 - 우선순위와 완료 조건은 [다음 작업](NEXT_STEPS.md)을 따릅니다.
-- 이 버전의 실제 결과·실행한 스킬·검증 범위는 [리뷰 수정 반영 검증](REVIEW_SYNC_VALIDATION.md)에 기록합니다.
+- 현재 번들의 실제 실행 범위는 [오류·요청 추적 검증](ERROR_TRACING_VALIDATION.md)에 기록합니다.
+  [리뷰 수정 반영 검증](REVIEW_SYNC_VALIDATION.md)은 이전 PR #9의 실행 기록입니다.
 - 새 backend 변경은 MCP 병합 후 plugin pin·5개 binary·schema·스킬을 함께 갱신합니다.
 - 설치된 앱 플러그인의 자동 연결/GUI와 다른 OS native 검증은 기존 보류 상태입니다.
 
@@ -72,9 +74,17 @@ MCP #21/#23/#24는 모두 develop 병합을 확인했습니다. #24 최종7f439a
 상류 문서에 남은 “구현 브랜치/병합 대기” 표현보다 최종 소스와 실제 PR 상태를 우선합니다.
 당시 실행 결과는 [안전 기능 검증](SAFETY_SYNC_VALIDATION.md)에 기록하며 과거 기록과 합산하지 않습니다.
 
-## 오류·요청 추적 — 이번 작업
+## 오류·요청 추적 — develop 반영 완료
 
 상류 [MCP #25](https://github.com/smrgd88/pixel-mcp/pull/25)는 `6507405`로 병합됐습니다.
-이 소스 변경은 해당 pin의 5개 번들·56개 도구 계약·요청 ID·오류 코드·rollback 복구 정보와
-스킬/명령을 동기화합니다. [계약](MCP_ERRORS.md) · [이번 검증](ERROR_TRACING_VALIDATION.md).
-플러그인 develop/main 병합·게시·사용자 설치 갱신은 수행하지 않았습니다.
+플러그인 #12는 해당 pin의 5개 번들·56개 도구 계약·요청 ID·오류 코드·rollback 복구 정보와
+스킬/명령을 동기화했고 develop에 병합됐습니다. [계약](MCP_ERRORS.md) · [이번 검증](ERROR_TRACING_VALIDATION.md).
+main 반영·정식 게시·사용자 설치 갱신은 별도 작업으로 남아 있습니다.
+
+## 상류 회귀 점검에서 확인된 잔여
+
+MCP [#27](https://github.com/smrgd88/pixel-mcp/pull/27)의 회귀 조합 점검은 병합됐습니다.
+그룹 내부 `draw_pixels`가 존재하는 레이어를 찾지 못하는 RM-FIX-01은 재현된 서버 결함이며,
+해당 테스트/문서 변경으로 수정된 것은 아닙니다. 서버 FIX와 이후 플러그인 회귀 검증은
+[로드맵](ROADMAP.md)에서 별도로 추적합니다. 이 문서 갱신에서 재현 테스트를 다시 실행하거나
+현재 번들의 소스 pin을 바꾸지는 않았습니다.

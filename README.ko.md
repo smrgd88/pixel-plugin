@@ -220,6 +220,7 @@ claude plugin install pixel-plugin@pixel-plugin
 - [로컬 MCP 개발](docs/LOCAL_MCP.md): 재현 가능한 빌드와 테스트 명령
 - [MCP 도구](docs/MCP_TOOLS.md): 도구 56개의 정확한 스키마
 - [최신 검증](docs/ERROR_TRACING_VALIDATION.md): 번들 검사와 미검증 범위
+- [플러그인 로드맵](docs/ROADMAP.md): 단계별 소유 범위와 완료 조건
 - [다음 작업](docs/NEXT_STEPS.md): 남은 통합·릴리스 작업
 - [기여 안내](CONTRIBUTING.md): 개발 지침
 - [이전 비교 보고서](docs/reports/mcp22/REPORT.md): 팔레트·음영 변경 전후
