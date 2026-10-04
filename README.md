@@ -1,299 +1,235 @@
-# Aseprite Pixel Art Plugin for Claude Code
+# Aseprite Pixel Art for Codex and Claude Code
 
-Create, animate, and export pixel art using Aseprite through natural language and commands in Claude Code.
+**English** | [한국어](README.ko.md)
 
-*Powered by [pixel-mcp](https://github.com/willibrandon/pixel-mcp) - a Model Context Protocol server for Aseprite.*
+Create, animate, and export pixel art with Aseprite through natural-language requests.
+This repository provides four skill workflows, a bundled pixel-mcp server, and client guidance.
+Start with the [Codex setup](#quick-start-with-codex); existing Claude Code packaging is
+covered [separately](#using-claude-code).
+
+This is the [smrgd88/pixel-plugin](https://github.com/smrgd88/pixel-plugin) development fork of
+[willibrandon/pixel-plugin](https://github.com/willibrandon/pixel-plugin).
+The bundled [pixel-mcp fork](https://github.com/smrgd88/pixel-mcp) derives from
+[willibrandon/pixel-mcp](https://github.com/willibrandon/pixel-mcp).
 
 ## Current source status
 
-The bundled MCP is pinned to `65074051f5d3903124ead37367c7fc62d9e7e7f6` (56 tools). See [error codes, request IDs and recovery](docs/MCP_ERRORS.md).
-The original five reported bugs are fixed and integrated through plugin PR #7;
-the subsequent palette/threshold findings and density improvements from MCP #22 were integrated
-through [plugin PR #9](https://github.com/smrgd88/pixel-plugin/pull/9) at `55c5697`.
-See the [illustrated before/after report](docs/reports/mcp22/REPORT.md),
-[standalone HTML](docs/reports/mcp22/REPORT.html), and [next work](docs/NEXT_STEPS.md).
-Known algorithm and validation boundaries remain. See [fix status](docs/BUG_STATUS.md),
-[remaining issues](docs/KNOWN_ISSUES.md), and [historical audit findings](docs/BUG_AUDIT.md).
+The bundle provides **56 MCP tools**, pinned to
+`65074051f5d3903124ead37367c7fc62d9e7e7f6` in [the source manifest](config/mcp-source.json).
+It includes drawing, animation, palette operations, exports, temporary-copy previews,
+saved-file snapshots, opt-in recorded undo, and error codes with request IDs.
 
-This describes the bundle in this checkout. Plugin integration is tracked separately
-from MCP merging; it is not a published release or a guarantee that an upstream
-marketplace install contains these changes. The installation
-instructions below describe the existing Claude plugin packaging. Actual Codex
-skill/MCP execution was verified through isolated CLI configuration; installed Codex
-plugin discovery and app GUI behavior were not verified.
+These capabilities describe this checkout. A merge into `develop` does not publish a
+release or update an installed plugin. An upstream marketplace installation can contain
+a different bundle. See [latest bundle validation](docs/ERROR_TRACING_VALIDATION.md),
+[fix status](docs/BUG_STATUS.md), and [known issues](docs/KNOWN_ISSUES.md).
 
-This checkout additionally bundles merged MCP #21/#23/#24: temporary-copy preview,
-saved-file snapshots and opt-in recorded undo. See [usage and boundaries](docs/MCP_SAFETY.md).
+## Quick start with Codex
 
-## Features
+### 1. Get the checkout
 
-**Natural Language Pixel Art Creation**
-- "Create a 64x64 Game Boy style sprite"
-- "Draw a red circle with blue outline"
-- "Make a 16x16 tile"
-
-**Animation Support**
-- "Add a 4-frame walk cycle"
-- "Create an idle animation"
-- "Set frame timing to 100ms"
-
-**Advanced Techniques**
-- Apply dithering patterns
-- Optimize color palettes
-- Add shading and antialiasing
-- Use retro console palettes (NES, Game Boy, C64, PICO-8)
-
-**Game-Ready Export**
-- PNG, GIF, spritesheet formats
-- Aseprite JSON metadata for game-engine adaptation
-- Pixel-perfect scaling (2x, 4x, 8x)
-- Multiple spritesheet layouts
-
-## Runnable Example
-
-See the [apple example](examples/apple/README.md) for reproducible MCP generation,
-checked-in animation assets, and an offline browser demo.
-
-## How It Works
-
-This plugin uses the [pixel-mcp](https://github.com/willibrandon/pixel-mcp) Model Context Protocol server to communicate with Aseprite. The MCP server provides 56 tools for pixel art operations and is bundled with the plugin.
-
-## Quick Start
-
-### 1. Prerequisites
-
-- [Aseprite](https://www.aseprite.org/) v1.3.17.2+ installed
-- [Claude Code](https://claude.com/code) installed
-
-### 2. Installation
-
-**Option A: Via Claude Code (recommended)**
-
-In Claude Code, run:
-```
-/plugin
-```
-Then:
-1. Select "Add marketplace"
-2. Enter: `willibrandon/pixel-plugin` (for GitHub) or `./path/to/local/marketplace` (for local)
-3. Select "Browse and install plugins"
-4. Find and install `pixel-plugin`
-
-**Option B: From command line**
+Requirements: Aseprite v1.3.17.2+, Codex CLI for the commands below, Git, and Bash for
+the bundled launcher. The shell examples use macOS/Linux paths. Windows also needs
+Bash to use the wrapper; see [configuration](config/README.md) for Windows path rules.
+Go is only needed when rebuilding MCP; Python and test dependencies are needed for validation.
 
 ```bash
-# Add the GitHub marketplace
-claude plugin marketplace add willibrandon/pixel-plugin
-
-# Install the plugin
-claude plugin install pixel-plugin
-```
-
-**Option C: Local development/testing**
-
-```bash
-# Clone the repository
-git clone https://github.com/willibrandon/pixel-plugin.git
+git clone --branch develop --single-branch https://github.com/smrgd88/pixel-plugin.git
 cd pixel-plugin
+```
 
-# Add as local marketplace (from parent directory)
-cd ..
-claude plugin marketplace add ./pixel-plugin
+For an existing checkout, use its root. `develop` moves; check out a reviewed plugin
+commit when you need a reproducible bundle.
 
-# Install from local source
+### 2. Configure Aseprite
+
+Create or update `~/.config/pixel-mcp/config.json` with the real absolute executable path.
+Preserve existing fields if the file already exists. Minimal macOS example:
+
+```json
+{
+  "aseprite_path": "/Applications/Aseprite.app/Contents/MacOS/aseprite"
+}
+```
+
+The server selects configuration in this order: `--config`, `PIXEL_MCP_CONFIG`, then the
+user-home `.config/pixel-mcp/config.json`. JSON paths do not expand `~` or shell variables.
+See [configuration](config/README.md) for the template, detection helper, and platform paths.
+
+From the checkout root, verify the selected bundle and Aseprite:
+
+```bash
+bin/pixel-mcp --version
+bin/pixel-mcp --health
+```
+
+Health checks runtime availability, not drawing. A `PIXEL_MCP_BINARY` override can select
+a different server; inspect it when the reported source version differs from this checkout.
+
+### 3. Connect the MCP server
+
+Inspect existing Codex connections first:
+
+```bash
+codex mcp list
+```
+
+If `aseprite` is already registered or supplied by an installed plugin, verify that
+connection before adding another. For a new CLI registration, run from this checkout:
+
+```bash
+codex mcp add aseprite -- "$PWD/bin/pixel-mcp"
+codex mcp get aseprite
+```
+
+This registers an absolute launcher path in your Codex configuration. Keep the checkout
+at that location while using the connection. If the server uses a non-default config,
+include it explicitly when registering:
+
+```bash
+codex mcp add aseprite -- "$PWD/bin/pixel-mcp" --config /absolute/path/pixel-mcp-config.json
+```
+
+Choose the registration command that matches your configuration; do not run both.
+For project-scoped configuration, Codex also supports `.codex/config.toml` in trusted
+projects. See [the official MCP guide](https://developers.openai.com/codex/mcp).
+Restart/reconnect the Codex session after changing MCP configuration.
+
+### 4. Use the repository guidance
+
+Start Codex from this repository's root:
+
+```bash
+codex
+```
+
+[AGENTS.md](AGENTS.md) gives Codex the project instructions and routes pixel-art tasks
+to the appropriate `skills/*/SKILL.md`. It does not install skills or start an MCP server.
+Codex's [instruction discovery](https://developers.openai.com/codex/guides/agents-md)
+uses `AGENTS.md`; `CLAUDE.md` remains the Claude Code entrypoint.
+
+The root `skills/` directory is retained for plugin packaging. A bare checkout does not
+make those folders automatically discoverable as standalone Codex skills. This setup
+uses AGENTS.md routing and explicit file reads. To use automatic discovery outside this
+repository, follow [Codex skill discovery](https://developers.openai.com/codex/skills)
+for `.agents/skills` or your installed plugin's setup, preserving supporting references.
+
+Ask in natural language, for example:
+
+```text
+Create a 32x32 Game Boy-style sprite and save it as hero.aseprite.
+Add four walk-cycle frames, each 100 ms long.
+Export an animated GIF and a PNG spritesheet with Aseprite JSON metadata.
+```
+
+Prior isolated Codex CLI skill/MCP execution is recorded in the project validation docs.
+Installed Codex plugin discovery, app GUI behavior, and automatic model skill selection
+are not covered by that evidence. The manual connection above does not rely on the
+Claude-specific `.mcp.json` launcher variable.
+
+## Features and workflows
+
+| Workflow | Examples | Guide |
+|---|---|---|
+| Creation and editing | Canvases, layers, pixels, shapes, selections, transforms | [Creator](skills/pixel-art-creator/SKILL.md) |
+| Animation | Frame timing, tags, native linked cels | [Animator](skills/pixel-art-animator/SKILL.md) |
+| Color and refinement | Retro palettes, quantization, dithering, shading, antialiasing, reference analysis | [Professional](skills/pixel-art-professional/SKILL.md) |
+| Export | PNG/GIF/JPG/BMP, frame sequences, spritesheets and Aseprite JSON | [Exporter](skills/pixel-art-exporter/SKILL.md) |
+
+Operations use explicit sprite file paths, not the Aseprite GUI's active or unsaved document.
+Save new canvases to a permanent native path when you want to keep them; creation initially
+uses the server temporary directory.
+
+Palette presets include gameboy, nes, pico8, db16, db32, c64, cga and retro (db16).
+Use `draw_with_dither` for a two-color rectangular pattern; use `quantize_palette` to
+reduce an existing single-frame raster sprite's colors, optionally with dithering.
+See [palette presets](config/palettes.json) and [color-operation limits](docs/MCP_COLOR_OPERATIONS.md).
+
+Exports support still images, numbered image sequences, animated GIFs and horizontal,
+vertical, rows, columns or packed spritesheets. Scaling and FPS changes use a saved
+copy; they are not direct export arguments. JSON metadata uses the Aseprite format and
+needs adaptation for a game engine. See [export workflows](skills/pixel-art-exporter/export-formats.md)
+and [sequence output handling](docs/MCP_EXPORT_ANALYSIS.md).
+
+## Preview and recovery
+
+| Request | Behavior and limits |
+|---|---|
+| Preview quantization, automatic shading, or flattening | Only these three operations support `dry_run`; the original stays unchanged and no permanent preview image is returned |
+| Snapshot a saved sprite | Saves file bytes; snapshots expire after 7 days and share a 100-entry / 512 MiB store limit |
+| Restore a snapshot | Replaces the existing original path and creates a backup snapshot first; cannot recreate a deleted source |
+| Undo a recorded edit | Requires a retained history entry; `enable_history` defaults to `false`, with no redo or GUI undo integration |
+
+Example: “Preview reducing this single-frame sprite to 16 colors without changing it.”
+Enabling history is an explicit configuration choice and adds storage cost. It does not
+record exports, new canvases, or every operation. Read [the recovery rules](docs/MCP_SAFETY.md).
+
+## Using Claude Code
+
+The existing `.claude-plugin/` manifests, `commands/`, `.mcp.json`, and [CLAUDE.md](CLAUDE.md)
+remain available for Claude Code. From the checkout root:
+
+```bash
+claude --plugin-dir "$PWD"
+```
+
+For a persistent installation, register the local checkout and install its manifest name:
+
+```bash
+claude plugin marketplace add "$PWD"
 claude plugin install pixel-plugin@pixel-plugin
 ```
 
-### 3. Setup
+The upstream and fork use the same marketplace name. Inspect the source in `/plugin`
+if `pixel-plugin` is already registered. Installed plugins use a cache; pulling this
+checkout does not update that copy. See [Claude Code's plugin guide](https://code.claude.com/docs/en/plugins)
+and [installation guide](https://code.claude.com/docs/en/discover-plugins).
 
-Configure Aseprite path (one-time setup):
+Enter these plugin commands inside Claude Code, not the shell or Codex:
 
-```bash
-/pixel-setup
-```
+| Command | Example |
+|---|---|
+| Setup | `/pixel-plugin:pixel-setup /absolute/path/to/aseprite` |
+| New sprite | `/pixel-plugin:pixel-new 32x32 gameboy` |
+| Palette | `/pixel-plugin:pixel-palette set pico8` |
+| Export | `/pixel-plugin:pixel-export png hero.png scale=4` |
+| Help | `/pixel-plugin:pixel-help palettes` |
 
-The command will auto-detect your Aseprite installation. If not found, specify the path manually:
-
-```bash
-/pixel-setup /Applications/Aseprite.app/Contents/MacOS/aseprite
-```
-
-### 4. Create Your First Sprite
-
-```bash
-# Using slash commands
-/pixel-new 64x64 gameboy
-"Draw a character sprite"
-/pixel-export png character.png
-
-# Or natural language only
-"Create a 32x32 Game Boy sprite of a character"
-"Export it as character.png"
-```
-
-## Usage
-
-### Slash Commands
-
-| Command | Description | Example |
-|---------|-------------|---------|
-| `/pixel-new [size] [palette]` | Create new sprite | `/pixel-new icon nes` |
-| `/pixel-palette <action> [args]` | Manage palettes | `/pixel-palette set gameboy` |
-| `/pixel-export <format> [file]` | Export sprite | `/pixel-export gif anim.gif` |
-| `/pixel-setup [path]` | Configure plugin | `/pixel-setup` |
-| `/pixel-help [topic]` | Get help | `/pixel-help palettes` |
-
-### Natural Language
-
-The plugin responds to natural language requests:
-
-**Creation:**
-```
-"Create a 64x64 RGB sprite"
-"Make a 16x16 tile with NES palette"
-"Start a new 128x128 canvas"
-```
-
-**Drawing:**
-```
-"Draw a red circle in the center"
-"Fill the background with blue"
-"Draw a pixelated tree"
-```
-
-**Animation:**
-```
-"Add 4 frames for a walk cycle"
-"Create a 2-frame idle animation"
-"Set all frame durations to 100ms"
-```
-
-**Advanced:**
-```
-"Apply Floyd-Steinberg dithering"
-"Reduce to 16 colors"
-"Add shading with light from top-left"
-"Convert to PICO-8 palette"
-```
-
-**Export:**
-```
-"Export as PNG at 4x scale"
-"Export as animated GIF at 12 FPS"
-"Create a horizontal spritesheet"
-"Export a spritesheet with Aseprite JSON metadata for Unity"
-```
-
-## Examples
-
-### Example 1: Game Boy Character
-
-```bash
-/pixel-new 48x48 gameboy
-"Draw a character sprite - round head, square body, stick limbs"
-"Add a 2-frame breathing animation"
-/pixel-export gif character-idle.gif fps=2
-```
-
-**Result:** Game Boy character with subtle idle animation.
-
-### Example 2: NES Tile
-
-```bash
-/pixel-new tile nes
-"Draw a brick wall pattern"
-"Apply Bayer dithering for texture"
-/pixel-export png brick-tile.png scale=4
-```
-
-**Result:** Retro NES-style brick tile, scaled 4x for modern displays.
-
-### Example 3: Modern Pixel Art
-
-```bash
-/pixel-new 64x64
-"Draw a detailed sword with silver blade and gold hilt"
-"Add shading from top-left light source"
-"Apply soft antialiasing to edges"
-/pixel-export png sword.png scale=2
-```
-
-**Result:** Modern pixel art with shading and antialiasing.
-
-### Example 4: Animated Sprite for Game
-
-```bash
-/pixel-new 32x32 pico8
-"Draw a simple character"
-"Create an 8-frame run cycle"
-"Set frames to 80ms each"
-/pixel-export json game-character.json
-```
-
-**Result:** `game-character.png` spritesheet + `game-character.json` with Aseprite metadata; adapt it to the target engine.
-
-## Palettes and exports
-
-Read [palette presets](config/palettes.json) for gameboy, nes, pico8, db16, db32, c64, cga and retro (db16). Custom hex palettes are supported. Palette optimization uses the real quantize_palette tool and can preserve transparency or keep RGB mode.
-
-Exports support still PNG, animated GIF and spritesheets with horizontal, vertical, rows, columns or packed layouts. A command-level grid request maps to rows. JSON is Aseprite metadata alongside a sheet, not an engine-specific format. Scale and FPS options create a native copy and transform/retime it before export; the server has no scale, FPS, tag-filter or loop export arguments. See [export details](skills/pixel-art-exporter/export-formats.md).
-
-## Local MCP development
-
-The bundled server and schemas are pinned to MCP error/tracing revision `65074051f5d3903124ead37367c7fc62d9e7e7f6`. Build a local committed revision and select it through PIXEL_MCP_BINARY; no personal source paths are stored in the distribution. See [reproducible build and validation](docs/LOCAL_MCP.md), [tool contract](docs/MCP_TOOLS.md), [historical synchronization audit](docs/MCP_SYNC.md), and [current status](docs/BUG_STATUS.md).
-
-## Documentation
-
-- [Skills Reference](skills/) - Detailed Skill documentation
-- [Commands Reference](commands/) - Slash command documentation
+These are Claude plugin commands. In Codex, use natural-language requests and the skill
+guides instead; the files in `commands/` are workflow references, not registered Codex commands.
 
 ## Troubleshooting
 
-### "Aseprite not found" Error
+- **Aseprite unavailable:** verify `aseprite_path` in the selected server configuration,
+  then run `bin/pixel-mcp --health` from the checkout. See [configuration](config/README.md).
+- **MCP unavailable in Codex:** inspect `codex mcp list` and `codex mcp get aseprite`,
+  verify the absolute launcher path, and restart/reconnect after changes. A configured
+  server entry alone does not prove a live MCP connection.
+- **Unexpected server behavior:** compare `bin/pixel-mcp --version` with the source pin;
+  check `PIXEL_MCP_BINARY` and the actual installed/registered path.
+- **Operation failed:** report the returned error code and request ID when available.
+  For `file_rollback_failed`, preserve all recovery references and backups and inspect
+  them before retrying; some outputs may have changed. See [error handling](docs/MCP_ERRORS.md).
 
-Run setup command:
-```bash
-/pixel-setup /path/to/aseprite
-```
+See [known issues](docs/KNOWN_ISSUES.md) for algorithm and validation limits.
 
-Platform-specific paths:
-- **macOS**: `/Applications/Aseprite.app/Contents/MacOS/aseprite`
-- **Linux**: `/usr/bin/aseprite`
-- **Windows**: `C:\Program Files\Aseprite\Aseprite.exe`
+## Examples and development
 
-### "MCP server not responding"
+The [apple example](examples/apple/README.md) includes reproducible MCP generation,
+checked-in assets, and an offline browser demo.
 
-1. Verify Aseprite is installed and accessible
-2. Check configuration: `cat ~/.config/pixel-mcp/config.json`
-3. Re-run setup: `/pixel-setup`
-4. Check binary permissions: `chmod +x bin/pixel-mcp`
+- [AGENTS.md](AGENTS.md): Codex project instructions, Git workflow, and skill routing
+- [Local MCP development](docs/LOCAL_MCP.md): Reproducible builds and test commands
+- [MCP tools](docs/MCP_TOOLS.md): Exact schemas for all 56 tools
+- [Latest validation](docs/ERROR_TRACING_VALIDATION.md): Bundle checks and untested areas
+- [Next work](docs/NEXT_STEPS.md): Remaining integration and release work
+- [Contributing](CONTRIBUTING.md): Development guidelines
+- [Historical comparison](docs/reports/mcp22/REPORT.md): Palette/shading before and after
 
-### "Export failed" or "File not found"
-
-- Ensure sprite is created before exporting
-- Check output path is writable
-- Verify format is supported (png, gif, sheet, json)
-
-See [Known Issues](docs/KNOWN_ISSUES.md) for additional troubleshooting information.
-
-## Platform Support
-
-- macOS (Intel and Apple Silicon)
-- Linux (x86_64 and ARM64)
-- Windows (x86_64)
-
-## Requirements
-
-- **Aseprite**: v1.3.17.2 or higher
-- **Claude Code**: v1.0.0 or higher
-- **pixel-mcp**: MCP server (bundled) - [Source](https://github.com/willibrandon/pixel-mcp)
-
-## Contributing
-
-Contributions welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
-
-Start work from the latest develop in a dedicated task branch/worktree. Test and review before integration; merge only when authorized.
+Bundled targets: macOS Intel/Apple Silicon, Linux x86_64/ARM64, and Windows x86_64.
+The latest recorded native verification ran on macOS Apple Silicon; other targets were
+cross-built and checksum-checked. Cross-builds are not native runtime tests.
 
 ## License
 
-This project is licensed under the MIT License - see [LICENSE](LICENSE) file for details.
+MIT. See [LICENSE](LICENSE).
