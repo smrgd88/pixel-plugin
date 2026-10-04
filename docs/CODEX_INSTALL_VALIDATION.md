@@ -9,8 +9,8 @@ MCP pin `6507405`, 도구 56개, 기존 바이너리·스키마·Claude 설정�
 
 macOS ARM에서 Codex CLI의 별도 로컬 마켓플레이스가 설치한 캐시를 통해 스킬을 발견하고,
 MCP 서버를 시작하여 실제 Aseprite 작업을 수행하는 경로를 확인했습니다.
-설치 앱 GUI·다른 OS·같은 설치 ID의 명시적 재설치/업그레이드는 이 결과에 포함하지 않습니다.
-M1 전체를 완료로 표시하지 않고 확인된 CLI 범위와 잔여를 구분합니다.
+macOS ARM 초기 설치/모델 작업과 Linux amd64 Docker의 명시적 수명주기 검증을 구분합니다.
+M1의 CLI 검증 범위를 마무리했습니다. 앱 GUI와 추가 플랫폼 검증은 별도 단계로 남깁니다.
 
 환경: Codex CLI 0.160.0, macOS 26.6.2 arm64, Aseprite 1.3.18.2-arm64, Python 3.14.
 
@@ -85,14 +85,13 @@ create_canvas가 거부됐습니다. 이 실행은 그림 생성 성공으로 �
 소스 manifest 수정만으로 cache가 자동 갱신된다고 가정한 초기 assertion은 실제 동작과
 일치하지 않았습니다. 최종 검사는 기존 cache 유지 사실을 확인합니다. 별도 버전 설치 실험에서
 catalog가 enabled/available이어도 스킬이 노출되지 않는 결과가 있어 업그레이드 완료를 주장하지
-않습니다. 동일 설치 ID의 explicit CLI add/remove 재설치는 사용자 설정을 쓰는 별도 검증입니다.
+않습니다. 이 초기 실험을 같은 ID의 explicit CLI 재설치/업그레이드 결과와 구분하며, 아래 추가 검증에서 해결했습니다.
 실행한 초기 실패와 최종 통과 자료를 분리해서 보존합니다.
 
 ## 잔여와 다음 작업
 
-- 같은 설치 ID의 명시적 설치/제거/재설치·버전 업그레이드 검증은 남아 있습니다.
-  CLI 명령 syntax는 설치된 도움말 및 공식 문서와 대조했지만 사용자 기본 config에 대한
-  plugin add/remove는 이번 격리 검사에서 실행하지 않았습니다.
+- 같은 설치 ID의 명시적 설치/제거/재설치·업그레이드는 아래 독립 Docker 사용자 환경에서
+  실제 CLI 명령으로 검증했습니다. 개인 macOS 기본 config에 대한 설치 변경은 실행하지 않았습니다.
 - 앱 GUI 설치·자동 연결은 기존 보류 상태입니다. CLI 결과를 앱 검증으로 세지 않습니다.
 - macOS ARM 이외의 native 플랫폼은 검증하지 않았습니다.
 - 모델의 한 생성/애니메이션/export 요청을 검증했습니다. 간접 요청, 비관련 요청,
@@ -120,7 +119,7 @@ CLI의 process-local marketplace override로 실제 저장소의 pixel-plugin-lo
 읽고 pixel-plugin 항목이 available로 반환되는 것도 확인했습니다. 사용자 config에
 marketplace add/plugin add를 저장한 검사와는 구분합니다.
 
-## 최종 추가 확인과 리뷰
+## 첫 후보(5b18585)의 검토 기록
 
 설치 cache의 바이너리 5개 checksum 및 실제 선택된 서버 --version의 source pin을 추가
 대조했습니다. 실제 native 실행은 macOS ARM이며 다른 바이너리는 checksum 대조입니다.
@@ -140,3 +139,73 @@ MCP 소스 수정, 공개 배포, 다른 플랫폼·GUI 및 explicit reinstall�
 
 Notes: explicit 동일 ID 설치/제거/재설치·업그레이드, GUI, 다른 native 플랫폼, 모든 모델
 요청 조합은 미검증입니다. 이 제한을 유지한 scoped 판정은 PASS_WITH_NOTES입니다.
+
+## 명시적 설치 수명주기 추가 검증
+
+Codex CLI 0.160.0의 실제 `plugin marketplace add`, `plugin add`, `plugin remove`,
+`plugin marketplace remove`를 독립 OS 사용자 환경에서 실행했습니다.
+호스트 HOME/CODEX_HOME과 개인 설정을 변경하지 않고 Docker의 기본 root 홈을 사용합니다.
+테스트 스크립트는 Docker 환경, 지정된 home과의 일치, 기존 Codex home/marketplace 부재를
+검사해 개인 사용자 환경의 변경을 거부합니다. 기존 이미지에 실제 Aseprite가 포함됩니다.
+
+환경: `pixel-mcp-ci:latest`, Linux amd64 Docker (Apple Silicon 호스트에서 amd64 emulation),
+Aseprite 1.3.18.3-dev, Python 3.10.12, 공식 Codex 0.160.0 Linux musl release binaries.
+이는 실제 Linux 프로세스 실행이며, 물리 x86_64 호스트 검증 또는 macOS의 사용자 설정 변경
+검증으로 표현하지 않습니다. 모델 호출/인증은 이 lifecycle 검사에 필요하지 않습니다.
+
+재현 (Docker와 해당 CI 이미지, GitHub CLI 필요):
+
+```bash
+./bin/test-codex-lifecycle-docker.sh
+```
+
+wrapper는 고정 버전의 Codex release binaries를 준비하고 Git 추적 파일만 package로 복사합니다.
+package/runtime은 read-only로 mount하고 evidence만 별도 출력합니다. 컨테이너는 종료 시 제거합니다.
+이미지 ID는 `test-outputs/codex-lifecycle/image-id.txt`에 기록합니다.
+
+| 단계 | 최종 결과 |
+|---|---|
+| marketplace 등록 + 최초 plugin add | 동일 ID의 0.5.0 캐시, 스킬 4개·도구 56개·실제 create_canvas 성공 |
+| plugin remove | 설치 payload 제거, 새 runtime에서 스킬 0·연결 0 |
+| 동일 ID plugin add | 재설치 후 스킬 4개·도구 56개·실제 create_canvas 성공 |
+| 소스 0.5.1 + 동일 ID plugin add | 설치 경로/version 갱신, host binary checksum 일치, 스킬·도구·실제 호출 성공 |
+| 같은 이름의 수동 mcp_servers.aseprite | 수동 설정 우선, 선택된 연결의 pluginId=null 확인 |
+| 수동 설정 해제 | pluginId가 해당 플러그인으로 복귀하고 실제 호출 성공 |
+| 최종 plugin/marketplace 제거 | 스킬·연결·설치 파일 없음. 빈 캐시 상위 디렉터리만 남을 수 있음 |
+
+fixture의 0.5.1은 갱신 검사용이며 저장소 manifest 버전이나 배포 버전을 올린 것이 아닙니다.
+Codex/Claude manifest의 버전은 함께 갱신합니다. 단순 소스 변경과 explicit reinstall의 효과를
+구분합니다. 수동 설정을 제거하는 작업은 이 컨테이너의 테스트 소유 설정에만 적용했습니다.
+
+최종 증거: `test-outputs/codex-lifecycle/{wrapper-final.log,image-id.txt,evidence/}`.
+각 CLI receipt, 단계별 skills/MCP status 및 실제 sprite 경로, 마지막 summary.json이 있습니다.
+최초 실행에서 `codex --version`이 home을 생성한 뒤 guard에 걸린 것은 보호 동작입니다.
+또한 payload 제거 후 빈 marketplace 부모까지 없어져야 한다는 잘못된 초기 assertion은
+실제 설치 파일·스킬·연결 제거 검사로 보정했습니다. 이 초기 실행을 최종 통과로 합산하지 않습니다.
+
+현재 남은 검증은 앱 GUI, macOS에서 개인 설정을 사용하는 명시적 lifecycle, Linux arm64/
+Windows/macOS Intel 및 전체 모델 선택 조합입니다. 기본 개인 설정으로 실제 설치를 변경한
+결과를 주장하지 않습니다. CLI 설치/재설치/업그레이드의 공유 동작은 위 독립 환경에서 확인했습니다.
+
+## 후속 검증 최종 상태
+
+최종 lifecycle 결과: `test-outputs/codex-lifecycle/evidence/run-20261004-065337-79353/summary.json` (PASS).
+명시적 CLI와 runtime을 합쳐 12개 단계 receipt/관찰을 기록했습니다.
+macOS 초기 설치·프로토콜·재시작 회귀는 `test-outputs/codex-install/run-7175fa32a5`에서 PASS.
+공통 helper의 tomllib import를 host runner 안으로 옮겨 Python 3.10 container에서도
+Server 클라이언트를 재사용했고, macOS 실행 회귀로 기존 동작을 확인했습니다.
+최종 기본 플러그인 suite 7/7, Python compile·shell syntax·문서 링크/앵커·README 한/영 예제 일치
+및 diff 검사가 통과했습니다. 모델 prompt/도구 구현은 바꾸지 않아 이전 19-call 모델 검증을
+다시 실행하지 않았습니다.
+
+후속 리뷰 범위: 첫 후보 5b18585부터 lifecycle driver/wrapper·helper import·관련 지침/문서,
+최종 fresh 검토는 develop@1f52e24에서 전체 PR 변경까지 포함합니다.
+SHARED-P2-002(반복 실행의 evidence 경로 재사용으로 검사 실패)을 발견해 실행별 고유 경로로
+수정하고 최종 wrapper로 VERIFIED입니다. 초기 P2 1 → 0, P0/P1 0, 재오픈·신규 지적 0.
+초기 1, mutation cycle 1, repair-diff 1, closure 1, fresh 전체 1 (4 review passes),
+후보 확정 후 관련 코드 변경/인증 무효화 0. 테스트가 개인 홈에서 실행되지 않는 guard와
+Docker read-only package/격리 홈, 실제 CLI receipt→캐시→스킬→MCP의 일치 여부를 확인했습니다.
+
+현재 Notes: 앱 GUI·추가 OS/물리 호스트·macOS 개인 설정을 변경하는 lifecycle·모델 요청 전체
+조합은 미검증입니다. 이전 후보의 explicit lifecycle 미검증 메모는 위 추가 결과로 대체합니다.
+M1 CLI 범위는 완료이며 현재 scoped 판정은 PASS_WITH_NOTES입니다.

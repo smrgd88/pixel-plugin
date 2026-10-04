@@ -133,6 +133,8 @@ and wrapper/client regressions. It does not substitute for real Aseprite behavio
 For Codex installation changes, run `bin/test-codex-install.py --aseprite /absolute/path/to/aseprite`;
 add `--model-workflow` to verify a real model turn. The test disables unrelated plugins/servers
 for its process, uses a dedicated cache identity and preserves user configuration.
+For explicit plugin lifecycle mutations, use `bin/test-codex-lifecycle-docker.sh` and a
+disposable container; never point the mutation test at a personal Codex home.
 For affected workflows, run the relevant `bin/test-mcp-*.py` or skill workflow tests
 with a real Aseprite executable and isolated config/temp/snapshot stores. Do not alter
 user history/config to run tests. Add compilation, unit/PBT, integration, lint/type/build

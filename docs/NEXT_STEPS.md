@@ -19,8 +19,8 @@
 
 1. **M0 — 로드맵 현행화:** PR #14로 develop 통합 완료 (`1f52e24`).
 2. **M1 — Codex 격리 CLI 설치 SPIKE:** 설치 cache의 스킬·MCP 연결, 실제 생성/출력·오류·경고,
-   재시작을 검증. [결과](CODEX_INSTALL_VALIDATION.md). 다음 잔여는 동일 설치 ID의 명시적
-   설치/제거/재설치·업그레이드 검증이며, 앱 GUI는 보류 상태 유지.
+   재시작 및 Linux Docker의 동일 ID 설치/제거/재설치·업그레이드·수동 연결 충돌을 검증.
+   [결과](CODEX_INSTALL_VALIDATION.md). CLI 범위를 마무리했으며 앱 GUI는 보류 상태 유지.
 3. **M2 — 릴리스 준비:** 검증한 클라이언트·플랫폼에 맞게 버전, 메타데이터, CHANGELOG,
    설치/갱신 경로, artifact와 릴리스 절차를 결정.
 4. **M3 — 플랫폼 검증:** 필요한 환경 확보 시 M1과 병행. 교차 빌드를 native 실행으로 세지 않음.

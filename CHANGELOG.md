@@ -14,6 +14,7 @@ entries below record their respective updates. See [current fix status](docs/BUG
 ### Codex CLI plugin installation
 - Add a Codex compatibility manifest, local marketplace, and separate MCP configuration with installed-root cwd and explicit environment forwarding.
 - Add real CLI cache/discovery/connection, error/warning, restart, source/cache-boundary, and optional natural-language workflow validation. Preserve Claude packaging and user configuration.
+- Verify explicit same-ID installation/removal/reinstallation/upgrades and manual MCP precedence in an isolated Linux amd64 Docker user environment with real Aseprite.
 - Document the tested CLI installation path and remaining app/platform limits; the bundled MCP pin and plugin version are unchanged.
 
 ### Plugin roadmap and current integration status

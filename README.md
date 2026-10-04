@@ -152,7 +152,10 @@ root and forwards `PIXEL_MCP_CONFIG` / `PIXEL_MCP_BINARY` when provided. The Cla
 Installed CLI workflows on macOS ARM were verified using a separate test marketplace,
 process-local settings, real Aseprite, and an installed cache. See
 [Codex installation validation](docs/CODEX_INSTALL_VALIDATION.md) for exact scope.
-App GUI installation and the other native platforms remain unverified.
+Same-ID install/remove/reinstall/upgrade and manual MCP precedence were additionally tested
+in an isolated Linux amd64 Docker user environment. App GUI and further platform combinations
+remain unverified. Reinstall explicitly after source changes; editing the checkout alone does
+not refresh the installed cache.
 
 ## Features and workflows
 

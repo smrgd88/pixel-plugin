@@ -25,9 +25,9 @@ manifest 버전은 0.5.0이며 누적 기능은 Unreleased입니다. 위 완료�
 | ID | 목적 | 현재 상태 | 완료 조건 | 의존 관계 |
 |---|---|---|---|---|
 | M0 | 현재 상태·다음 작업 정리 | [PR #14](https://github.com/smrgd88/pixel-plugin/pull/14) develop 병합 완료 | 완료 PR과 남은 작업 구분, 소유 저장소·범위·검증 기준 명시, README 진입 링크·문서 검증 통과 후 develop 병합 | 없음 |
-| M1 | Codex 설치·연결 검증 | CLI 초기 설치·작업·재시작 검증; 재설치/업그레이드 잔여, 앱 GUI 보류 | 선택한 설치 경로에서 스킬 탐색·참조 파일·MCP 실행·실제 결과를 검증하고 지원 클라이언트·제약을 기록 | M0 이후 범위 확정; 실제 Aseprite 필요 |
+| M1 | Codex 설치·연결 검증 | CLI 범위 검증 완료: macOS 초기/모델, Linux Docker lifecycle; GUI 보류 | 선택한 설치 경로에서 스킬 탐색·참조 파일·MCP 실행·실제 결과를 검증하고 지원 클라이언트·제약을 기록 | M0 이후 범위 확정; 실제 Aseprite 필요 |
 | M2 | 정식 플러그인 릴리스 | 예정 | 릴리스 기준 커밋·버전·배포 대상 결정, 메타데이터·CHANGELOG·설치 경로 일치, 검증 증거 확보, 승인된 main 반영·태그·artifact 게시 확인 | 배포 대상 클라이언트의 M1 검증, 해당 플랫폼의 M3 검증 |
-| M3 | 플랫폼 실행 검증 확대 | 예정 | 선언한 OS/아키텍처에서 실제 Aseprite와 번들 launcher의 smoke·실패 경로 검증, CI/수동 증거·미지원 범위 기록 | M1과 병행 가능; 해당 실행 환경 필요 |
+| M3 | 플랫폼 실행 검증 확대 | macOS ARM·Linux amd64 Docker 일부 검증; 추가 환경 예정 | 선언한 OS/아키텍처에서 실제 Aseprite와 번들 launcher의 smoke·실패 경로 검증, CI/수동 증거·미지원 범위 기록 | M1과 병행 가능; 해당 실행 환경 필요 |
 
 M1은 CLI 경로만 검증했다면 CLI 지원 범위에 한해 완료할 수 있습니다. 기존에 보류한 Codex
 앱 GUI·자동 연결은 재개 요청 전까지 미검증으로 남깁니다. CLI 성공을 앱 GUI 성공으로
@@ -40,8 +40,8 @@ M1은 CLI 경로만 검증했다면 CLI 지원 범위에 한해 완료할 수 �
 
 현재 README의 수동 MCP 연결 및 AGENTS.md 라우팅과 설치형 플러그인 동작을 구분합니다.
 Codex 호환 manifest와 별도 stdio 설정을 추가하고 설치 cache 기반 CLI 경로를 검증했습니다.
-[실행 결과와 제한](CODEX_INSTALL_VALIDATION.md)을 따릅니다. 명시적 재설치·업그레이드와 앱 GUI는
-미검증이므로 M1 전체 완료로 표시하지 않습니다.
+[실행 결과와 제한](CODEX_INSTALL_VALIDATION.md)을 따릅니다. 동일 ID의 명시적 설치/제거/재설치·업그레이드와 수동 MCP 충돌은 독립 Linux Docker 환경에서
+검증했습니다. M1의 CLI 범위를 완료하며 앱 GUI 및 추가 native 플랫폼 검증은 별도입니다.
 
 완료 증거:
 
@@ -74,7 +74,9 @@ Codex 호환 manifest와 별도 stdio 설정을 추가하고 설치 cache 기반
 ## 플랫폼 검증 범위: M3
 
 번들 대상은 macOS amd64/arm64, Linux amd64/arm64, Windows amd64입니다.
-현재 플러그인의 최신 native 검증은 macOS arm64이며 나머지는 교차 빌드·체크섬 근거입니다.
+macOS arm64 실행과 Linux amd64 Docker의 CLI lifecycle/실제 Aseprite 실행을 검증했습니다.
+Linux Docker는 ARM 호스트에서 amd64 emulation을 사용했으며 물리 x86_64 검증과 구분합니다.
+나머지 대상은 교차 빌드·체크섬 근거입니다.
 각 대상의 실제 launcher→MCP→Aseprite 실행, 최소 버전/설정 경로, 출력 파일·오류 응답을
 확인해야 합니다. Windows Bash 래퍼 제약과 native launcher 필요성은 조사 후 별도 OPS 작업으로
 범위를 정합니다. 실행 환경이 없는 대상을 완료로 표시하지 않습니다.

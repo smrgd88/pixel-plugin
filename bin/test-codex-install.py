@@ -14,7 +14,6 @@ import shutil
 import subprocess
 import threading
 import time
-import tomllib
 import uuid
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -165,6 +164,7 @@ def main():
         'plugins': {plugin_id:{'enabled':True,'mcp_servers':{'aseprite':{'default_tools_approval_mode':'approve'}}}}, 'mcp_servers': {},
         'projects': {str(fixture):{'trust_level':'trusted'}},
         'features': {'remote_plugin':False,'apps':False}}
+    import tomllib  # Only the host model-workflow runner needs Python 3.11+.
     user_config = Path.home()/'.codex/config.toml'
     if user_config.is_file():
         existing = tomllib.loads(user_config.read_text())
