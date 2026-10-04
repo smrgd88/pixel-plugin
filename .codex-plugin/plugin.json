@@ -3,8 +3,8 @@
   "version": "0.5.0",
   "description": "Create, animate, and export pixel art using Aseprite through natural language and commands. Supports retro palettes, animation, dithering, and game engine export.",
   "author": {
-    "name": "Brandon Williams",
-    "url": "https://github.com/willibrandon"
+    "name": "smrgd88",
+    "url": "https://github.com/smrgd88"
   },
   "license": "MIT",
   "homepage": "https://github.com/smrgd88/pixel-plugin",
@@ -14,8 +14,8 @@
   "interface": {
     "displayName": "Pixel Plugin",
     "shortDescription": "Create, animate, and export Aseprite pixel art",
-    "longDescription": "Aseprite pixel-art workflows with a bundled local MCP server. Requires Aseprite 1.3.17.2 or later.",
-    "developerName": "Brandon Williams",
+    "longDescription": "Aseprite pixel-art workflows maintained by smrgd88, based on Brandon Williams's pixel-plugin. Includes a bundled local MCP server and requires Aseprite 1.3.17.2 or later.",
+    "developerName": "smrgd88",
     "category": "Productivity",
     "capabilities": [
       "Read",
@@ -23,6 +23,7 @@
     ],
     "defaultPrompt": [
       "Create a 32x32 pixel-art sprite and export it as a PNG."
-    ]
+    ],
+    "websiteURL": "https://github.com/smrgd88/pixel-plugin"
   }
 }

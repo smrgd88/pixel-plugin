@@ -12,6 +12,9 @@
 번들에 포함된 [pixel-mcp 포크](https://github.com/smrgd88/pixel-mcp)는
 [willibrandon/pixel-mcp](https://github.com/willibrandon/pixel-mcp)를 기반으로 합니다.
 
+이 포크의 개발·유지보수·배포자는 **smrgd88**입니다. 원본 플러그인 제작자는
+**Brandon Williams**이며, 기존 저작권 고지와 MIT 라이선스를 보존합니다.
+
 ## 현재 소스 상태
 
 번들은 **MCP 도구 56개**를 제공하며, [소스 매니페스트](config/mcp-source.json)의

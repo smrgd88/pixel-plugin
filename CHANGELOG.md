@@ -11,6 +11,10 @@ These entries describe cumulative develop changes, not a newly published release
 The active bundled source is `65074051f5d3903124ead37367c7fc62d9e7e7f6`; earlier pin
 entries below record their respective updates. See [current fix status](docs/BUG_STATUS.md).
 
+### Fork publisher metadata
+- Identify smrgd88 as the Codex/Claude package publisher and marketplace owner, and link to the fork repository/website.
+- Retain Brandon Williams's original-author credit in both README languages and preserve the original MIT copyright/license notice.
+
 ### Codex CLI plugin installation
 - Add a Codex compatibility manifest, local marketplace, and separate MCP configuration with installed-root cwd and explicit environment forwarding.
 - Add real CLI cache/discovery/connection, error/warning, restart, source/cache-boundary, and optional natural-language workflow validation. Preserve Claude packaging and user configuration.

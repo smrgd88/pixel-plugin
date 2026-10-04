@@ -12,6 +12,9 @@ This is the [smrgd88/pixel-plugin](https://github.com/smrgd88/pixel-plugin) deve
 The bundled [pixel-mcp fork](https://github.com/smrgd88/pixel-mcp) derives from
 [willibrandon/pixel-mcp](https://github.com/willibrandon/pixel-mcp).
 
+This fork is maintained by **smrgd88**. The original plugin was created by
+**Brandon Williams**; its original copyright notice and MIT license are retained.
+
 ## Current source status
 
 The bundle provides **56 MCP tools**, pinned to
