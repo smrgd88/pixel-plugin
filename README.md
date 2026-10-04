@@ -222,6 +222,7 @@ checked-in assets, and an offline browser demo.
 - [Local MCP development](docs/LOCAL_MCP.md): Reproducible builds and test commands
 - [MCP tools](docs/MCP_TOOLS.md): Exact schemas for all 56 tools
 - [Latest validation](docs/ERROR_TRACING_VALIDATION.md): Bundle checks and untested areas
+- [Plugin roadmap](docs/ROADMAP.md): Milestones, ownership, and completion criteria
 - [Next work](docs/NEXT_STEPS.md): Remaining integration and release work
 - [Contributing](CONTRIBUTING.md): Development guidelines
 - [Historical comparison](docs/reports/mcp22/REPORT.md): Palette/shading before and after
