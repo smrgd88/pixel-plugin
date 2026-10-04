@@ -123,9 +123,36 @@ Export an animated GIF and a PNG spritesheet with Aseprite JSON metadata.
 ```
 
 Prior isolated Codex CLI skill/MCP execution is recorded in the project validation docs.
-Installed Codex plugin discovery, app GUI behavior, and automatic model skill selection
-are not covered by that evidence. The manual connection above does not rely on the
+Installed CLI discovery and the selected model workflow are covered separately in
+[Codex installation validation](docs/CODEX_INSTALL_VALIDATION.md); app GUI behavior is not. The manual connection above does not rely on the
 Claude-specific `.mcp.json` launcher variable.
+
+### Install the local Codex plugin (CLI 0.160.0)
+
+This checkout now includes a Codex compatibility manifest and a local marketplace.
+To install the bundled skills and MCP connection together, run from a clean checkout:
+
+```bash
+codex plugin marketplace add "$PWD"
+codex plugin add pixel-plugin@pixel-plugin-local
+codex plugin list --marketplace pixel-plugin-local --json
+```
+
+These commands register/install the plugin in your Codex user configuration. The local
+marketplace name is `pixel-plugin-local`, separate from the Claude marketplace. Restart
+Codex after installation. The installed skills are `pixel-plugin:pixel-art-*`; the
+server name remains `aseprite`. Check an existing `aseprite` registration before installing
+so that a manual connection does not collide with the plugin's server.
+
+[.codex-plugin/plugin.json](.codex-plugin/plugin.json) uses
+[config/codex-mcp.json](config/codex-mcp.json): the server runs from the installed plugin
+root and forwards `PIXEL_MCP_CONFIG` / `PIXEL_MCP_BINARY` when provided. The Claude
+`.mcp.json` is still used by Claude Code. No personal executable or config path is bundled.
+
+Installed CLI workflows on macOS ARM were verified using a separate test marketplace,
+process-local settings, real Aseprite, and an installed cache. See
+[Codex installation validation](docs/CODEX_INSTALL_VALIDATION.md) for exact scope.
+App GUI installation and the other native platforms remain unverified.
 
 ## Features and workflows
 

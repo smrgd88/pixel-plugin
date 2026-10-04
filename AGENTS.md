@@ -18,6 +18,8 @@ Code packaging is a separate client integration; do not assume its slash command
 - `config/mcp-contract.json` and [MCP_TOOLS.md](docs/MCP_TOOLS.md): tool schemas.
 - `bin/mcp-build.json`: source/build provenance and five binary checksums.
 - `config/README.md`: server configuration; `bin/`: builds and validation scripts.
+- `.codex-plugin/plugin.json`, `config/codex-mcp.json`, `.agents/plugins/marketplace.json`:
+  local Codex packaging; explicit plugin cwd and environment forwarding are required.
 - `.claude-plugin/`, `.mcp.json`, `CLAUDE.md`: Claude integration; keep components at
   the repository root, not inside `.claude-plugin/`.
 
@@ -128,6 +130,9 @@ PATH="$PWD/test-outputs/venv/bin:$PATH" ./bin/test-plugin.sh
 
 The default suite covers packaging, docs, skill/command structure, contracts, checksums,
 and wrapper/client regressions. It does not substitute for real Aseprite behavior tests.
+For Codex installation changes, run `bin/test-codex-install.py --aseprite /absolute/path/to/aseprite`;
+add `--model-workflow` to verify a real model turn. The test disables unrelated plugins/servers
+for its process, uses a dedicated cache identity and preserves user configuration.
 For affected workflows, run the relevant `bin/test-mcp-*.py` or skill workflow tests
 with a real Aseprite executable and isolated config/temp/snapshot stores. Do not alter
 user history/config to run tests. Add compilation, unit/PBT, integration, lint/type/build

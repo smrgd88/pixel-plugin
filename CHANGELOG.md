@@ -11,6 +11,11 @@ These entries describe cumulative develop changes, not a newly published release
 The active bundled source is `65074051f5d3903124ead37367c7fc62d9e7e7f6`; earlier pin
 entries below record their respective updates. See [current fix status](docs/BUG_STATUS.md).
 
+### Codex CLI plugin installation
+- Add a Codex compatibility manifest, local marketplace, and separate MCP configuration with installed-root cwd and explicit environment forwarding.
+- Add real CLI cache/discovery/connection, error/warning, restart, source/cache-boundary, and optional natural-language workflow validation. Preserve Claude packaging and user configuration.
+- Document the tested CLI installation path and remaining app/platform limits; the bundled MCP pin and plugin version are unchanged.
+
 ### Plugin roadmap and current integration status
 - Record plugin #11/#12/#13 as merged into develop and add scoped M0–M3 planning stages for Codex installation, release preparation, and native platform validation.
 - Keep Codex app GUI validation on hold, distinguish MCP-owned fixes/extensions from plugin integration, and exclude the separately backed-up Godot game from the plugin backlog.

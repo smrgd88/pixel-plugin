@@ -122,8 +122,33 @@ Codex의 [지침 탐색](https://developers.openai.com/codex/guides/agents-md)�
 ```
 
 이전에 격리된 Codex CLI에서 수행한 스킬/MCP 실행 검증은 프로젝트 검증 문서에 기록되어
-있습니다. 설치된 Codex 플러그인의 탐색, 앱 GUI 동작, 모델의 자동 스킬 선택은 그 검증에
-포함되지 않습니다. 위 수동 연결 방식은 Claude 전용 `.mcp.json` 실행 변수에 의존하지 않습니다.
+있습니다. 설치된 CLI의 탐색과 선택한 모델 작업 흐름은
+[Codex 설치 검증](docs/CODEX_INSTALL_VALIDATION.md)에 별도로 기록하며 앱 GUI 동작은 포함하지 않습니다. 위 수동 연결 방식은 Claude 전용 `.mcp.json` 실행 변수에 의존하지 않습니다.
+
+### 로컬 Codex 플러그인 설치 (CLI 0.160.0)
+
+이 체크아웃에는 Codex 호환 매니페스트와 로컬 마켓플레이스가 포함됩니다.
+번들 스킬과 MCP 연결을 함께 설치하려면 깨끗한 체크아웃에서 실행하세요.
+
+```bash
+codex plugin marketplace add "$PWD"
+codex plugin add pixel-plugin@pixel-plugin-local
+codex plugin list --marketplace pixel-plugin-local --json
+```
+
+이 명령은 Codex 사용자 설정에 플러그인을 등록·설치합니다. 마켓플레이스 이름은
+`pixel-plugin-local`이며 Claude 마켓플레이스와 구분됩니다. 설치 후 Codex를 다시 시작하세요.
+설치된 스킬 이름은 `pixel-plugin:pixel-art-*`, 서버 이름은 `aseprite`입니다.
+기존 수동 `aseprite` 연결이 있다면 플러그인 서버와 충돌하지 않도록 설치 전에 확인하세요.
+
+[.codex-plugin/plugin.json](.codex-plugin/plugin.json)은
+[config/codex-mcp.json](config/codex-mcp.json)을 사용합니다. 서버는 설치된 플러그인 루트에서
+실행되고, 지정된 `PIXEL_MCP_CONFIG` / `PIXEL_MCP_BINARY`를 전달받습니다.
+Claude Code는 기존 `.mcp.json`을 사용합니다. 개인 실행 파일·설정 경로는 번들에 저장하지 않습니다.
+
+macOS ARM에서 별도 테스트 마켓플레이스, 프로세스별 설정, 실제 Aseprite, 설치 캐시를 이용한
+CLI 작업 흐름을 검증했습니다. 정확한 범위는 [Codex 설치 검증](docs/CODEX_INSTALL_VALIDATION.md)을
+참고하세요. 앱 GUI 설치와 다른 플랫폼의 네이티브 실행은 미검증 상태입니다.
 
 ## 기능과 작업 흐름
 

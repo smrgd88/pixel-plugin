@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "aseprite": {
+      "command": "./bin/pixel-mcp",
+      "args": [],
+      "cwd": ".",
+      "env_vars": [
+        "PIXEL_MCP_CONFIG",
+        "PIXEL_MCP_BINARY"
+      ]
+    }
+  }
+}
