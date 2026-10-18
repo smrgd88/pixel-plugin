@@ -8,8 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 These entries describe cumulative develop changes, not a newly published release.
-The active bundled source is `65074051f5d3903124ead37367c7fc62d9e7e7f6`; earlier pin
-entries below record their respective updates. See [current fix status](docs/BUG_STATUS.md).
+The active candidate bundle is pinned to `99f193ad3a0eefcb8e8b71a3b9e3f69be47ac2d8` (64 tools).
+Earlier entries below record their own updates. This branch is not a published release or an installed-plugin update.
+
+### Top4 MCP and export contract synchronization
+- Bundle merged MCP #29–#35 at exact source pin 99f193a, with five rebuilt binaries and live schemas.
+- Add revision-guarded structure/cel/layer/group/tag workflows and native unlink; retain legacy tool boundaries.
+- Support output-specific tag/range/layer selection, trim/extrude/padding, source-indexed JSON and output-set overwrite/rollback rules; preserve GIF restrictions and native-background/RGB texture caveats.
+- Add actual workflow/recipes, source/metadata/pixel/JSON and failure checks; preserve Codex/Claude packaging, fork attribution and MIT credit. See [validation](docs/TOP4_SYNC_VALIDATION.md).
 
 ### Fork publisher metadata
 - Identify smrgd88 as the Codex/Claude package publisher and marketplace owner, and link to the fork repository/website.

@@ -107,11 +107,14 @@ report the missing connection and follow README setup within the user's authoriz
   History is opt-in; do not silently enable it, invent IDs, or bypass a refused undo
   with automatic snapshot restore.
 - Follow [export/analysis rules](docs/MCP_EXPORT_ANALYSIS.md). Report every returned
-  sequence file. Scale/FPS/layer filtering require a native copy, not invented export
-  parameters. Keep the original source intact.
+  sequence file. Scale/FPS changes require a native copy. PNG/JPG/BMP and sheets accept direct selectors;
+  GIF rejects new selection/trim options. Read [export options](docs/MCP_EXPORT_OPTIONS.md). Keep the original source intact.
 - Server config precedence: `--config` > `PIXEL_MCP_CONFIG` > user-home
   `.config/pixel-mcp/config.json`. Use absolute executable/config paths; preserve
   existing settings. Reconnect after changes. Health is not a drawing test.
+
+Read [structure/revision editing](docs/MCP_STRUCTURE_EDITING.md) before new cel/layer/tag edits or unlink.
+Use returned IDs and fresh revisions; shared-set edits need authorization for the complete impact set.
 
 ## Implementation and validation
 

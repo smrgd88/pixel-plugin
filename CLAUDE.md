@@ -17,7 +17,7 @@ The plugin follows a layered architecture:
 
 1. **User Layer**: Natural language or slash commands in Claude Code
 2. **Plugin Layer**: Skills (model-invoked) and Commands (user-invoked)
-3. **MCP Layer**: pixel-mcp server (56 tools)
+3. **MCP Layer**: pixel-mcp server (64 tools)
 4. **Application Layer**: Aseprite CLI interactions
 
 **Key Integration Point:** The plugin bundles pre-compiled pixel-mcp binaries and provides a platform-detection wrapper (`bin/pixel-mcp`) that selects the correct binary for macOS, Linux, or Windows.
@@ -228,7 +228,7 @@ bin/pixel-mcp --health            # May fail without Aseprite configured
 ## External Dependencies
 
 - **pixel-mcp**: Go-based MCP server pinned in `config/mcp-source.json`
-  - Provides 56 tools for pixel art operations
+  - Provides 64 tools for pixel art operations
   - Built with Go 1.25+
   - Communicates with Aseprite via CLI
 
@@ -253,3 +253,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, coding guidelines,
 ## Version History
 
 See [CHANGELOG.md](CHANGELOG.md) for detailed version history and release notes.
+
+## Revision-based editing and selected exports
+
+Read [structure/cel/layer/tag editing](docs/MCP_STRUCTURE_EDITING.md) and [export options](docs/MCP_EXPORT_OPTIONS.md) before using the new tools. Query exact IDs and revision, edit only the authorized scope, then requery. Shared cel properties affect the complete native sharing set unless explicitly unlinked first. GIF has fewer selectors than PNG/sheets. Source metadata and protected output sets are distinct from crash atomicity or output undo.

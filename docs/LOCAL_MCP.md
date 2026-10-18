@@ -4,7 +4,7 @@ The plugin launches `.mcp.json` → `bin/pixel-mcp` → a platform binary. A bui
 
 ## Pinned source
 
-[config/mcp-source.json](../config/mcp-source.json) pins the merged MCP #25 error/tracing revision at `65074051f5d3903124ead37367c7fc62d9e7e7f6`. All five bundled executables are built from that commit; [bin/mcp-build.json](../bin/mcp-build.json) records their SHA-256 hashes. The actual `tools/list` input/output schemas are in [config/mcp-contract.json](../config/mcp-contract.json).
+[config/mcp-source.json](../config/mcp-source.json) pins the merged MCP #35 Top4 revision at `99f193ad3a0eefcb8e8b71a3b9e3f69be47ac2d8`. All five bundled executables are built from that commit; [bin/mcp-build.json](../bin/mcp-build.json) records their SHA-256 hashes. The actual `tools/list` input/output schemas are in [config/mcp-contract.json](../config/mcp-contract.json).
 
 The MCP protocol's `serverInfo.version` is still `0.1.0` in this source. It is not the plugin version or a reliable source identifier. `bin/pixel-mcp --version` in these builds reports the full source commit.
 
@@ -67,7 +67,7 @@ python3 bin/test-mcp-live.py --aseprite /absolute/path/to/aseprite
 
 Run `python3 bin/test-mcp-warnings.py` for schema/client compatibility and add `--aseprite /absolute/path/to/aseprite` for real warning conditions and failure paths. See [warning handling](MCP_WARNINGS.md) and [previous warnings validation](WARNINGS_VALIDATION.md).
 
-This pin also includes MCP #13 capability checks and #14 single-file protection. `--health` returns JSON with version/API support status; tools/list startup alone does not probe Aseprite. File locking/staging does not replace pre-edit copy guidance, and does not provide undo or atomic publication of a spritesheet plus JSON. Run `python3 bin/test-mcp-color-operations.py --aseprite /absolute/path/to/aseprite` for exact-pixel, density and rejection regressions.
+This pin also includes MCP #13 capability checks and #14 single-file protection. `--health` returns JSON with version/API support status; tools/list startup alone does not probe Aseprite. File locking/staging does not replace pre-edit copy guidance, and does not provide undo or crash-atomic publication of a spritesheet plus JSON; ordinary-error output-set rollback is included. Run `python3 bin/test-mcp-color-operations.py --aseprite /absolute/path/to/aseprite` for exact-pixel, density and rejection regressions.
 
 Previous color sync execution evidence and review: [color sync validation](COLOR_SYNC_VALIDATION.md).
 
@@ -90,3 +90,5 @@ must set an isolated absolute snapshot_dir and must not change the user’s hist
 The current pin adds [error codes, request IDs and partial rollback recovery](MCP_ERRORS.md).
 Run `python3 bin/test-mcp-errors.py --aseprite /absolute/path/to/aseprite` with real Aseprite.
 Current execution and review evidence: [error/tracing validation](ERROR_TRACING_VALIDATION.md).
+
+The Top4 bundle adds [revision/ID editing](MCP_STRUCTURE_EDITING.md) and [filtered export/output sets](MCP_EXPORT_OPTIONS.md). Run `python3 bin/test-mcp-top4.py --aseprite /absolute/path/to/aseprite` for actual source/metadata/pixel/JSON/rejection checks. Pillow is included in the test requirements. See [Top4 synchronization validation](TOP4_SYNC_VALIDATION.md) for this candidate and remaining platform scope.

@@ -189,5 +189,114 @@
         "save": "result"
       }
     ]
+  },
+  {
+    "id": "unlink-and-retag",
+    "fixture": {
+      "frames": 2
+    },
+    "steps": [
+      {
+        "name": "add_layer",
+        "arguments": {
+          "sprite_path": "{source}",
+          "layer_name": "Shared"
+        }
+      },
+      {
+        "name": "draw_pixels",
+        "arguments": {
+          "sprite_path": "{source}",
+          "layer_name": "Shared",
+          "frame_number": 1,
+          "pixels": [
+            {
+              "x": 2,
+              "y": 3,
+              "color": "#FF0000"
+            }
+          ]
+        }
+      },
+      {
+        "name": "link_cel",
+        "arguments": {
+          "sprite_path": "{source}",
+          "layer_name": "Shared",
+          "source_frame": 1,
+          "target_frame": 2
+        }
+      },
+      {
+        "name": "get_sprite_structure",
+        "arguments": {
+          "sprite_path": "{source}"
+        },
+        "save": "linked"
+      },
+      {
+        "name": "unlink_cel",
+        "arguments": {
+          "sprite_path": "{source}",
+          "layer_id": "2",
+          "frame_number": 1,
+          "expected_revision": "{linked.revision}"
+        },
+        "save": "unlinked"
+      },
+      {
+        "name": "get_sprite_structure",
+        "arguments": {
+          "sprite_path": "{source}"
+        },
+        "save": "independent"
+      },
+      {
+        "name": "set_cel_properties",
+        "arguments": {
+          "sprite_path": "{source}",
+          "layer_id": "2",
+          "frame_number": 1,
+          "expected_revision": "{independent.revision}",
+          "x": 0,
+          "opacity": 128
+        }
+      },
+      {
+        "name": "create_tag",
+        "arguments": {
+          "sprite_path": "{source}",
+          "tag_name": "idle",
+          "from_frame": 1,
+          "to_frame": 2,
+          "direction": "forward"
+        }
+      },
+      {
+        "name": "get_sprite_tags",
+        "arguments": {
+          "sprite_path": "{source}"
+        },
+        "save": "tags"
+      },
+      {
+        "name": "set_tag_properties",
+        "arguments": {
+          "sprite_path": "{source}",
+          "tag_id": 1,
+          "expected_revision": "{tags.revision}",
+          "direction": "pingpong_reverse",
+          "repeats": 0
+        }
+      },
+      {
+        "name": "save_as",
+        "arguments": {
+          "sprite_path": "{source}",
+          "output_path": "{output}/independent.aseprite"
+        },
+        "save": "result"
+      }
+    ]
   }
 ]

@@ -18,7 +18,7 @@ version=subprocess.check_output([str(ROOT/'bin/pixel-mcp'),'--version'],env=env,
 (RUN/'version.txt').write_text(version+'\n')
 c=clientmod.Client([str(ROOT/'bin/pixel-mcp')],env)
 tools={t['name']:t for t in c.tools()};results=[];calls=[];focus=''
-def call(name,**a):
+def call(name,/,**a):
  Draft202012Validator(tools[name]['inputSchema']).validate(a)
  row={'case':focus,'name':name,'arguments':a};calls.append(row)
  try:
@@ -74,6 +74,25 @@ def basic(name):
   finally:c.close();c=previous
  elif name=='get_sprite_info':
   r=call(name,**s);q=inspect(p);assert r['width']==q['width'] and r['frame_count']==len(q['frames']) and r['layers']==[l['name'] for l in q['layers']]
+ elif name=='get_sprite_structure':
+  r=call(name,**s);assert r['layer_count']==1 and r['layers'][0]['layer_id']=='1' and r['revision']==__import__('hashlib').sha256(Path(p).read_bytes()).hexdigest()
+ elif name=='get_sprite_tags':assert call(name,**s)['tags']==[]
+ elif name=='set_cel_properties':
+  draw(p);q=call('get_sprite_structure',**s);r=call(name,**s,layer_id='1',frame_number=1,expected_revision=q['revision'],x=0,opacity=0);assert r['affected_cels'][0]['x']==0 and inspect(p)['layers'][0]['cels'][0]['opacity']==0
+ elif name=='unlink_cel':
+  call('add_frame',**s,duration_ms=100);call('add_layer',**s,layer_name='Shared');draw(p,layer='Shared');call('link_cel',**s,layer_name='Shared',source_frame=1,target_frame=2)
+  q=call('get_sprite_structure',**s);lid=next(l['layer_id'] for l in q['layers'] if l['name']=='Shared');call(name,**s,layer_id=lid,frame_number=1,expected_revision=q['revision']);q=call('get_sprite_structure',**s);assert all(c['linked_cel_count']==1 for l in q['layers'] if l['name']=='Shared' for c in l['cels'])
+ elif name in ['create_layer_group','move_layer','set_layer_properties']:
+  q=call('get_sprite_structure',**s)
+  if name=='set_layer_properties':
+   r=call(name,**s,layer_id='1',expected_revision=q['revision'],name='Ink',visible=False,opacity=0);assert r['layer']['name']=='Ink' and not r['layer']['visible'] and r['layer']['opacity']==0
+  else:
+   g=call('create_layer_group',**s,expected_revision=q['revision'],name='Parts',parent_id='',stack_index=2)
+   if name=='create_layer_group':assert g['layer']['kind']=='group'
+   else:
+    q=call('get_sprite_structure',**s);r=call(name,**s,expected_revision=q['revision'],layer_id='1',parent_id=g['layer']['layer_id'],stack_index=1);q=call('get_sprite_structure',**s);assert next(l for l in q['layers'] if l['kind']=='raster')['name_path']==['Parts','Layer 1']
+ elif name=='set_tag_properties':
+  call('add_frame',**s,duration_ms=100);call('create_tag',**s,tag_name='idle',from_frame=1,to_frame=2,direction='forward');q=call('get_sprite_tags',**s);r=call(name,**s,tag_id=q['tags'][0]['tag_id'],expected_revision=q['revision'],direction='pingpong_reverse',repeats=0);assert r['tag']['direction']=='pingpong_reverse' and r['tag']['repeats']==0
  elif name=='add_layer':call(name,**s,layer_name='Ink');assert 'Ink' in [l['name'] for l in inspect(p)['layers']]
  elif name=='delete_layer':call('add_layer',**s,layer_name='Discard');call(name,**s,layer_name='Discard');assert [l['name'] for l in inspect(p)['layers']]==['Layer 1']
  elif name=='flatten_layers':

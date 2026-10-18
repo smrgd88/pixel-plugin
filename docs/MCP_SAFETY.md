@@ -1,6 +1,6 @@
 # Preview, snapshots and recorded undo
 
-Bundled MCP 6507405 includes merged #21/#23/#24. Read the exact [tool schemas](MCP_TOOLS.md)
+Bundled MCP 99f193a includes merged #21/#23/#24. Read the exact [tool schemas](MCP_TOOLS.md)
 and [configuration](../config/README.md). These operations concern saved files, not unsaved GUI state.
 
 ## Dry-run: execute on a temporary copy
@@ -76,3 +76,5 @@ Follow [the error contract](MCP_ERRORS.md) for tool and JSON-RPC failures. Prese
 all error.recovery entries. file_rollback_failed outranks cancellation/timeout: some outputs can
 remain changed. Stop automatic retries, keep recovery folders/backups and inspect the original
 canonical output location. Do not equate file staging rollback with snapshot restore or history undo.
+
+Revision-guarded cel/layer/tag edits and unlink also use the existing opt-in history system. Export remains read-only on source and does not create an output undo entry. See [editing](MCP_STRUCTURE_EDITING.md) and [output sets](MCP_EXPORT_OPTIONS.md).

@@ -45,7 +45,10 @@ def validate_recipes(tools):
             contract.validate_call(tools,{'name':step['name'],'arguments':arguments})
             if step.get('save'):
                 # References must name actual output fields, not guessed return values.
-                context[step['save']]={k:'/fixtures/result' for k,p in tools[step['name']]['outputSchema']['properties'].items() if p.get('type')=='string'}
+                def fixture(schema,field=''):
+                    if schema.get('type')=='object': return {k:fixture(v,k) for k,v in schema.get('properties',{}).items()}
+                    return '0'*64 if field=='revision' else '/fixtures/result'
+                context[step['save']]=fixture(tools[step['name']]['outputSchema'])
         count+=1
     return count
 
@@ -69,7 +72,7 @@ def main():
         def timing(path):
             sheet=out/'check-timing.png'
             r=call('export_spritesheet',{'sprite_path':path,'output_path':str(sheet),'layout':'horizontal','padding':0,'include_json':True})
-            frames=json.loads(Path(r['metadata_path']).read_text())['frames'];frames=list(frames.values()) if isinstance(frames,dict) else frames
+            frames=json.loads(Path(r['metadata_path']).read_text())['frames'];frames=sorted(frames.values(),key=lambda f:f['source_frame_number']) if isinstance(frames,dict) else frames
             return [f['duration'] for f in frames]
         report=[]
         try:
@@ -86,7 +89,23 @@ def main():
                     result=call(step['name'],resolve(step['arguments'],ctx))
                     if step.get('save'):ctx[step['save']]=result
                 name=recipe['id'];path=ctx.get('result',{}).get('file_path')
-                if name=='heart':
+                if name=='nested-revision-edit':
+                    q=call('get_sprite_structure',{'sprite_path':path});nested=next(l for l in q['layers'] if l['name']=='Ink')
+                    assert nested['parent_id'] and nested['opacity']==128
+                    from PIL import Image
+                    rendered=call('export_sprite',{'sprite_path':path,'output_path':str(dest/'nested-check.png'),'format':'png','frame_number':1})
+                    assert Image.open(rendered['exported_path']).convert('RGBA').getpixel((2,3))==(255,0,0,128)
+                elif name=='unlink-and-retag':
+                    q=call('get_sprite_structure',{'sprite_path':path});shared=next(l for l in q['layers'] if l['name']=='Shared')
+                    assert all(c['linked_cel_count']==1 for c in shared['cels'] if c['exists'])
+                    tags=call('get_sprite_tags',{'sprite_path':path})['tags'];assert tags[0]['direction']=='pingpong_reverse' and tags[0]['repeats']==0
+                elif name=='selected-sheet-export':
+                    from PIL import Image
+                    r=ctx['sheet'];meta=json.loads(Path(r['metadata_path']).read_text());fr=meta['frames'];fr=sorted(fr.values(),key=lambda f:f['source_frame_number']) if isinstance(fr,dict) else fr
+                    assert [f['source_frame_number'] for f in fr]==[1,2] and [f['duration'] for f in fr]==[100,100]
+                    im=Image.open(r['spritesheet_path']).convert('RGBA');assert im.size==(12,6)
+                    assert im.getpixel((0,0))==(68,119,170,255)
+                elif name=='heart':
                     data=pixels(path,size=8);red={xy for xy,c in data.items() if c=='#FF0000FF'}
                     assert len(red)==32 and (3,6) in red and (0,0) not in red
                     assert all((7-x,y) in red for x,y in red)

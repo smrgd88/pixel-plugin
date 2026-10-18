@@ -17,8 +17,8 @@ This fork is maintained by **smrgd88**. The original plugin was created by
 
 ## Current source status
 
-The bundle provides **56 MCP tools**, pinned to
-`65074051f5d3903124ead37367c7fc62d9e7e7f6` in [the source manifest](config/mcp-source.json).
+The bundle provides **64 MCP tools**, pinned to
+`99f193ad3a0eefcb8e8b71a3b9e3f69be47ac2d8` in [the source manifest](config/mcp-source.json).
 It includes drawing, animation, palette operations, exports, temporary-copy previews,
 saved-file snapshots, opt-in recorded undo, and error codes with request IDs.
 
@@ -184,6 +184,15 @@ copy; they are not direct export arguments. JSON metadata uses the Aseprite form
 needs adaptation for a game engine. See [export workflows](skills/pixel-art-exporter/export-formats.md)
 and [sequence output handling](docs/MCP_EXPORT_ANALYSIS.md).
 
+## Structure and selected exports
+
+Query saved layers/cels/tags, then edit using structural IDs and fresh revisions. Layer properties/group moves, cel properties/unlink and tag updates preserve native structure under their guards. See [editing contracts](docs/MCP_STRUCTURE_EDITING.md). PNG/JPG/BMP and sheets now support source tag/range and layer selection, trim and output-set protection; GIF has a smaller option set. Read [the support table](docs/MCP_EXPORT_OPTIONS.md) before exporting.
+
+New tools: `get_sprite_structure` / `get_sprite_tags` query IDs and revisions;
+`set_cel_properties` / `unlink_cel` distinguish shared-set edits from independent poses;
+`set_layer_properties` / `move_layer` / `create_layer_group` edit saved layer hierarchies;
+`set_tag_properties` edits native tag ranges, directions and repeats.
+
 ## Preview and recovery
 
 | Request | Behavior and limits |
@@ -253,7 +262,7 @@ checked-in assets, and an offline browser demo.
 
 - [AGENTS.md](AGENTS.md): Codex project instructions, Git workflow, and skill routing
 - [Local MCP development](docs/LOCAL_MCP.md): Reproducible builds and test commands
-- [MCP tools](docs/MCP_TOOLS.md): Exact schemas for all 56 tools
+- [MCP tools](docs/MCP_TOOLS.md): Exact schemas for all 64 tools
 - [Latest validation](docs/ERROR_TRACING_VALIDATION.md): Bundle checks and untested areas
 - [Plugin roadmap](docs/ROADMAP.md): Milestones, ownership, and completion criteria
 - [Next work](docs/NEXT_STEPS.md): Remaining integration and release work

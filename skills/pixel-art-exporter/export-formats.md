@@ -7,15 +7,15 @@ See [validated examples](examples.md) and the [exact tool contract](../../docs/M
 | Still PNG | `export_sprite`, `format: png`, `frame_number: 1` (or another one-based frame) | Preserve image transparency; specify a frame for one file; frame_number=0 exports numbered files for a multi-frame sprite |
 | Animated GIF | `export_sprite`, `format: gif`, `frame_number: 0` | All frames with saved timing; GIF has palette and alpha limits |
 | JPG/BMP | `export_sprite`, matching `format` and extension | Use when that format is explicitly needed; verify transparency loss |
-| Spritesheet | `export_spritesheet` | All frames; horizontal, vertical, rows, columns, packed |
+| Spritesheet | `export_spritesheet` | All or selected source frames; horizontal, vertical, rows, columns, packed |
 | Metadata | sheet with `include_json: true` | Aseprite JSON alongside the texture; inspect before adapting to an engine |
 | Native copy | `save_as` | `.aseprite` or `.ase`, preserves editable structure |
 
 The output extension must match format (`.jpeg` is also accepted for jpg). For all-frame PNG/JPG/BMP, read the optional ordered `files` array; the two legacy fields identify only its first file. Verify actual files and do not infer output names from the requested base.
 
-Spritesheet padding applies to border, shape and inner padding. Do not assume it is only the gap between frames or calculate final dimensions without reading the output. The MCP does not expose exact row/column counts, trimming, extrusion or alternate JSON formats.
+Spritesheet padding applies to border, shape and inner padding. Do not assume it is only the gap between frames or calculate final dimensions without reading the output. Exact grid column/row counts and alternate JSON formats are not exposed. trim, boolean one-pixel extrude and separate padding overrides are supported for sheets; read [their full contract](../../docs/MCP_EXPORT_OPTIONS.md).
 
-Scale and FPS are plugin workflows: save a native copy, scale with nearest-neighbor and/or change frame durations, then export. For tag or layer filtering, obtain a known range or layer list and delete unwanted frames/layers on the copy. Delete frames from the end to avoid index shifts. There is no loop-count export option.
+Scale and FPS are plugin workflows: save a native copy, scale with nearest-neighbor and/or change frame durations, then export. For PNG/JPG/BMP or sheets, use direct tag/range or revision-guarded layer_id selection. GIF does not accept those selectors; a requested transformation can instead use a separate native copy with explicit filtering/retiming. Never silently change output semantics. There is no loop-count export option.
 
 For Unity/Godot/Phaser, consume the actual frame names, coordinates and duration fields from the exported JSON; engine-specific asset/code generation is a separate adaptation, not an MCP export format.
 
@@ -36,3 +36,5 @@ Engine import guidance is separate from MCP export:
 The [copy-and-export recipe](examples.md#complete-export-recipe) demonstrates native-source preservation, 2× pixel scaling and real sheet metadata rather than an invented export option.
 
 See [sequence naming, compatibility and recovery boundaries](../../docs/MCP_EXPORT_ANALYSIS.md). Existing base files and old numbered files outside the returned list are not automatically deleted.
+
+Read [the output-specific support table](../../docs/MCP_EXPORT_OPTIONS.md) for source indices, hidden/empty selections, native-background trim and indexed RGB texture behavior, JSON sidecar protection and crash limits. include_json=false hides metadata_path but still creates/protects the sidecar.

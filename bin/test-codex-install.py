@@ -129,6 +129,8 @@ def main():
     parser.add_argument('--codex', default='codex')
     parser.add_argument('--output', type=Path, default=ROOT/'test-outputs/codex-install')
     parser.add_argument('--model-workflow', action='store_true')
+    parser.add_argument('--sandbox',choices=['workspace-write','danger-full-access'],default='workspace-write',
+                        help='Test-thread sandbox; choose the execution environment authorized for native Aseprite')
     args = parser.parse_args()
     aseprite = args.aseprite.resolve(strict=True)
     output = args.output.resolve() / ('run-'+uuid.uuid4().hex[:10])
@@ -234,7 +236,7 @@ def main():
                 subprocess.run([str(cache/'bin/pixel-mcp'),'--health'], env=env,
                                stdout=subprocess.PIPE, check=True)
                 thread = server.request('thread/start', {'cwd':str(fixture),'ephemeral':True,
-                    'approvalPolicy':'never','sandbox':'workspace-write','experimentalRawEvents':False})
+                    'approvalPolicy':'never','sandbox':args.sandbox,'experimentalRawEvents':False})
                 tid = thread['thread']['id']
                 status = server.request('mcpServerStatus/list', {'threadId':tid,'limit':100})
                 connected = [x for x in status['data'] if x['runtimeStatus']=='connected']
@@ -250,7 +252,7 @@ def main():
                     result = server.request('mcpServer/tool/call', {'threadId':tid,'server':'aseprite',
                         'tool':'get_sprite_info','arguments':{'sprite_path':str(output/'artifacts/protocol.aseprite')}})
                     assert not result.get('isError')
-                    print('PASS:',phase,'cache/health/56 schemas/reconnected sprite',flush=True)
+                    print('PASS:',phase,'cache/health/schemas/reconnected sprite',flush=True)
                     continue
                 def call(name, **arguments):
                     value = server.request('mcpServer/tool/call', {'threadId':tid,'server':'aseprite',
@@ -290,9 +292,9 @@ def main():
                 verify_sprite(aseprite,art/'protocol.gif',16,['#FF0000FF','#00FF00FF'])
                 metadata = json.loads((art/'protocol-sheet.json').read_text())
                 frames = metadata['frames']
-                frames = list(frames.values()) if isinstance(frames,dict) else frames
+                frames = sorted(frames.values(),key=lambda f:f['source_frame_number']) if isinstance(frames,dict) else frames
                 assert [f['duration'] for f in frames]==[150,100]
-                print('PASS: installed cache, 4 skills, 56 schemas, 12 MCP calls, native/GIF/JSON pixels and timing',flush=True)
+                print('PASS: installed cache, 4 skills, exact schemas, 12 MCP calls, native/GIF/JSON pixels and timing',flush=True)
                 if args.model_workflow:
                     prompt = ('Use the installed Pixel Plugin to create a 32x32 RGB sprite with a red pixel at (2,3). '
                       'Add a second frame of 100 ms with a blue pixel at (2,3). Set the first frame to 150 ms. '
@@ -315,7 +317,7 @@ def main():
                     verify_sprite(aseprite,art/'model.aseprite',32,['#FF0000FF','#0000FFFF'])
                     verify_sprite(aseprite,art/'model.gif',32,['#FF0000FF','#0000FFFF'])
                     model_frames = json.loads((art/'model-sheet.json').read_text())['frames']
-                    model_frames = list(model_frames.values()) if isinstance(model_frames,dict) else model_frames
+                    model_frames = sorted(model_frames.values(),key=lambda f:f['source_frame_number']) if isinstance(model_frames,dict) else model_frames
                     assert [x['duration'] for x in model_frames]==[150,100]
                     print('PASS: natural-language Codex workflow, independently verified native/GIF/JSON',flush=True)
             finally:

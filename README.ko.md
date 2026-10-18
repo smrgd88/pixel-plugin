@@ -17,8 +17,8 @@
 
 ## 현재 소스 상태
 
-번들은 **MCP 도구 56개**를 제공하며, [소스 매니페스트](config/mcp-source.json)의
-`65074051f5d3903124ead37367c7fc62d9e7e7f6` 커밋에 고정되어 있습니다.
+번들은 **MCP 도구 64개**를 제공하며, [소스 매니페스트](config/mcp-source.json)의
+`99f193ad3a0eefcb8e8b71a3b9e3f69be47ac2d8` 커밋에 고정되어 있습니다.
 드로잉, 애니메이션, 팔레트 작업, 내보내기, 임시 복사본 미리보기, 저장 파일 스냅샷,
 선택적으로 기록한 작업의 실행 취소, 요청 ID가 포함된 오류 코드를 지원합니다.
 
@@ -179,6 +179,15 @@ rows, columns, packed 레이아웃의 스프라이트시트를 지원합니다. 
 맞게 변환해야 합니다. [내보내기 작업 흐름](skills/pixel-art-exporter/export-formats.md)과
 [시퀀스 출력 처리](docs/MCP_EXPORT_ANALYSIS.md)를 참고하세요.
 
+## 구조 편집과 선택 내보내기
+
+저장된 레이어·cel·태그를 조회한 뒤 구조 ID와 최신 revision으로 편집합니다. 레이어 속성·그룹 이동, cel 속성·unlink, 태그 수정은 각각의 보호 계약을 따릅니다. [편집 계약](docs/MCP_STRUCTURE_EDITING.md)을 확인하세요. PNG/JPG/BMP와 sheet는 태그·프레임 범위·레이어 선택, trim 및 출력 세트 보호를 지원하지만 GIF의 지원 범위는 더 좁습니다. [출력별 지원표](docs/MCP_EXPORT_OPTIONS.md)를 확인하세요.
+
+새 도구: `get_sprite_structure` / `get_sprite_tags`로 ID와 revision을 조회하고,
+`set_cel_properties` / `unlink_cel`로 공유 집합 편집과 단일 cel 분리를 구분합니다.
+`set_layer_properties` / `move_layer` / `create_layer_group`는 저장 계층을 편집하며,
+`set_tag_properties`는 태그 범위·방향·반복을 수정합니다.
+
 ## 미리보기와 복구
 
 | 요청 | 동작과 제한 |
@@ -248,7 +257,7 @@ claude plugin install pixel-plugin@pixel-plugin
 
 - [AGENTS.md](AGENTS.md): Codex가 읽는 프로젝트 지침, Git 작업 흐름, 스킬 안내
 - [로컬 MCP 개발](docs/LOCAL_MCP.md): 재현 가능한 빌드와 테스트 명령
-- [MCP 도구](docs/MCP_TOOLS.md): 도구 56개의 정확한 스키마
+- [MCP 도구](docs/MCP_TOOLS.md): 도구 64개의 정확한 스키마
 - [최신 검증](docs/ERROR_TRACING_VALIDATION.md): 번들 검사와 미검증 범위
 - [플러그인 로드맵](docs/ROADMAP.md): 단계별 소유 범위와 완료 조건
 - [다음 작업](docs/NEXT_STEPS.md): 남은 통합·릴리스 작업

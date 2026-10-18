@@ -10,7 +10,7 @@ for source/PR links and [the latest focused audit](BUG_AUDIT.md) for reproductio
 
 ## Audited defects now included in the bundle
 
-MCP #22 repairs remain included in the newer 6507405 pin; their first plugin integration was PR #9. MCP-AUDIT-01 (indexed mask resize),
+MCP #22 repairs remain included in the current 99f193a pin; their first plugin integration was PR #9. MCP-AUDIT-01 (indexed mask resize),
 MCP-AUDIT-02 (explicit edge_threshold=0), and MCP-AUDIT-03 (inactive AA threshold)
 are fixed in this bundle. The [original audit](BUG_AUDIT.md) records old behavior;
 [current status](BUG_STATUS.md) and [control semantics](MCP_REVIEW_CONTROLS.md)
@@ -31,7 +31,7 @@ sampled colors. Large-image subsampling is not a guarantee of retaining every ra
 
 - The server operates on files through batch Aseprite processes. It does not inspect the GUI's current unsaved document, control playback, or expose arbitrary Aseprite Lua execution.
 - `get_sprite_info` has no tags, durations or cel-link identity fields. Native link targets must have no cel; `add_frame` may copy content. Use the [animator's construction workflow](../skills/pixel-art-animator/SKILL.md).
-- Export inputs have no scale, FPS, loop, layer, tag or range selector. Scaling/retiming/filtering is a separate workflow on a native copy. There is no standalone JSON or engine-specific metadata exporter. See [export formats](../skills/pixel-art-exporter/export-formats.md).
+- No direct scale/FPS/loop override exists. PNG/JPG/BMP and sheets support tag/range/layer_id selectors; GIF rejects the new selectors and trim=true. Scaling/retiming still uses a native copy. See [output support and protection](MCP_EXPORT_OPTIONS.md). There is no standalone JSON or engine-specific metadata exporter. See [export formats](../skills/pixel-art-exporter/export-formats.md).
 - Export format and extension must match (.jpeg is accepted for jpg). Multi-frame PNG/JPG/BMP now returns all numbered outputs in optional `files`; legacy `exported_path`/`file_size` identify only the first. Read the full array and inspect actual files.
 - Exported sheet JSON can represent frames as an object. Read actual names/coordinates rather than assuming a fixed array shape. Padding affects border, shape and inner padding.
 - Selection masks use row runs in the private pixel-mcp/selection extension-property namespace; user sprite.data remains untouched and legacy masks/bounds are still readable. Copy always targets the first layer and first frame and has no selector. Clipboard content is stored in a hidden layer in the same sprite; do not promise system or cross-file clipboard semantics.
@@ -44,8 +44,12 @@ The bundled source includes the separately reviewed MCP behavior repairs describ
 
 Quantization now remaps pixels without dithering/indexed conversion and preserves distinct opaque colors when converting to indexed. See [color-operation limits](MCP_COLOR_OPERATIONS.md) for single-frame/raster, transparency, palette-size and pixel-validation constraints. The included capability check requires Aseprite 1.3.17.2+ / API 39+. File protection stages single-file writes; it is not undo, a backup, or multi-artifact atomic publishing.
 
-See [export and analysis contracts](MCP_EXPORT_ANALYSIS.md). Sequence exports stage all outputs and attempt rollback for ordinary failures, but the set is not OS/crash-atomic and external writers or rollback failure can require recovery from retained backups. Spritesheet texture+JSON atomic publication remains separate.
+See [export and analysis contracts](MCP_EXPORT_ANALYSIS.md). Sequence exports stage all outputs and attempt rollback for ordinary failures, but the set is not OS/crash-atomic and external writers or rollback failure can require recovery from retained backups. Spritesheet texture+JSON ordinary-error rollback is included; set-wide crash atomicity remains unsupported.
 
 MCP #21/#23/#24 are included in this checkout: [dry-run, snapshots and recorded undo](MCP_SAFETY.md).
 Preview is limited to three tools; undo requires recorded history, defaults off and shares snapshot TTL/quota.
 This does not provide native GUI undo, redo or permanent backups. See [next work](NEXT_STEPS.md).
+
+## Current structure/edit/export limits
+
+RM-FIX-01 nested draw_pixels is fixed in this bundle, but duplicate names reject and other name-based tools do not gain structural-ID addressing. The eight additive tools and freshness/locked/linked/tag policies are in [structure editing](MCP_STRUCTURE_EDITING.md). Export retains visible native background canvas bounds; some indexed background textures become RGBA. Exact indexed PNG preservation, tighter size budgeting, output-set crash recovery and slices remain server follow-ups.

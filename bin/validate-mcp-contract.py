@@ -43,14 +43,33 @@ def validate_call(tools, call):
         'apply_shading': {'style': ['pillow', 'smooth', 'hard']},
         'scale_sprite': {'algorithm': ['nearest', 'bilinear', 'rotsprite']},
         'create_tag': {'direction': ['forward', 'reverse', 'pingpong']},
+        'set_tag_properties': {'direction': ['forward', 'reverse', 'pingpong', 'pingpong_reverse']},
         'draw_with_dither': {'pattern': ['bayer_2x2', 'bayer_4x4', 'bayer_8x8', 'checkerboard', 'floyd_steinberg', 'grass', 'water', 'stone', 'cloud', 'brick', 'dots', 'diagonal', 'cross', 'noise', 'horizontal_lines', 'vertical_lines']},
     }
     for key, choices in enum_fields.get(name, {}).items():
+        if name=='set_tag_properties' and args.get(key) is None:
+            continue
         if args.get(key) not in choices:
             raise ValueError(f'{name}.{key}: expected one of {choices}')
     for key in ['frame_number', 'source_frame', 'target_frame', 'from_frame', 'to_frame']:
-        if key in args and args[key] < (0 if name == 'export_sprite' else 1):
+        if args.get(key) is not None and args[key] < (0 if name == 'export_sprite' else 1):
             raise ValueError(f'{name}.{key}: invalid frame index')
+    if name in ['export_sprite','export_spritesheet']:
+        tag = args.get('tag') is not None
+        span = any(args.get(k) is not None for k in ['frame_start','frame_end'])
+        if tag and (not args['tag'] or span or args.get('frame_number',0)>0):
+            raise ValueError('Tag selection must be nonempty and exclusive')
+        if span and args.get('frame_number',0)>0:
+            raise ValueError('Range and positive frame_number are exclusive')
+        for key in ['frame_start','frame_end']:
+            if args.get(key) is not None and not 1<=args[key]<=65535:
+                raise ValueError('Invalid source frame range')
+        if args.get('layer_id') and not re.fullmatch(r'[0-9a-f]{64}',args.get('expected_revision','')):
+            raise ValueError('layer_id requires a fresh SHA-256 revision')
+        if args.get('include_hidden') and not args.get('layer_id'):
+            raise ValueError('include_hidden requires layer_id')
+        if name=='export_sprite' and args['format']=='gif' and (tag or span or args.get('layer_id') or args.get('include_hidden') or args.get('trim')):
+            raise ValueError('GIF rejects new selectors and trim')
     if name == 'export_sprite' and Path(args['output_path']).suffix.lower() not in ({'.jpg', '.jpeg'} if args['format'] == 'jpg' else {'.' + args['format']}):
         raise ValueError('Export extension must match format')
 
@@ -98,6 +117,13 @@ def regressions(tools, examples):
     def mutate(name, key, value):
         bad = copy.deepcopy(originals[name]); bad['arguments'][key] = value; mutations.append(bad)
     mutate('export_sprite', 'scale', 2)
+    mutate('export_sprite', 'frame_start', 0)
+    mutate('export_sprite', 'tag', '')
+    bad=copy.deepcopy(originals['export_spritesheet']);bad['arguments']['layer_id']='2/1';bad['arguments'].pop('expected_revision',None);mutations.append(bad)
+    bad=copy.deepcopy(originals['export_spritesheet']);bad['arguments'].pop('layer_id',None);bad['arguments']['include_hidden']=True;mutations.append(bad)
+    mutate('set_tag_properties', 'direction', 'backward')
+    for extra in [{'frame_start':1},{'tag':'walk'},{'trim':True},{'layer_id':'1','expected_revision':'0'*64}]:
+        bad=copy.deepcopy(originals['export_sprite']);bad['arguments']={'sprite_path':'/work/a.aseprite','output_path':'/work/a.gif','format':'gif','frame_number':0,**extra};mutations.append(bad)
     mutate('export_sprite', 'frame_number', -1)
     mutate('export_spritesheet', 'layout', 'grid')
     mutate('apply_auto_shading', 'style', 'hard')

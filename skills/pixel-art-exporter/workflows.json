@@ -70,5 +70,41 @@
         "save": "sheet"
       }
     ]
+  },
+  {
+    "id": "selected-sheet-export",
+    "fixture": {
+      "frames": 2
+    },
+    "steps": [
+      {
+        "name": "get_sprite_structure",
+        "arguments": {
+          "sprite_path": "{source}"
+        },
+        "save": "structure"
+      },
+      {
+        "name": "export_spritesheet",
+        "arguments": {
+          "sprite_path": "{source}",
+          "output_path": "{output}/selected.png",
+          "layout": "horizontal",
+          "padding": 2,
+          "include_json": true,
+          "layer_id": "1",
+          "expected_revision": "{structure.revision}",
+          "frame_start": 1,
+          "frame_end": 2,
+          "trim": true,
+          "extrude": true,
+          "border_padding": 0,
+          "shape_padding": 0,
+          "inner_padding": 0,
+          "overwrite": false
+        },
+        "save": "sheet"
+      }
+    ]
   }
 ]

@@ -1,12 +1,13 @@
 # 버그 수정 및 반영 현황
 
-확인일: **2026-10-04** · 플러그인 기준 `develop@82d5edb`.
+확인일: **2026-10-18** · 이번 플러그인 후보의 기준 `develop@49d9687`.
 현재 런타임 반영은 [플러그인 PR #12](https://github.com/smrgd88/pixel-plugin/pull/12)의
 `d96682876ec088723fe14d92e612fced0ab161f0`이며, 이후 Codex 안내는
 [PR #13](https://github.com/smrgd88/pixel-plugin/pull/13)의 `82d5edb`로 병합됐습니다.
 
 내장 MCP는 [mcp-source.json](../config/mcp-source.json)의
-`65074051f5d3903124ead37367c7fc62d9e7e7f6`이며 도구 수는 56개입니다.
+`99f193ad3a0eefcb8e8b71a3b9e3f69be47ac2d8`이며 도구 수는 64개입니다.
+이는 이번 동기화 작업 브랜치의 번들로, plugin develop 통합·릴리스·개인 설치 갱신과 구분합니다.
 manifest 버전 0.5.0, MCP protocol serverInfo.version 0.1.0과 소스 커밋은 서로 다른 값입니다.
 **develop 병합은 새 릴리스 배포나 upstream marketplace 패키지 갱신을 뜻하지 않습니다.**
 우선순위·소유 저장소·완료 조건은 [플러그인 로드맵](ROADMAP.md)을 따릅니다.
@@ -81,10 +82,16 @@ MCP #21/#23/#24는 모두 develop 병합을 확인했습니다. #24 최종7f439a
 스킬/명령을 동기화했고 develop에 병합됐습니다. [계약](MCP_ERRORS.md) · [이번 검증](ERROR_TRACING_VALIDATION.md).
 main 반영·정식 게시·사용자 설치 갱신은 별도 작업으로 남아 있습니다.
 
-## 상류 회귀 점검에서 확인된 잔여
+## Top4 서버 병합 및 이번 플러그인 동기화 후보
 
-MCP [#27](https://github.com/smrgd88/pixel-mcp/pull/27)의 회귀 조합 점검은 병합됐습니다.
-그룹 내부 `draw_pixels`가 존재하는 레이어를 찾지 못하는 RM-FIX-01은 재현된 서버 결함이며,
-해당 테스트/문서 변경으로 수정된 것은 아닙니다. 서버 FIX와 이후 플러그인 회귀 검증은
-[로드맵](ROADMAP.md)에서 별도로 추적합니다. 이 문서 갱신에서 재현 테스트를 다시 실행하거나
-현재 번들의 소스 pin을 바꾸지는 않았습니다.
+서버 PR #29에서 RM-FIX-01 nested draw_pixels를 수정했고, #30/#31에서 구조 조회·cel 속성과
+revision을 추가했습니다. #33 unlink, #34 레이어/그룹, #32 태그, #35 선택 export·trim/extrude·
+padding·overwrite·출력 세트 보호가 develop `99f193a`에 포함됩니다.
+이번 플러그인 후보는 정확한 pin·5개 binary·64개 schema·스킬·레시피·검증을 함께 갱신합니다.
+[편집 계약](MCP_STRUCTURE_EDITING.md) · [export 계약](MCP_EXPORT_OPTIONS.md) ·
+[실행과 리뷰](TOP4_SYNC_VALIDATION.md).
+
+RM-FIX-01은 수정 완료지만 draw_pixels의 재귀적인 이름 조회를 다른 legacy 도구에 소급 적용하지
+않습니다. get_sprite_info는 기존 경량 응답을 유지하며 상세 구조/태그는 별도 도구로 조회합니다.
+현재 출력 세트의 일반 오류 rollback은 포함되나 crash 원자성, indexed PNG 유지 옵션,
+크기 예산 정밀화와 slices/pivot은 서버 잔여입니다.

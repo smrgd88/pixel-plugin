@@ -474,3 +474,83 @@ The executable recipes `heart`, `sword` and `layered-character` in [workflows.js
 Recipe JSON uses `{source}` for an existing absolute sprite path, `{output}` for a caller-selected output directory, and saved step results such as `{canvas.file_path}`. These are recipe substitutions, never literal MCP arguments. The runner resolves them before schema validation. Run `python3 bin/test-skill-workflows.py --aseprite /absolute/path/to/aseprite` to validate the recipes with real files. The prerequisite fixture is created only by the test runner; production use must inspect the user's actual source.
 
 After successful calls, report optional `warnings` using [the shared warning rules](../../docs/MCP_WARNINGS.md). Preserve unknown codes and accept older responses without this field.
+
+## Revision-guarded examples
+
+Independent alternatives, not a sequence. Replace the all-zero revision with the actual latest query revision and resolve IDs in that same saved file. Never send placeholder revisions. Property examples assume an independent raster cel; unlink assumes a native linked cel. Requery after every edit.
+
+### get_sprite_structure
+
+```mcp-example
+{
+  "name": "get_sprite_structure",
+  "arguments": {
+    "sprite_path": "/work/hero.aseprite",
+    "page_size": 50
+  }
+}
+```
+
+### create_layer_group
+
+```mcp-example
+{
+  "name": "create_layer_group",
+  "arguments": {
+    "sprite_path": "/work/hero.aseprite",
+    "expected_revision": "0000000000000000000000000000000000000000000000000000000000000000",
+    "name": "Effects",
+    "parent_id": "",
+    "stack_index": 2
+  }
+}
+```
+
+### move_layer
+
+```mcp-example
+{
+  "name": "move_layer",
+  "arguments": {
+    "sprite_path": "/work/hero.aseprite",
+    "expected_revision": "0000000000000000000000000000000000000000000000000000000000000000",
+    "layer_id": "1",
+    "parent_id": "2",
+    "stack_index": 1
+  }
+}
+```
+
+### set_layer_properties
+
+```mcp-example
+{
+  "name": "set_layer_properties",
+  "arguments": {
+    "sprite_path": "/work/hero.aseprite",
+    "expected_revision": "0000000000000000000000000000000000000000000000000000000000000000",
+    "layer_id": "2/1",
+    "opacity": 0
+  }
+}
+```
+
+### set_cel_properties
+
+```mcp-example
+{
+  "name": "set_cel_properties",
+  "arguments": {
+    "sprite_path": "/work/hero.aseprite",
+    "expected_revision": "0000000000000000000000000000000000000000000000000000000000000000",
+    "layer_id": "2/1",
+    "frame_number": 1,
+    "x": 0,
+    "opacity": 128
+  }
+}
+```
+
+### Executable nested-revision-edit recipe
+
+Create a group, query/move by revision and returned ID, requery, rename/adjust raster opacity, draw on its unique nested name and save. The complete schema-checked sequence is in [workflows.json](workflows.json), executed by `bin/test-skill-workflows.py`.

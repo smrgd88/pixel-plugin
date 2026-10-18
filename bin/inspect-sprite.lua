@@ -15,7 +15,7 @@ for _,t in ipairs(s.tags) do o.tags[#o.tags+1]={name=t.name,from=t.fromFrame.fra
 for _,l in ipairs(s.layers) do
  local v={name=l.name,visible=l.isVisible,cels={}}
  for _,cel in ipairs(l.cels) do
-  local c={frame=cel.frame.frameNumber,x=cel.position.x,y=cel.position.y,pixels={}}
+  local c={frame=cel.frame.frameNumber,x=cel.position.x,y=cel.position.y,opacity=cel.opacity,z_index=cel.zIndex,data=cel.data,pixels={}}
   for y=0,cel.image.height-1 do for x=0,cel.image.width-1 do
    local raw=cel.image:getPixel(x,y)
    local color

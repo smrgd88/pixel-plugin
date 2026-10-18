@@ -20,15 +20,15 @@ A selected frame, one-frame sprite, or animated GIF returns the original two fie
 without files. Accept older responses without files (and nullable schema values),
 but verify the returned path instead of inventing a sequence. Existing clients already
 preserve the whole result. `output_path` extension must match format; .jpeg is accepted
-for jpg. There are still no direct scale/FPS/layer/tag/range/loop options.
+for jpg. There are no direct scale/FPS/loop overrides. PNG/JPG/BMP and sheets now accept tag/range and revision-guarded layer selection; GIF does not. Read [export options](MCP_EXPORT_OPTIONS.md).
 
 Source/output aliases and invalid/read-only destinations are rejected. All new sequence
 outputs are staged before publication; ordinary errors/cancellation attempt rollback.
 If restoration fails, preserve and report the server's recovery/backup information.
 Do not retry blindly, delete retained backups, claim successful rollback without evidence,
 or promise undo. Replacement is atomic per file, not for the whole set under a crash
-or power loss. Non-cooperating external writers and spritesheet texture+JSON have
-separate protection limits. Single-frame images are RGB composites; original indexed
+or power loss. Non-cooperating external writer races remain a limitation. Spritesheet texture+JSON now
+share ordinary-error output-set rollback, with [set-wide crash limits](MCP_EXPORT_OPTIONS.md). Single-frame images are RGB composites; original indexed
 palette/index identity is not an export guarantee.
 
 ## Reference formats
