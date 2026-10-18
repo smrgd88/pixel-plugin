@@ -1,6 +1,6 @@
 # 플러그인 로드맵
 
-기준일: **2026-10-18** · 플러그인 기준: `develop@49d9687` · 동기화 후보 MCP pin: `99f193a` · 도구: 64개.
+기준일: **2026-10-18** · 플러그인 기준: `develop@f5228e3` ([PR #16](https://github.com/smrgd88/pixel-plugin/pull/16) 병합) · MCP runtime pin: `99f193a` · 도구: 64개.
 [현재 실행 순서](NEXT_STEPS.md) · [수정 현황](BUG_STATUS.md) · [제약](KNOWN_ISSUES.md).
 
 이 문서는 Aseprite 작업을 위한 스킬·클라이언트 연동·MCP 번들·배포의 계획입니다.
@@ -16,6 +16,8 @@
 | dry-run·스냅샷·기록 기반 undo | develop 반영 | [PR #11](https://github.com/smrgd88/pixel-plugin/pull/11), `2114d77`, [검증](SAFETY_SYNC_VALIDATION.md) |
 | 오류 코드·요청 ID·부분 롤백 복구 정보 | develop 반영 | [PR #12](https://github.com/smrgd88/pixel-plugin/pull/12), `d966828`, [검증](ERROR_TRACING_VALIDATION.md) |
 | Codex 우선 README 한·영, 영어 AGENTS.md | develop 반영 | [PR #13](https://github.com/smrgd88/pixel-plugin/pull/13), `82d5edb` |
+| Codex CLI 설치·연결·lifecycle 및 포크 publisher | develop 반영 | [PR #15](https://github.com/smrgd88/pixel-plugin/pull/15), `49d9687`, [설치 검증](CODEX_INSTALL_VALIDATION.md) |
+| Top4 MCP·export 계약과 스킬·번들 동기화 | develop 반영 | [PR #16](https://github.com/smrgd88/pixel-plugin/pull/16), `f5228e3`, [검증](TOP4_SYNC_VALIDATION.md) |
 
 manifest 버전은 0.5.0이며 누적 기능은 Unreleased입니다. 위 완료는 develop 통합 완료를
 뜻합니다. 정식 플러그인 릴리스, 사용자 설치 갱신, 설치 앱 GUI 검증 완료를 뜻하지 않습니다.
@@ -26,7 +28,7 @@ manifest 버전은 0.5.0이며 누적 기능은 Unreleased입니다. 위 완료�
 |---|---|---|---|---|
 | M0 | 현재 상태·다음 작업 정리 | [PR #14](https://github.com/smrgd88/pixel-plugin/pull/14) develop 병합 완료 | 완료 PR과 남은 작업 구분, 소유 저장소·범위·검증 기준 명시, README 진입 링크·문서 검증 통과 후 develop 병합 | 없음 |
 | M1 | Codex 설치·연결 검증 | CLI 범위 검증 완료: macOS 초기/모델, Linux Docker lifecycle; GUI 보류 | 선택한 설치 경로에서 스킬 탐색·참조 파일·MCP 실행·실제 결과를 검증하고 지원 클라이언트·제약을 기록 | M0 이후 범위 확정; 실제 Aseprite 필요 |
-| M2 | 정식 플러그인 릴리스 | 예정 | 릴리스 기준 커밋·버전·배포 대상 결정, 메타데이터·CHANGELOG·설치 경로 일치, 검증 증거 확보, 승인된 main 반영·태그·artifact 게시 확인 | 배포 대상 클라이언트의 M1 검증, 해당 플랫폼의 M3 검증 |
+| M2 | 정식 플러그인 릴리스 | 다음 단계: 릴리스 준비; 배포 미완료 | 릴리스 기준 커밋·버전·배포 대상 결정, 메타데이터·CHANGELOG·설치 경로 일치, 검증 증거 확보, 승인된 main 반영·태그·artifact 게시 확인 | 배포 대상 클라이언트의 M1 검증, 해당 플랫폼의 M3 검증 |
 | M3 | 플랫폼 실행 검증 확대 | macOS ARM·Linux amd64 Docker 일부 검증; 추가 환경 예정 | 선언한 OS/아키텍처에서 실제 Aseprite와 번들 launcher의 smoke·실패 경로 검증, CI/수동 증거·미지원 범위 기록 | M1과 병행 가능; 해당 실행 환경 필요 |
 
 M1은 CLI 경로만 검증했다면 CLI 지원 범위에 한해 완료할 수 있습니다. 기존에 보류한 Codex
@@ -47,7 +49,8 @@ Codex 호환 manifest와 별도 stdio 설정을 추가하고 설치 cache 기반
 
 1. 실제 Codex/운영체제/Aseprite 버전과 플러그인·MCP 소스 식별값 기록.
 2. 격리된 설치·설정에서 스킬 4개와 참조/예제 파일이 실제로 읽히는지 확인.
-3. 선택된 번들로 MCP 초기화와 tools/list를 확인하고 후보의 64개 계약과 대조.
+3. 선택된 번들로 MCP 초기화와 tools/list를 확인하고 해당 pin의 계약과 대조.
+   PR #15 설치 검증은 당시 56개, PR #16의 후속 격리 CLI 검증은 64개입니다.
 4. 최소 생성→저장→픽셀 확인→내보내기를 실제 MCP 호출로 검증하고 파일을 검사.
 5. 도구 실패의 오류 코드·요청 ID, 경고, 재연결 시 서버 선택을 검사.
 6. 중복 스킬·중복 MCP 연결, 경로 공백, 설치 캐시와 원본 체크아웃의 차이를 확인.
@@ -81,25 +84,32 @@ Linux Docker는 ARM 호스트에서 amd64 emulation을 사용했으며 물리 x8
 확인해야 합니다. Windows Bash 래퍼 제약과 native launcher 필요성은 조사 후 별도 OPS 작업으로
 범위를 정합니다. 실행 환경이 없는 대상을 완료로 표시하지 않습니다.
 
-## Top4 동기화 후보와 서버 잔여
+## Top4 develop 반영과 서버 잔여
 
 MCP #29/#30/#31/#33/#34/#32/#35는 develop `99f193a`에 병합됐습니다.
-현재 플러그인 후보는 이 commit을 정확히 pin하고 다섯 binary·64 tool schema·스킬·검증을
-갱신합니다. 도구 개수만으로 완료를 판단하지 않습니다.
+plugin [PR #16](https://github.com/smrgd88/pixel-plugin/pull/16)은 이 commit을 정확히 pin하고
+다섯 binary·64 tool schema·스킬·검증을 갱신한 뒤 develop `f5228e3`에 병합됐습니다.
+MCP 현황 문서 [PR #36](https://github.com/smrgd88/pixel-mcp/pull/36)은 develop `42bab18`에
+병합됐으며 runtime pin은 계속 `99f193a`입니다. 도구 개수만으로 완료를 판단하지 않습니다.
 
-| 항목 | 현재 서버 상태 | 이번 플러그인 작업 |
+| 항목 | 현재 서버 상태 | 플러그인 반영 상태 |
 |---|---|---|
 | RM-FIX-01 nested draw_pixels | #29 수정 완료 | 중첩 고유 이름과 duplicate 거부, legacy lookup 경계 검증 |
 | 구조/cel 조회·속성·unlink | #30/#31/#33 포함 | 조회→revision→편집→재조회, 공유 영향 집합/동의와 단일 cel 분리 구분 |
 | 레이어/그룹·태그 편집 | #34/#32 포함 | 구조/태그 ID 무효화, 잠금/숨김/명시적 0·빈 값·이름 정책 반영 |
 | 선택 export·trim/extrude/padding·출력 세트 | #35 포함 | GIF 차이, source 번호, JSON/일반 오류 rollback·background 계약 검증 |
-| 정확한 indexed PNG 유지 옵션·크기 예산 정밀화 | 서버 후속 | 구현됐다고 표시하지 않음 |
+| 크기 예산 정밀화 | 별도 MCP `feature/be-export-size-budget` 세션 작업 중 | 현재 pin에는 미포함; 서버 병합 후 별도 동기화 판단 |
+| 정확한 indexed PNG 유지 옵션 | 서버 후속 | 구현됐다고 표시하지 않음 |
 | 출력 세트 crash 복구·고아 staging 정리 | 서버 후속 | 현재 ordinary-error rollback과 구분 |
 | slice/pivot/nine-slice·범용 모드 전환 | 별도 범위 선정 | 서버 구현 뒤 도구/스킬/번들 동기화 |
 
 [편집 계약](MCP_STRUCTURE_EDITING.md), [출력 지원표](MCP_EXPORT_OPTIONS.md),
-[후보 검증](TOP4_SYNC_VALIDATION.md)을 따릅니다. 플러그인 develop/main 통합, 릴리스 및
-개인 설치본 갱신은 각각 별도 완료 단계입니다. M2/M3를 이 기능 동기화로 완료 처리하지 않습니다.
+[동기화 검증과 병합 이력](TOP4_SYNC_VALIDATION.md)을 따릅니다. background caveat는
+Exporter 스킬에, 선택 export 흐름은 스킬·예제·레시피에 반영됐습니다. 태그 변경 후 재조회 지침은
+Animator 스킬·예제에 반영됐으며 실행 레시피는 조회→태그 편집까지를 다룹니다.
+이는 해당 문서/예제와 검증된 workflow 범위의 완료입니다. 모든 조합의 지원 검증은 아닙니다.
+plugin develop 통합은 완료됐으며 main 반영·릴리스·마켓 게시·개인 설치본 갱신은 미완료입니다.
+다음 단계는 M2 릴리스 준비이며 M2/M3를 이 기능 동기화로 완료 처리하지 않습니다.
 
 ## 제외 범위
 

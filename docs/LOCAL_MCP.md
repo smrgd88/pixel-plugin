@@ -87,8 +87,8 @@ separate from file staging: read [safety contracts](MCP_SAFETY.md). Verify with
 `python3 bin/test-mcp-safety.py --aseprite /absolute/path/to/aseprite`. Test configs
 must set an isolated absolute snapshot_dir and must not change the user’s history setting.
 
-The current pin adds [error codes, request IDs and partial rollback recovery](MCP_ERRORS.md).
+MCP #25 introduced [error codes, request IDs and partial rollback recovery](MCP_ERRORS.md).
 Run `python3 bin/test-mcp-errors.py --aseprite /absolute/path/to/aseprite` with real Aseprite.
-Current execution and review evidence: [error/tracing validation](ERROR_TRACING_VALIDATION.md).
+Historical execution and review evidence for plugin PR #12: [error/tracing validation](ERROR_TRACING_VALIDATION.md).
 
-The Top4 bundle adds [revision/ID editing](MCP_STRUCTURE_EDITING.md) and [filtered export/output sets](MCP_EXPORT_OPTIONS.md). Run `python3 bin/test-mcp-top4.py --aseprite /absolute/path/to/aseprite` for actual source/metadata/pixel/JSON/rejection checks. Pillow is included in the test requirements. See [Top4 synchronization validation](TOP4_SYNC_VALIDATION.md) for this candidate and remaining platform scope.
+The Top4 bundle adds [revision/ID editing](MCP_STRUCTURE_EDITING.md) and [filtered export/output sets](MCP_EXPORT_OPTIONS.md). Run `python3 bin/test-mcp-top4.py --aseprite /absolute/path/to/aseprite` for actual source/metadata/pixel/JSON/rejection checks. Pillow is included in the test requirements. See [Top4 synchronization validation](TOP4_SYNC_VALIDATION.md) for the PR #16 develop merge, historical execution evidence and remaining platform scope.

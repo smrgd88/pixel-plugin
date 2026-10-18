@@ -1,13 +1,13 @@
 # 버그 수정 및 반영 현황
 
-확인일: **2026-10-18** · 이번 플러그인 후보의 기준 `develop@49d9687`.
-현재 런타임 반영은 [플러그인 PR #12](https://github.com/smrgd88/pixel-plugin/pull/12)의
-`d96682876ec088723fe14d92e612fced0ab161f0`이며, 이후 Codex 안내는
-[PR #13](https://github.com/smrgd88/pixel-plugin/pull/13)의 `82d5edb`로 병합됐습니다.
+확인일: **2026-10-18** · plugin `develop@f5228e3`.
+현재 런타임·스킬 동기화는 [플러그인 PR #16](https://github.com/smrgd88/pixel-plugin/pull/16)으로
+병합됐습니다. 이전 #12 오류/추적, #13 Codex 안내, #15 설치 검증·publisher 변경도 포함됩니다.
 
 내장 MCP는 [mcp-source.json](../config/mcp-source.json)의
 `99f193ad3a0eefcb8e8b71a3b9e3f69be47ac2d8`이며 도구 수는 64개입니다.
-이는 이번 동기화 작업 브랜치의 번들로, plugin develop 통합·릴리스·개인 설치 갱신과 구분합니다.
+MCP 현황 문서 [PR #36](https://github.com/smrgd88/pixel-mcp/pull/36)은 develop `42bab18`에
+병합됐으나 plugin runtime pin은 유지합니다. develop 통합은 완료됐고 누적 변경은 Unreleased입니다.
 manifest 버전 0.5.0, MCP protocol serverInfo.version 0.1.0과 소스 커밋은 서로 다른 값입니다.
 **develop 병합은 새 릴리스 배포나 upstream marketplace 패키지 갱신을 뜻하지 않습니다.**
 우선순위·소유 저장소·완료 조건은 [플러그인 로드맵](ROADMAP.md)을 따릅니다.
@@ -55,16 +55,18 @@ AA 후보 전체 재설계, palette 중복 항목 제거, 모든 희귀색 보�
 | REVIEW_SYNC_VALIDATION | bd13cdb 번들, 실제 Aseprite 회귀·계약·스킬 확인 | PR #9 후보에서 실행한 기록 |
 | [전후 비교·이미지](reports/mcp22/REPORT.md) | 이전56회+현재56회, 총112회; native26개 PNG 대조 | PR #9 후보의 후속 실제 비교. 문서 갱신 때 재실행한 결과가 아님 |
 | 앱 GUI/설치 자동 연결 | 보류 | 사용자 요청대로 미실행 상태 유지 |
-| 다른 4개 플랫폼 | 교차 빌드·checksum | native 실행 통과로 해석하지 않음 |
+| [Top4 동기화](TOP4_SYNC_VALIDATION.md) | 64도구·119/119 시나리오, 11/11 레시피, 92요청, 격리 CLI 및 Linux Docker smoke | PR #16 당시 실행 기록; 이번 문서 갱신에서 재실행하지 않음 |
+| macOS amd64/Linux arm64/Windows amd64 | 교차 빌드·checksum | native 실행 통과로 해석하지 않음; Linux amd64는 ARM 호스트의 Docker emulation 검증 |
 
-저장소는 .claude-plugin 형태로 패키징되어 있습니다. Codex의 실제 스킬+MCP 사용은
+저장소는 Codex와 Claude 패키징을 함께 유지합니다. Codex의 실제 스킬+MCP 사용은
 격리 CLI 설정으로 검증했으며, 설치된 Codex 플러그인의 자동 연결을 검증한 것은 아닙니다.
 
 ## 다음 작업 경계
 
 - [MCP #21 dry-run](https://github.com/smrgd88/pixel-mcp/pull/21)은 2026-09-28 13:10:26 KST 병합됐습니다(`1c410b6`). 이 번들에는 #23 snapshot/restore 및 #24 history/undo와 함께 포함됩니다. [사용 계약](MCP_SAFETY.md).
 - 우선순위와 완료 조건은 [다음 작업](NEXT_STEPS.md)을 따릅니다.
-- 현재 번들의 실제 실행 범위는 [오류·요청 추적 검증](ERROR_TRACING_VALIDATION.md)에 기록합니다.
+- 현재 번들의 실제 실행 범위는 [Top4 검증](TOP4_SYNC_VALIDATION.md)에 기록합니다.
+  [오류·요청 추적 검증](ERROR_TRACING_VALIDATION.md)은 이전 PR #12의 실행 기록입니다.
   [리뷰 수정 반영 검증](REVIEW_SYNC_VALIDATION.md)은 이전 PR #9의 실행 기록입니다.
 - 새 backend 변경은 MCP 병합 후 plugin pin·5개 binary·schema·스킬을 함께 갱신합니다.
 - 설치된 앱 플러그인의 자동 연결/GUI와 다른 OS native 검증은 기존 보류 상태입니다.
@@ -82,16 +84,18 @@ MCP #21/#23/#24는 모두 develop 병합을 확인했습니다. #24 최종7f439a
 스킬/명령을 동기화했고 develop에 병합됐습니다. [계약](MCP_ERRORS.md) · [이번 검증](ERROR_TRACING_VALIDATION.md).
 main 반영·정식 게시·사용자 설치 갱신은 별도 작업으로 남아 있습니다.
 
-## Top4 서버 병합 및 이번 플러그인 동기화 후보
+## Top4 서버·플러그인 develop 반영 완료
 
 서버 PR #29에서 RM-FIX-01 nested draw_pixels를 수정했고, #30/#31에서 구조 조회·cel 속성과
 revision을 추가했습니다. #33 unlink, #34 레이어/그룹, #32 태그, #35 선택 export·trim/extrude·
 padding·overwrite·출력 세트 보호가 develop `99f193a`에 포함됩니다.
-이번 플러그인 후보는 정확한 pin·5개 binary·64개 schema·스킬·레시피·검증을 함께 갱신합니다.
+plugin #16은 정확한 pin·5개 binary·64개 schema·스킬·레시피·검증을 함께 갱신하고 develop에 병합됐습니다.
 [편집 계약](MCP_STRUCTURE_EDITING.md) · [export 계약](MCP_EXPORT_OPTIONS.md) ·
 [실행과 리뷰](TOP4_SYNC_VALIDATION.md).
 
 RM-FIX-01은 수정 완료지만 draw_pixels의 재귀적인 이름 조회를 다른 legacy 도구에 소급 적용하지
 않습니다. get_sprite_info는 기존 경량 응답을 유지하며 상세 구조/태그는 별도 도구로 조회합니다.
 현재 출력 세트의 일반 오류 rollback은 포함되나 crash 원자성, indexed PNG 유지 옵션,
-크기 예산 정밀화와 slices/pivot은 서버 잔여입니다.
+크기 예산 정밀화와 slices/pivot은 현재 pin에 없는 서버 후속입니다.
+크기 예산은 별도 MCP `feature/be-export-size-budget` 세션 작업 중이며, 이 문서 작업은 서버를
+수정하거나 완료를 판정하지 않습니다. plugin의 다음 단계는 M2 릴리스 준비입니다.

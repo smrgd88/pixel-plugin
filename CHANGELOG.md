@@ -8,8 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 These entries describe cumulative develop changes, not a newly published release.
-The active candidate bundle is pinned to `99f193ad3a0eefcb8e8b71a3b9e3f69be47ac2d8` (64 tools).
-Earlier entries below record their own updates. This branch is not a published release or an installed-plugin update.
+The develop bundle merged in [PR #16](https://github.com/smrgd88/pixel-plugin/pull/16) at `f5228e3` is pinned to `99f193ad3a0eefcb8e8b71a3b9e3f69be47ac2d8` (64 tools).
+Earlier entries below record their own updates. Develop integration is complete; release publication and personal installed-plugin updates remain separate steps.
 
 ### Top4 MCP and export contract synchronization
 - Bundle merged MCP #29–#35 at exact source pin 99f193a, with five rebuilt binaries and live schemas.
