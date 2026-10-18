@@ -81,9 +81,12 @@ for i=1,{count} do
  s.frames[i].duration=(100+i)/1000
  {body}
 end
-s:saveAs({json.dumps(str(path))})
+s:saveAs(app.params.fixture_path)
 ''')
-        r = subprocess.run([ase, '--batch', '--script', str(script)], capture_output=True,
+        # JSON string escaping is not Lua syntax (notably \uXXXX). Pass the
+        # filename as one argv parameter so Unicode/quotes stay data.
+        r = subprocess.run([ase, '--batch', '--script-param', f'fixture_path={path}',
+                            '--script', str(script)], capture_output=True,
                            text=True, timeout=30)
         assert r.returncode == 0, r.stdout + r.stderr
         return path
@@ -145,7 +148,7 @@ s:saveAs({json.dumps(str(path))})
         load('contract', 'validate-mcp-contract.py').compare(current.tools(), snapshot['tools'])
         if previous:
             assert previous.tools() == current.tools(), 'Unexpected public schema change'
-        many = fixture('many', 128, 128, 65,
+        many = fixture('many-한글 sprite', 128, 128, 65,
             'local im=Image(128,128);im:clear(app.pixelColor.rgba(i,0,0,255));s:newCel(s.layers[1],i,im)')
         def canvas(image, frame, n):
             assert frame['spriteSourceSize'] == dict(x=0,y=0,w=128,h=128)

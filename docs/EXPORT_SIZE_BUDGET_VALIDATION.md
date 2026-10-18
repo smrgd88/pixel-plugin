@@ -199,3 +199,69 @@ Notes:
 
 Verdict: **PASS_WITH_NOTES**. Ready for review as a develop PR; no merge or release is performed.
 Keep the branch/worktree and ignored evidence until an authorized merge and cleanup check.
+
+## Requested follow-up self-review and repair
+
+This follow-up starts at `a36567ff26736f0bc05ad149979c367643644392` with a clean
+`chore/shared-export-size-budget-sync` worktree. Base/merge-base remains
+`develop@e856582ee6ef50cf32d5ae12143cf3f858891428`. The initial 25-file PR scope and
+its direct build/client/export consumers were reviewed again in review-and-repair mode
+using `convergent-code-review` and its backend lens. Earlier results above remain historical
+execution evidence; they are not replaced by this narrower repair.
+
+| ID | Priority / final status | Trigger, impact, correction and evidence |
+|---|---|---|
+| SHARED-P2-002 | P2 / VERIFIED | `bin/test-mcp-export-budget.py` interpolated `json.dumps(path)` as Lua source in `fixture`. A Korean output directory produces JSON `\uXXXX` escapes that Lua rejects before any export call. Reproduced with real Aseprite (`unicode-red.log`, zero export calls). Pass the path through `--script-param fixture_path=...` and `app.params.fixture_path` instead. The default many-frame fixture now includes Korean characters and a space so future native runs exercise the regression. |
+
+Evidence retained under `test-outputs/export-size-budget-rereview/`:
+
+- Red: `--output 'test-outputs/export-size-budget-rereview/한글 경로'` failed with
+  native Lua `missing '{'` at the generated JSON Unicode escape (`run-97b29f94`). This
+  was a reproducible test-runner defect, not an MCP export error or timeout.
+- Green: the same Unicode output root with the repaired runner and the preserved prior
+  binary passed all 26 calls / 6 groups (`unicode-green.log`, `run-42c07d99`). It retains
+  exact full/per-frame pixels, known bounds/strip order, duration, source metadata/bytes,
+  padding/explicit zero and source/output preservation checks. The earlier SHARED-P2-001
+  repair remains intact and is not reopened.
+- Native parameter round trips: 4/4 each on macOS Aseprite 1.3.18.2 and the Linux amd64
+  emulated supported floor 1.3.17.2. Exact values include ASCII, Korean/CJK/emoji, spaces,
+  quotes, backslash, equals, newline and injection-like text (`param-roundtrip.log`).
+  Paths travel as one argv value and are never interpreted as Lua code. The floor check
+  validates this runner interface, not another execution of the entire floor export matrix.
+- Final default package suite 7/7 PASS (`package.log`), Python syntax and Git whitespace
+  PASS. Native calls retain timeout=30. No fixture bypass, timeout increase or dependency
+  downgrade was used. Pin, all five binary bytes/checksums, live schema and guidance are
+  unchanged; no rebuild is necessary for this test-only correction.
+
+Repair-diff and closure review checked CLI option ordering (`--script-param` precedes
+`--script`), argument boundaries, native return-code handling, saved path identity and
+all callers of `fixture`; the per-frame oracle and failure snapshots remain unchanged.
+The subsequent fresh-discovery pass traversed the full base-to-candidate scope again:
+source/build/provenance and launcher selection, schema and handler constraints, generated
+reference and exporter consumers, source/output guarantees and current/historical status.
+No further finding or merge blocker was found.
+
+Metrics for this follow-up only: initial discovery 1, mutation cycle 1, repair-diff review 1,
+closure 1, full-scope fresh-discovery 1, total review passes 4. Initial P0/P1/P3=0 and P2=1;
+new findings after repair/closure/fresh=0; repair-caused/reopened=0; VERIFIED=1;
+ACCEPTED/OUT_OF_SCOPE/unresolved=0. Open P0/P1 remained zero. Stop reason: the reproduced
+path failure is fixed, relevant native checks pass and no blocker remains. Duration not measured.
+
+Final candidate is initial HEAD plus the runner diff, with 25 PR files fingerprinted before
+this reporting-only addition. Manifest SHA-256:
+`45bab63bf83610b5772cee579d245c8dbee3d904b30e1216886c690436b31b70`.
+Relevant mutations after selection and candidate invalidations: 0. Changed during repair:
+only the test runner; this section records results. Inspected for context: the native CLI,
+MCP client, build/validation helpers and pinned export planner. Excluded: backend production
+changes, unrelated tests/features, other worktrees, installations, merge/release operations.
+
+Notes:
+
+1. This narrow test-runner repair does not repeat the unchanged binaries' full Linux export,
+   scratch/rollback/PBT, full source suite/race or GUI/install matrices. Their earlier results
+   and unexecuted scopes above remain distinct; three platforms still have cross-build evidence only.
+2. Older-runtime exact packed planning, total RSS control, crash recovery and external-writer
+   protection remain unimplemented. Existing Top4 Pillow deprecation warnings remain a separate follow-up.
+
+Follow-up verdict: **PASS_WITH_NOTES**. Commit/push updates the existing develop PR #18;
+merging, release/publication, personal installation and worktree cleanup remain excluded.
