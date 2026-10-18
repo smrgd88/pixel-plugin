@@ -1,5 +1,25 @@
 # Top4 MCP 기능 및 export 계약 동기화 검증 — 2026-10-18
 
+## 병합 후 현재 상태
+
+[plugin PR #16](https://github.com/smrgd88/pixel-plugin/pull/16)은 2026-10-18 04:09:34 UTC에
+`develop@f5228e3b7dd3096600cebd216808f7cc2829330a`로 병합됐습니다.
+검증 후보 `4814d47e2e69d448af5a9c6da145c82f42030457`과 병합 commit의 tree는 동일합니다.
+전용 작업 브랜치/워크트리는 정리됐고 ignored 검증자료는 다음 로컬 아카이브에 보관됐습니다:
+`/Users/keumheesung/orca/archives/pixel-plugin/pr-16-top4-4814d47/local-evidence.tar.gz`.
+아래 `test-outputs/` 경로는 당시 워크트리 내 증거 위치이며 현재 checkout의 파일을 뜻하지 않습니다.
+
+MCP 현황 문서 [PR #36](https://github.com/smrgd88/pixel-mcp/pull/36)은 develop `42bab18`에
+병합됐습니다. plugin runtime pin `99f193a`/64개 도구와 manifest 0.5.0은 유지하며 **Unreleased**입니다.
+다음 단계는 [M2 릴리스 준비](ROADMAP.md#릴리스-준비-범위-m2)입니다.
+main 반영·릴리스·마켓 게시·개인 설치본 교체는 미완료입니다. 크기 예산 정밀화는 별도 MCP
+`feature/be-export-size-budget` 세션 작업 중이며 현재 pin의 기능으로 표시하지 않습니다.
+
+## 당시 구현·검증 기록
+
+이하 환경·실행 결과·초기 실패·수정·리뷰는 PR #16 구현 당시 기록입니다.
+이번 문서 현황 갱신에서 재실행한 것으로 합산하지 않습니다.
+
 작업: `[SHARED][FEATURE] Top4 MCP 기능 및 export 계약 플러그인 동기화`.
 경로: `/Users/keumheesung/orca/workspaces/pixel-plugin/shared-feature-top4-mcp-sync`.
 브랜치: `feature/shared-top4-mcp-sync`.
@@ -129,7 +149,7 @@ source/build/schema snapshots, 관련 스킬/commands/문서/테스트)를 검�
 미해결 finding 0. JSON 순서 가정의 직접 소비자 전파를 보강하며 후보 snapshot을 1회 갱신했습니다.
 최종 후보는 `test-outputs/top4/final-candidate.json`의 48개 SHA-256과 base commit으로 식별하며,
 이 reporting-only 문서만 hash에서 제외했습니다. 최종 후보 선택 뒤 runtime/test/계약의 추가 변경은
-없으며 최종 검증 후 hash 일치를 확인합니다. 전체 시간은 별도로 측정하지 않았습니다.
+없었으며 최종 검증 후 hash 일치를 확인했습니다. 전체 시간은 별도로 측정하지 않았습니다.
 
 차단 위험(P0/P1)은 전 단계 0이며 세 검증/계약 공백을 해결한 뒤 추가 mutation을 중단했습니다.
 셀프리뷰이며 독립 외부 리뷰나 병합 승인을 대신하지 않습니다.
@@ -147,8 +167,9 @@ source/build/schema snapshots, 관련 스킬/commands/문서/테스트)를 검�
    정확한 indexed PNG 유지 옵션·size budget 정밀화·slice 기능을 이번 완료로 표현하지 않습니다.
 
 판정: **PASS_WITH_NOTES** (최종 후보의 필수 검사·closure·fresh 리뷰 완료 기준).
-미병합 task branch/worktree와 ignored evidence를 유지합니다. develop/main 병합·release·공개 게시,
-개인 설치 갱신은 이 작업에 포함하지 않습니다.
+당시 판정은 구현 후보의 검증 결과이며 독립 병합 승인을 뜻하지 않았습니다.
+후속 develop 병합·검증자료 보관·워크트리 정리 상태는 위의 [현재 상태](#병합-후-현재-상태)를 따릅니다.
+release·공개 게시·개인 설치 갱신은 이 구현 작업에 포함하지 않았습니다.
 
 최종 후보의 레시피 전체는 `recipes-certified`에서 11/11, 순서 소비자 보강 후 Codex 검사는
 `codex-certified/run-472597e45e`에서 PASS, 기본 suite는 `plugin-certified.log`에서 7/7입니다.
