@@ -9,7 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 These entries describe cumulative develop changes, not a newly published release.
 The develop bundle merged in [PR #16](https://github.com/smrgd88/pixel-plugin/pull/16) at `f5228e3` is pinned to `99f193ad3a0eefcb8e8b71a3b9e3f69be47ac2d8` (64 tools).
-Earlier entries below record their own updates. Develop integration is complete; release publication and personal installed-plugin updates remain separate steps.
+Earlier entries below record their own updates. This export-budget candidate advances the bundle to MCP #37 (`fcb83861df08b4ee897f162d9a175bd9d149ed96`); its plugin develop merge is pending. Release publication and personal installed-plugin updates remain separate steps.
+
+### Export size-budget synchronization
+- Rebuild five bundles from merged MCP #37, retaining all 64 live tool definitions, plugin versions, packaging and configuration precedence.
+- Reflect actual trim/layout/packed duplicates, padding/extrusion, bounded scratch lifetimes and pre-publication output checks. Preserve older-runtime packed envelopes and dimension/planning limits; no total RSS cap or crash-recovery feature.
+- Add real bundled before/after export regressions and update exporter guidance/current status. Preserve earlier validation/failure history. See [validation](docs/EXPORT_SIZE_BUDGET_VALIDATION.md).
 
 ### Top4 MCP and export contract synchronization
 - Bundle merged MCP #29–#35 at exact source pin 99f193a, with five rebuilt binaries and live schemas.

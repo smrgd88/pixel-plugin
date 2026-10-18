@@ -19,7 +19,7 @@ Parse `$ARGUMENTS`, resolve the actual sprite_path, and read [exporter guidance]
 
 Default output names are sprite.png, animation.gif or spritesheet.png in the requested output directory (resolve absolute paths). Validate positive integer scale; positive FPS must produce a duration within 1–65535 ms. Validate frame selection against frame_count. Reject unsupported or malformed options instead of passing them to MCP.
 
-A `grid` layout request maps to `rows`; MCP accepts horizontal, vertical, rows, columns, packed. Padding is 0–100 and affects border, shape and inner padding. There is no fixed grid-column parameter.
+MCP accepts horizontal, vertical, rows, columns, packed. Rows/columns are unconstrained horizontal/vertical strips; clarify a fixed-grid request instead of promising grid dimensions. Padding is 0–100 and affects border, shape and inner padding. There is no fixed grid-column parameter.
 
 Read [the output support table](../docs/MCP_EXPORT_OPTIONS.md). Map `tag=NAME` to exact `tag`, or `frames=A:B` to inclusive frame_start/frame_end. A positive frame=N cannot combine with tag/range; with either selector use frame_number=0. For `layer_id=ID`, query get_sprite_structure and send its expected_revision; do not interpret a layer name as an ID. `include_hidden=true` requires that explicit layer selection. Query get_sprite_tags to resolve exact names; duplicate/empty names cannot be exported by tag. Tag direction/repeats do not expand output order.
 
@@ -40,3 +40,5 @@ Use [preview and recovery rules](../docs/MCP_SAFETY.md) for requested previews o
 Follow [error and request-tracing rules](../docs/MCP_ERRORS.md): report error.code and request_id, preserve error.recovery, and never automatically retry file_rollback_failed or delete its retained backups.
 
 For sheet JSON, preserve source_frame_number and output-relative frameTags, final meta.image basename and native bounds/durations. Visible native backgrounds retain the canvas under trim; some indexed-background textures become RGBA. Original source bytes remain unchanged. Texture+JSON ordinary-error rollback is not set-wide crash atomicity.
+
+Budgeting uses actual selected trim/layout/duplicates and padding/extrusion. Exact packed planning requires Aseprite 1.3.18.2+; older supported versions retain conservative packed bounds. Follow [size/planning limits](../docs/MCP_EXPORT_OPTIONS.md#size-and-planning-budgets): split source ranges on rejection; do not increase timeout, bypass guards or retry automatically.

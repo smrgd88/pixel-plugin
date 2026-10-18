@@ -18,13 +18,17 @@ This fork is maintained by **smrgd88**. The original plugin was created by
 ## Current source status
 
 The bundle provides **64 MCP tools**, pinned to
-`99f193ad3a0eefcb8e8b71a3b9e3f69be47ac2d8` in [the source manifest](config/mcp-source.json).
+`fcb83861df08b4ee897f162d9a175bd9d149ed96` in [the source manifest](config/mcp-source.json).
 It includes drawing, animation, palette operations, exports, temporary-copy previews,
 saved-file snapshots, opt-in recorded undo, and error codes with request IDs.
+MCP #37 refines sheet budgets using actual trim/layout/duplicates and padding/extrusion.
+Rows/columns are unconstrained strips; exact packed planning requires Aseprite 1.3.18.2+.
+Earlier supported runtimes keep conservative packed bounds. Dimension/planning limits remain;
+this is not a process-wide memory cap. See [export limits](docs/MCP_EXPORT_OPTIONS.md#size-and-planning-budgets).
 
 These capabilities describe this checkout. A merge into `develop` does not publish a
 release or update an installed plugin. An upstream marketplace installation can contain
-a different bundle. See [latest bundle validation](docs/ERROR_TRACING_VALIDATION.md),
+a different bundle. See [latest bundle validation](docs/EXPORT_SIZE_BUDGET_VALIDATION.md),
 [fix status](docs/BUG_STATUS.md), and [known issues](docs/KNOWN_ISSUES.md).
 
 ## Quick start with Codex
@@ -263,7 +267,7 @@ checked-in assets, and an offline browser demo.
 - [AGENTS.md](AGENTS.md): Codex project instructions, Git workflow, and skill routing
 - [Local MCP development](docs/LOCAL_MCP.md): Reproducible builds and test commands
 - [MCP tools](docs/MCP_TOOLS.md): Exact schemas for all 64 tools
-- [Latest validation](docs/ERROR_TRACING_VALIDATION.md): Bundle checks and untested areas
+- [Latest validation](docs/EXPORT_SIZE_BUDGET_VALIDATION.md): Bundle checks and untested areas
 - [Plugin roadmap](docs/ROADMAP.md): Milestones, ownership, and completion criteria
 - [Next work](docs/NEXT_STEPS.md): Remaining integration and release work
 - [Contributing](CONTRIBUTING.md): Development guidelines

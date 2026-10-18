@@ -1,11 +1,11 @@
 {
-  "commit": "99f193ad3a0eefcb8e8b71a3b9e3f69be47ac2d8",
+  "commit": "fcb83861df08b4ee897f162d9a175bd9d149ed96",
   "toolchain": "go version go1.25.0 darwin/arm64",
   "binaries": {
-    "pixel-mcp-darwin-amd64": "1a95ba4e611475182b922d94491866953c455f97100810be429f5000bb881e3e",
-    "pixel-mcp-darwin-arm64": "d65c521b4ca926a03938e291f11c8eb3b3b534df83046fe8966ac2153a09dd27",
-    "pixel-mcp-linux-amd64": "cd4cc96a193c1cf64208ec4ccf6802ee2571221b5c5cb3c7b8ed0c4bc325e243",
-    "pixel-mcp-linux-arm64": "998d0450b5d3046a2287f0c68eaf2f5dfa32b1fd15393c010babf10ff25b4d02",
-    "pixel-mcp-windows-amd64.exe": "4bb852366a0a70cc8186d6340bc31dc7eeb50cefc4eb4f8762d1d8497897508d"
+    "pixel-mcp-darwin-amd64": "7206b3536e31513f8df2cc4485ebcc8ba908c6fdac74cd9ea61e867c8c6dc295",
+    "pixel-mcp-darwin-arm64": "baffb86e1a386654d05772f8c7ded8f4693d7b27320e293c75df42d60a8107ea",
+    "pixel-mcp-linux-amd64": "d8bb0d960a22991819ca2f7fddc12b5f93bf8b3afaa0ba2a0f0277737ec7bd7a",
+    "pixel-mcp-linux-arm64": "b31ff9e0d7136554ec200b3b75adb376a292b9f318d47f2ccd69e0e31b538e0a",
+    "pixel-mcp-windows-amd64.exe": "3818d59e5b0749db5dd2de7cdcea85bce83c3e0d89a43bc5a5ee0febceea5d91"
   }
 }

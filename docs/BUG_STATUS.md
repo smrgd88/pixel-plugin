@@ -1,13 +1,14 @@
 # 버그 수정 및 반영 현황
 
-확인일: **2026-10-18** · plugin `develop@f5228e3`.
-현재 런타임·스킬 동기화는 [플러그인 PR #16](https://github.com/smrgd88/pixel-plugin/pull/16)으로
+확인일: **2026-10-18** · plugin 기준 `develop@e856582` (문서 PR #17 병합), 크기 예산 동기화 후보.
+이전 Top4 런타임·스킬 동기화는 [플러그인 PR #16](https://github.com/smrgd88/pixel-plugin/pull/16)으로
 병합됐습니다. 이전 #12 오류/추적, #13 Codex 안내, #15 설치 검증·publisher 변경도 포함됩니다.
 
 내장 MCP는 [mcp-source.json](../config/mcp-source.json)의
-`99f193ad3a0eefcb8e8b71a3b9e3f69be47ac2d8`이며 도구 수는 64개입니다.
+`fcb83861df08b4ee897f162d9a175bd9d149ed96`이며 도구 수는 64개입니다.
 MCP 현황 문서 [PR #36](https://github.com/smrgd88/pixel-mcp/pull/36)은 develop `42bab18`에
-병합됐으나 plugin runtime pin은 유지합니다. develop 통합은 완료됐고 누적 변경은 Unreleased입니다.
+병합됐으며 당시 runtime pin은 유지됐습니다. 이후 MCP #37 크기 예산 개선이 `fcb8386`에 병합됐고
+이 후보의 번들·스킬·문서를 동기화했습니다. 이번 plugin develop 병합은 미수행이며 누적 변경은 Unreleased입니다.
 manifest 버전 0.5.0, MCP protocol serverInfo.version 0.1.0과 소스 커밋은 서로 다른 값입니다.
 **develop 병합은 새 릴리스 배포나 upstream marketplace 패키지 갱신을 뜻하지 않습니다.**
 우선순위·소유 저장소·완료 조건은 [플러그인 로드맵](ROADMAP.md)을 따릅니다.
@@ -65,7 +66,8 @@ AA 후보 전체 재설계, palette 중복 항목 제거, 모든 희귀색 보�
 
 - [MCP #21 dry-run](https://github.com/smrgd88/pixel-mcp/pull/21)은 2026-09-28 13:10:26 KST 병합됐습니다(`1c410b6`). 이 번들에는 #23 snapshot/restore 및 #24 history/undo와 함께 포함됩니다. [사용 계약](MCP_SAFETY.md).
 - 우선순위와 완료 조건은 [다음 작업](NEXT_STEPS.md)을 따릅니다.
-- 현재 번들의 실제 실행 범위는 [Top4 검증](TOP4_SYNC_VALIDATION.md)에 기록합니다.
+- 현재 번들의 실제 실행 범위는 [크기 예산 검증](EXPORT_SIZE_BUDGET_VALIDATION.md)에 기록합니다.
+  [Top4 검증](TOP4_SYNC_VALIDATION.md)은 이전 pin의 실행·실패·리뷰 이력입니다.
   [오류·요청 추적 검증](ERROR_TRACING_VALIDATION.md)은 이전 PR #12의 실행 기록입니다.
   [리뷰 수정 반영 검증](REVIEW_SYNC_VALIDATION.md)은 이전 PR #9의 실행 기록입니다.
 - 새 backend 변경은 MCP 병합 후 plugin pin·5개 binary·schema·스킬을 함께 갱신합니다.
@@ -95,7 +97,10 @@ plugin #16은 정확한 pin·5개 binary·64개 schema·스킬·레시피·검�
 
 RM-FIX-01은 수정 완료지만 draw_pixels의 재귀적인 이름 조회를 다른 legacy 도구에 소급 적용하지
 않습니다. get_sprite_info는 기존 경량 응답을 유지하며 상세 구조/태그는 별도 도구로 조회합니다.
-현재 출력 세트의 일반 오류 rollback은 포함되나 crash 원자성, indexed PNG 유지 옵션,
-크기 예산 정밀화와 slices/pivot은 현재 pin에 없는 서버 후속입니다.
-크기 예산은 별도 MCP `feature/be-export-size-budget` 세션 작업 중이며, 이 문서 작업은 서버를
-수정하거나 완료를 판정하지 않습니다. plugin의 다음 단계는 M2 릴리스 준비입니다.
+현재 출력 세트의 일반 오류 rollback과 MCP #37의 실제 trim/layout/중복 기반 예산·scratch
+수명 개선은 포함됩니다. 구버전(<1.3.18.2) packed 정밀화, 전체 프로세스 RSS 제한,
+비협력 writer 경쟁 보호, crash 복구, indexed PNG 유지 옵션과 slices/pivot은 미구현입니다.
+별도 crash-recovery SPIKE는 설계·process kill 실험이며 production 복구 tool이나 자동 retry를
+추가하지 않았습니다. [현재 계약](MCP_EXPORT_OPTIONS.md#size-and-planning-budgets)과
+[이번 검증](EXPORT_SIZE_BUDGET_VALIDATION.md)을 따릅니다. Plugin 후보 PR 검토·별도 병합 판단 후
+M2 릴리스 준비로 진행합니다.

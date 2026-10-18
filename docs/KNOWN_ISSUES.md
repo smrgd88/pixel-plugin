@@ -10,7 +10,7 @@ for source/PR links and [the latest focused audit](BUG_AUDIT.md) for reproductio
 
 ## Audited defects now included in the bundle
 
-MCP #22 repairs remain included in the current 99f193a pin; their first plugin integration was PR #9. MCP-AUDIT-01 (indexed mask resize),
+MCP #22 repairs remain included in the current fcb8386 pin; their first plugin integration was PR #9. MCP-AUDIT-01 (indexed mask resize),
 MCP-AUDIT-02 (explicit edge_threshold=0), and MCP-AUDIT-03 (inactive AA threshold)
 are fixed in this bundle. The [original audit](BUG_AUDIT.md) records old behavior;
 [current status](BUG_STATUS.md) and [control semantics](MCP_REVIEW_CONTROLS.md)
@@ -52,4 +52,6 @@ This does not provide native GUI undo, redo or permanent backups. See [next work
 
 ## Current structure/edit/export limits
 
-RM-FIX-01 nested draw_pixels is fixed in this bundle, but duplicate names reject and other name-based tools do not gain structural-ID addressing. The eight additive tools and freshness/locked/linked/tag policies are in [structure editing](MCP_STRUCTURE_EDITING.md). Export retains visible native background canvas bounds; some indexed background textures become RGBA. Exact indexed PNG preservation, tighter size budgeting, output-set crash recovery and slices remain server follow-ups.
+RM-FIX-01 nested draw_pixels is fixed in this bundle, but duplicate names reject and other name-based tools do not gain structural-ID addressing. The eight additive tools and freshness/locked/linked/tag policies are in [structure editing](MCP_STRUCTURE_EDITING.md). Export retains visible native background canvas bounds; some indexed background textures become RGBA. Exact indexed PNG preservation, older-runtime exact packed budgeting, output-set crash recovery and slices remain server follow-ups.
+
+MCP #37 improves actual sheet size budgeting and scratch lifetimes. Older supported runtimes (<1.3.18.2) still use conservative packed envelopes; complex modern packing can hit planning-work limits. These limits do not bound total process RSS. Crash recovery and non-cooperating writer protection remain unimplemented. See [exact limits](MCP_EXPORT_OPTIONS.md#size-and-planning-budgets) and [current validation](EXPORT_SIZE_BUDGET_VALIDATION.md).

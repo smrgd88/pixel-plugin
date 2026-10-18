@@ -202,3 +202,15 @@ Independent examples. First query structure; replace zero revision and layer_id 
 ### Executable selected-sheet-export recipe
 
 Query layer/revision and export a selected trimmed/extruded sheet with three explicit-zero padding overrides; verify actual PNG and source-indexed JSON. The complete schema-checked sequence is in [workflows.json](workflows.json), executed by `bin/test-skill-workflows.py`.
+
+## Trimmed packed output within the budget
+
+Use a distinct destination. This example keeps one-pixel extrusion, overrides border/inner
+padding to zero and leaves one pixel between shapes. Verify the returned PNG and actual
+JSON; duplicate samples may share bounds but preserve source_frame_number and duration.
+Aseprite 1.3.18.2+ uses exact packed planning; older supported versions may reject a set
+that would fit. On budget rejection, narrow the source range without bypassing guards.
+
+```mcp-example
+{"name":"export_spritesheet","arguments":{"sprite_path":"/work/walk.aseprite","output_path":"/work/walk-packed.png","layout":"packed","padding":1,"include_json":true,"trim":true,"extrude":true,"border_padding":0,"inner_padding":0,"overwrite":false}}
+```
