@@ -18,13 +18,17 @@
 ## 현재 소스 상태
 
 번들은 **MCP 도구 64개**를 제공하며, [소스 매니페스트](config/mcp-source.json)의
-`99f193ad3a0eefcb8e8b71a3b9e3f69be47ac2d8` 커밋에 고정되어 있습니다.
+`fcb83861df08b4ee897f162d9a175bd9d149ed96` 커밋에 고정되어 있습니다.
 드로잉, 애니메이션, 팔레트 작업, 내보내기, 임시 복사본 미리보기, 저장 파일 스냅샷,
 선택적으로 기록한 작업의 실행 취소, 요청 ID가 포함된 오류 코드를 지원합니다.
+MCP #37은 실제 trim/layout/중복과 padding/extrude를 반영해 sheet 예산을 계산합니다.
+rows/columns는 행·열 수 지정 없는 strip이며, packed 정밀 계산은 Aseprite 1.3.18.2 이상에 적용합니다.
+이전 지원 버전은 packed 보수 경로를 유지합니다. 크기·계산량 제한은 유지되며 전체 프로세스
+메모리 상한은 아닙니다. [export 제한](docs/MCP_EXPORT_OPTIONS.md#size-and-planning-budgets)을 참고하세요.
 
 이 설명은 현재 체크아웃의 기능을 기준으로 합니다. `develop`에 병합해도 릴리스가 게시되거나
 설치된 플러그인이 갱신되지는 않습니다. 원본 저장소의 마켓플레이스 설치본에는 다른 번들이
-들어 있을 수 있습니다. [최신 번들 검증](docs/ERROR_TRACING_VALIDATION.md),
+들어 있을 수 있습니다. [최신 번들 검증](docs/EXPORT_SIZE_BUDGET_VALIDATION.md),
 [수정 현황](docs/BUG_STATUS.md), [알려진 문제](docs/KNOWN_ISSUES.md)를 참고하세요.
 
 ## Codex로 시작하기
@@ -258,7 +262,7 @@ claude plugin install pixel-plugin@pixel-plugin
 - [AGENTS.md](AGENTS.md): Codex가 읽는 프로젝트 지침, Git 작업 흐름, 스킬 안내
 - [로컬 MCP 개발](docs/LOCAL_MCP.md): 재현 가능한 빌드와 테스트 명령
 - [MCP 도구](docs/MCP_TOOLS.md): 도구 64개의 정확한 스키마
-- [최신 검증](docs/ERROR_TRACING_VALIDATION.md): 번들 검사와 미검증 범위
+- [최신 검증](docs/EXPORT_SIZE_BUDGET_VALIDATION.md): 번들 검사와 미검증 범위
 - [플러그인 로드맵](docs/ROADMAP.md): 단계별 소유 범위와 완료 조건
 - [다음 작업](docs/NEXT_STEPS.md): 남은 통합·릴리스 작업
 - [기여 안내](CONTRIBUTING.md): 개발 지침

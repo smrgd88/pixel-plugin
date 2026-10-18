@@ -1,6 +1,6 @@
 # 플러그인 로드맵
 
-기준일: **2026-10-18** · 플러그인 기준: `develop@f5228e3` ([PR #16](https://github.com/smrgd88/pixel-plugin/pull/16) 병합) · MCP runtime pin: `99f193a` · 도구: 64개.
+기준일: **2026-10-18** · 플러그인 기준: `develop@e856582` ([PR #17](https://github.com/smrgd88/pixel-plugin/pull/17) 병합) · 이 동기화 후보 MCP runtime pin: `fcb8386` · 도구: 64개.
 [현재 실행 순서](NEXT_STEPS.md) · [수정 현황](BUG_STATUS.md) · [제약](KNOWN_ISSUES.md).
 
 이 문서는 Aseprite 작업을 위한 스킬·클라이언트 연동·MCP 번들·배포의 계획입니다.
@@ -90,7 +90,9 @@ MCP #29/#30/#31/#33/#34/#32/#35는 develop `99f193a`에 병합됐습니다.
 plugin [PR #16](https://github.com/smrgd88/pixel-plugin/pull/16)은 이 commit을 정확히 pin하고
 다섯 binary·64 tool schema·스킬·검증을 갱신한 뒤 develop `f5228e3`에 병합됐습니다.
 MCP 현황 문서 [PR #36](https://github.com/smrgd88/pixel-mcp/pull/36)은 develop `42bab18`에
-병합됐으며 runtime pin은 계속 `99f193a`입니다. 도구 개수만으로 완료를 판단하지 않습니다.
+병합됐으며 당시 runtime pin은 `99f193a`였습니다. Plugin 문서 PR #17은 `e856582`에 병합됐습니다.
+MCP #37은 `fcb8386`에 병합됐고 이 작업은 해당 pin으로 동기화한 develop PR 후보입니다.
+Plugin develop 병합·릴리스·개인 설치 갱신은 별도이며 도구 개수만으로 완료를 판단하지 않습니다.
 
 | 항목 | 현재 서버 상태 | 플러그인 반영 상태 |
 |---|---|---|
@@ -98,9 +100,10 @@ MCP 현황 문서 [PR #36](https://github.com/smrgd88/pixel-mcp/pull/36)은 deve
 | 구조/cel 조회·속성·unlink | #30/#31/#33 포함 | 조회→revision→편집→재조회, 공유 영향 집합/동의와 단일 cel 분리 구분 |
 | 레이어/그룹·태그 편집 | #34/#32 포함 | 구조/태그 ID 무효화, 잠금/숨김/명시적 0·빈 값·이름 정책 반영 |
 | 선택 export·trim/extrude/padding·출력 세트 | #35 포함 | GIF 차이, source 번호, JSON/일반 오류 rollback·background 계약 검증 |
-| 크기 예산 정밀화 | 별도 MCP `feature/be-export-size-budget` 세션 작업 중 | 현재 pin에는 미포함; 서버 병합 후 별도 동기화 판단 |
+| 크기 예산 정밀화·scratch 수명 | MCP #37 병합 완료 | 이 동기화 후보에 포함; [실행·리뷰](EXPORT_SIZE_BUDGET_VALIDATION.md) |
+| 구버전 packed 정밀화·전체 RSS 제한·비협력 writer 보호 | 미구현 | 보수 경로/작업메모리 제한과 구분 |
 | 정확한 indexed PNG 유지 옵션 | 서버 후속 | 구현됐다고 표시하지 않음 |
-| 출력 세트 crash 복구·고아 staging 정리 | 서버 후속 | 현재 ordinary-error rollback과 구분 |
+| 출력 세트 crash 복구·고아 staging 정리 | 별도 SPIKE 설계/process kill 실험 예정 | production 복구 없음; 구현 병합 후 재동기화 |
 | slice/pivot/nine-slice·범용 모드 전환 | 별도 범위 선정 | 서버 구현 뒤 도구/스킬/번들 동기화 |
 
 [편집 계약](MCP_STRUCTURE_EDITING.md), [출력 지원표](MCP_EXPORT_OPTIONS.md),
@@ -108,8 +111,9 @@ MCP 현황 문서 [PR #36](https://github.com/smrgd88/pixel-mcp/pull/36)은 deve
 Exporter 스킬에, 선택 export 흐름은 스킬·예제·레시피에 반영됐습니다. 태그 변경 후 재조회 지침은
 Animator 스킬·예제에 반영됐으며 실행 레시피는 조회→태그 편집까지를 다룹니다.
 이는 해당 문서/예제와 검증된 workflow 범위의 완료입니다. 모든 조합의 지원 검증은 아닙니다.
-plugin develop 통합은 완료됐으며 main 반영·릴리스·마켓 게시·개인 설치본 갱신은 미완료입니다.
-다음 단계는 M2 릴리스 준비이며 M2/M3를 이 기능 동기화로 완료 처리하지 않습니다.
+Top4 plugin develop 통합은 완료됐으며 이번 크기 예산 후보는 PR 검토·별도 병합 판단이 남습니다.
+main 반영·릴리스·마켓 게시·개인 설치본 갱신은 수행하지 않습니다. 이후 M2 릴리스 준비로 진행하며
+M2/M3를 이 기능 동기화로 완료 처리하지 않습니다.
 
 ## 제외 범위
 

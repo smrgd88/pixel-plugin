@@ -4,7 +4,7 @@ The plugin launches `.mcp.json` → `bin/pixel-mcp` → a platform binary. A bui
 
 ## Pinned source
 
-[config/mcp-source.json](../config/mcp-source.json) pins the merged MCP #35 Top4 revision at `99f193ad3a0eefcb8e8b71a3b9e3f69be47ac2d8`. All five bundled executables are built from that commit; [bin/mcp-build.json](../bin/mcp-build.json) records their SHA-256 hashes. The actual `tools/list` input/output schemas are in [config/mcp-contract.json](../config/mcp-contract.json).
+[config/mcp-source.json](../config/mcp-source.json) pins the merged MCP #37 export-budget revision at `fcb83861df08b4ee897f162d9a175bd9d149ed96`. All five bundled executables are built from that commit; [bin/mcp-build.json](../bin/mcp-build.json) records their SHA-256 hashes. The actual `tools/list` input/output schemas are in [config/mcp-contract.json](../config/mcp-contract.json).
 
 The MCP protocol's `serverInfo.version` is still `0.1.0` in this source. It is not the plugin version or a reliable source identifier. `bin/pixel-mcp --version` in these builds reports the full source commit.
 
@@ -75,7 +75,7 @@ Current [export/analysis contract](MCP_EXPORT_ANALYSIS.md) includes MCP #18 sequ
 
 Historical execution, before/after comparison and review: [export/analysis validation](EXPORT_ANALYSIS_VALIDATION.md).
 
-For merged fixes, confirmed remaining defects and unreleased work, use [the status ledger](BUG_STATUS.md) and [focused audit](BUG_AUDIT.md). The binary pin in this file is unchanged by that documentation-only audit.
+For merged fixes, confirmed remaining defects and unreleased work, use [the status ledger](BUG_STATUS.md) and [focused audit](BUG_AUDIT.md). That earlier documentation-only audit did not change its runtime pin.
 
 The previous safety bundle verification is recorded in
 [the safety sync validation](SAFETY_SYNC_VALIDATION.md). The earlier
@@ -92,3 +92,22 @@ Run `python3 bin/test-mcp-errors.py --aseprite /absolute/path/to/aseprite` with 
 Historical execution and review evidence for plugin PR #12: [error/tracing validation](ERROR_TRACING_VALIDATION.md).
 
 The Top4 bundle adds [revision/ID editing](MCP_STRUCTURE_EDITING.md) and [filtered export/output sets](MCP_EXPORT_OPTIONS.md). Run `python3 bin/test-mcp-top4.py --aseprite /absolute/path/to/aseprite` for actual source/metadata/pixel/JSON/rejection checks. Pillow is included in the test requirements. See [Top4 synchronization validation](TOP4_SYNC_VALIDATION.md) for the PR #16 develop merge, historical execution evidence and remaining platform scope.
+
+## Export size-budget synchronization
+
+MCP #37 refines actual trim/layout/packed-duplicate allocation and bounds scratch-image
+lifetimes; the 64 public tool definitions remain identical to #35. Compare full live schemas
+and handler behavior, not just names/counts. See [limits and older-runtime policy](MCP_EXPORT_OPTIONS.md#size-and-planning-budgets)
+and [current validation](EXPORT_SIZE_BUDGET_VALIDATION.md). The Top4 and installation reports
+above retain their original pins, review results and failed/timeout attempts.
+
+```bash
+python3 bin/test-mcp-export-budget.py --aseprite /absolute/path/to/aseprite
+# Optional before/after evidence using a separately preserved prior executable:
+python3 bin/test-mcp-export-budget.py --aseprite /absolute/path/to/aseprite --previous-binary /absolute/path/to/previous-pixel-mcp
+```
+
+The comparison fixture expects exact packed planning (Aseprite 1.3.18.2+); use the pinned
+server's older-runtime integration tests for the conservative packed path. Keep timeout=30.
+The crash-recovery SPIKE only investigates design/process-kill behavior. No recovery tool,
+automatic retry or production crash recovery is included in this bundle.

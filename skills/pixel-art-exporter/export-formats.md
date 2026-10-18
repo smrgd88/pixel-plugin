@@ -13,7 +13,7 @@ See [validated examples](examples.md) and the [exact tool contract](../../docs/M
 
 The output extension must match format (`.jpeg` is also accepted for jpg). For all-frame PNG/JPG/BMP, read the optional ordered `files` array; the two legacy fields identify only its first file. Verify actual files and do not infer output names from the requested base.
 
-Spritesheet padding applies to border, shape and inner padding. Do not assume it is only the gap between frames or calculate final dimensions without reading the output. Exact grid column/row counts and alternate JSON formats are not exposed. trim, boolean one-pixel extrude and separate padding overrides are supported for sheets; read [their full contract](../../docs/MCP_EXPORT_OPTIONS.md).
+Spritesheet padding applies to border, shape and inner padding. Do not assume it is only the gap between frames or calculate final dimensions without reading the output. Rows/columns are unconstrained strips. Exact grid column/row counts and alternate JSON formats are not exposed. trim, boolean one-pixel extrude and separate padding overrides are supported for sheets; read [their full contract](../../docs/MCP_EXPORT_OPTIONS.md).
 
 Scale and FPS are plugin workflows: save a native copy, scale with nearest-neighbor and/or change frame durations, then export. For PNG/JPG/BMP or sheets, use direct tag/range or revision-guarded layer_id selection. GIF does not accept those selectors; a requested transformation can instead use a separate native copy with explicit filtering/retiming. Never silently change output semantics. There is no loop-count export option.
 
@@ -38,3 +38,5 @@ The [copy-and-export recipe](examples.md#complete-export-recipe) demonstrates na
 See [sequence naming, compatibility and recovery boundaries](../../docs/MCP_EXPORT_ANALYSIS.md). Existing base files and old numbered files outside the returned list are not automatically deleted.
 
 Read [the output-specific support table](../../docs/MCP_EXPORT_OPTIONS.md) for source indices, hidden/empty selections, native-background trim and indexed RGB texture behavior, JSON sidecar protection and crash limits. include_json=false hides metadata_path but still creates/protects the sidecar.
+
+Sheet budgets include actual trim, padding/extrusion and packed duplicates; duplicate frames can share bounds without losing timing. Exact packed planning requires Aseprite 1.3.18.2+. Older supported versions retain conservative packed limits. See [size and planning budgets](../../docs/MCP_EXPORT_OPTIONS.md#size-and-planning-budgets); preserve limits and split frame ranges on rejection, without increasing timeout or automatic retry.

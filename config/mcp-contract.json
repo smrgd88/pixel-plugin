@@ -1,5 +1,5 @@
 {
-  "source_commit": "99f193ad3a0eefcb8e8b71a3b9e3f69be47ac2d8",
+  "source_commit": "fcb83861df08b4ee897f162d9a175bd9d149ed96",
   "tools": [
     {
       "description": "Add a new frame to an existing Aseprite sprite. Returns the frame number (1-based index).",

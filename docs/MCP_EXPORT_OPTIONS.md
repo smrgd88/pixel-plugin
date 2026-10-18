@@ -1,7 +1,7 @@
 # Export selection, trimming and output-set protection
 
-MCP pin `99f193ad3a0eefcb8e8b71a3b9e3f69be47ac2d8` includes PR #35.
-[Exact schemas](MCP_TOOLS.md) · [server contract at this pin](https://github.com/smrgd88/pixel-mcp/blob/99f193ad3a0eefcb8e8b71a3b9e3f69be47ac2d8/docs/EXPORT_OPTIONS.md).
+MCP pin `fcb83861df08b4ee897f162d9a175bd9d149ed96` includes PR #35 and merged PR #37.
+[Exact schemas](MCP_TOOLS.md) · [server contract at this pin](https://github.com/smrgd88/pixel-mcp/blob/fcb83861df08b4ee897f162d9a175bd9d149ed96/docs/EXPORT_OPTIONS.md).
 
 | Option | export_sprite PNG/JPG/BMP | export_sprite GIF | export_spritesheet |
 |---|---|---|---|
@@ -38,7 +38,8 @@ Legacy empty-canvas export without new selection/trim remains supported.
 Sheet padding is the fallback for border_padding/shape_padding/inner_padding. Omission/null uses fallback;
 explicit 0 overrides it. Do not replace `0` with the fallback using truthiness. Border is the outer margin,
 shape separates frames, inner is transparent inset. JSON frame bounds include inner but exclude extrusion.
-With inner>0 the extruded edge can be transparent. Fixed grid column/row counts are not exposed.
+Native extrusion extends rendered content within the padded allocation; transparent edges can remain transparent.
+Do not infer extrusion pixels from inner padding alone. Fixed grid column/row counts are not exposed.
 
 A visible selected **native background** makes sheet trim retain the canvas. Exclude that background for
 foreground-only trimming. For a single-palette indexed visible background, the in-memory texture may become
@@ -66,11 +67,42 @@ file_rollback_failed, preserve all error.recovery entries: sheet output_index 1 
 [error handling](MCP_ERRORS.md). Source history/undo does not undo exports. Never retry blindly or delete backups.
 
 This is not set-wide crash atomicity. External readers can observe an intermediate set; non-cooperating writers,
-ABA/final-check races, crash recovery and orphan staging cleanup remain limitations. Canvas/extent limits are
-conservative (32767 per axis, 64 Mi pixels); rows/columns/packed can reject a set that tighter packing might fit.
-Split a request rather than increasing timeout or bypassing guards. Exact indexed PNG preservation, more precise
-size budgeting, crash recovery and slice/pivot/nine-slice are server follow-ups, not plugin features.
+ABA/final-check races, crash recovery and orphan staging cleanup remain limitations.
+The separate crash-recovery SPIKE is design/process-kill experimentation, not production recovery.
+Exact indexed PNG preservation and slice/pivot/nine-slice remain server follow-ups.
 
 No direct scale/FPS/loop override is added. Scale/retime a separate native copy when requested, query IDs/revision
 again on that copy, then select/export. For filtered GIF, explain the unsupported options; only prepare a separate
 copy within the user's authorized transformation, rather than silently substituting PNG semantics.
+
+## Size and planning budgets
+
+MCP #37 keeps **32767 per axis and 64 Mi pixels** for the canvas and final sheet rectangle.
+It measures selected source-mode render/trim bounds before allocating the sheet, retaining
+1x1 empty frames and the visible-background exception. Horizontal/rows and vertical/columns
+are strips: fixed row/column counts, rotation and fixed sheet dimensions are not exposed.
+Border, shape, inner padding and the one-pixel extrusion rim all enter the allocation budget.
+
+On **Aseprite 1.3.18.2+**, packed planning follows native stable descending-area ordering and
+placement, merging identical rendered samples even though native mergeDuplicates=false.
+Frames retain their individual source numbers/durations and may share JSON bounds. Native
+algorithm changes require revalidation. Earlier supported versions use unstable equal-area
+sorting: packed alone uses a conservative horizontal/vertical strip envelope refined by
+actual trim and duplicates. Some valid older-runtime packing still rejects; exact XY matching
+is not forced there. The other four layouts use actual measured bounds on all supported versions.
+
+For example, 65 distinct 128x128 frames now fit rows (8320x128), columns (128x8320), and
+modern packed; the previous envelope rejected them. Two one-pixel samples on a 32767x1
+canvas trim to a two-pixel sheet. This does not increase the limits or promise arbitrary
+large exports. Packed planning also limits unique sample pixels to 64 Mi, geometry work to
+8,000,000 operations and allocation planning to 30 seconds, respecting request cancellation.
+Complex packing can reject even when its final image would be small. Source decode and
+native renderer internals are outside these working-memory bounds; **there is no total RSS cap**.
+Scratch buffers are released/reused so leading empty frames do not retain one canvas each.
+
+Before native output allocation, the source is remeasured and bounds/duplicate relations
+are checked against the plan. The actual texture and JSON dimensions, placements (modern
+packed), trim offsets, source size and durations are validated before protected publication.
+Budget rejection uses existing invalid_arguments; a changed plan uses file_changed. Keep
+all diagnostic request IDs and recovery entries. Split the selected frame range when needed;
+do not raise timeout, bypass guards or automatically retry a failed export.
