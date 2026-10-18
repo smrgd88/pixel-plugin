@@ -20,3 +20,5 @@ Use Background, Character and Effects layers when those elements will change ind
 For a manual circle or diagonal, use symmetric pixel runs and avoid accidental isolated pixels. Check the result at native size as well as an integer zoom. For small icons, strong value contrast and a recognizable outline usually matter more than extra colors.
 
 Read the [heart, sword and layered-character recipes](examples.md#complete-creation-recipes) for concrete starting points. Palette data remains centralized in [presets](../../config/palettes.json); do not duplicate preset arrays here.
+
+For group creation, ID-based layer properties/reordering and guarded cel properties read [structure editing](../../docs/MCP_STRUCTURE_EDITING.md). draw_pixels now supports unique nested raster names; other legacy drawing tools keep their own contracts.

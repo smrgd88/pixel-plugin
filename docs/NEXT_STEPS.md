@@ -1,47 +1,42 @@
-# 다음 작업 — 2026-10-04
+# 다음 작업 — 2026-10-18
 
-플러그인 기준은 `develop@1f52e24`입니다. MCP 번들은 `6507405`에 고정된 56개 도구이며,
-버전은 0.5.0/Unreleased입니다. 우선순위·범위·완료 조건은 [로드맵](ROADMAP.md)에서 관리하고,
-이 문서에는 현재 실행 순서만 둡니다.
+작업: `[SHARED][FEATURE] Top4 MCP 기능 및 export 계약 플러그인 동기화`.
+기준 plugin develop `49d9687`, MCP pin `99f193ad3a0eefcb8e8b71a3b9e3f69be47ac2d8`,
+등록 도구 64개. 이번 브랜치의 bundle/schema/스킬 동기화는 구현 후보이며 develop/main 병합,
+태그·릴리스·마켓 게시·개인 설치본 교체는 완료 범위에 포함하지 않습니다.
+[로드맵](ROADMAP.md) · [이번 검증](TOP4_SYNC_VALIDATION.md).
 
-## 완료된 통합
+## 완료된 기반과 이번 후보
 
-- [플러그인 #11](https://github.com/smrgd88/pixel-plugin/pull/11): dry-run·snapshot·undo,
-  `2114d77`. [계약](MCP_SAFETY.md) · [검증](SAFETY_SYNC_VALIDATION.md).
-- [플러그인 #12](https://github.com/smrgd88/pixel-plugin/pull/12): MCP #25 오류 코드·요청 추적,
-  `d966828`. [계약](MCP_ERRORS.md) · [검증](ERROR_TRACING_VALIDATION.md).
-- [플러그인 #13](https://github.com/smrgd88/pixel-plugin/pull/13): Codex 우선 README 한·영과
-  영어 AGENTS.md, `82d5edb`.
+- 플러그인 #11 안전 기능, #12 오류/추적, #13 README/AGENTS, #14 로드맵,
+  #15 Codex 설치·연결·lifecycle 및 smrgd88 publisher 표시가 develop에 병합돼 있습니다.
+  [설치 검증 이력](CODEX_INSTALL_VALIDATION.md)은 당시 pin/도구 수를 유지합니다.
+- 서버 #29 nested draw_pixels, #30 structure, #31 cel properties/revision,
+  #33 unlink, #34 layer/group, #32 tags, #35 export options가 모두 MCP develop에 병합됐습니다.
+- 이번 후보는 56→64의 실제 등록 집합, 기존 draw_pixels/두 export schema 변경,
+  revision freshness·linked 영향·native 파일·선택 출력/JSON 계약까지 함께 검증합니다.
 
-위 PR 통합은 남은 작업이 아닙니다. 정식 릴리스·게시·사용자 설치 갱신과는 별개입니다.
+## 현재 실행 순서
 
-## 실행 순서
+1. 이번 후보의 실제 워크플로·오류·원본/출력 보존·provenance 검증과 셀프리뷰를 끝내고
+   develop 대상 PR에서 검토합니다. 병합은 사용자 지시 후 수행합니다.
+2. M2 릴리스 준비: 검증한 commit/지원 범위에 맞게 버전·CHANGELOG·배포 artifact·설치/갱신/복귀
+   절차를 확정합니다. 릴리스·게시와 사용자의 설치 갱신은 별도 단계입니다.
+3. M3 플랫폼 확대: 추가 OS/아키텍처의 실제 실행 증거를 확보합니다. 교차 빌드는 native 검증이 아닙니다.
+4. 설치 앱 GUI 자동 검증은 기존 보류 상태를 유지합니다. 이번 작업에서 개인 설정/설치본을 교체하지 않습니다.
 
-1. **M0 — 로드맵 현행화:** PR #14로 develop 통합 완료 (`1f52e24`).
-2. **M1 — Codex 격리 CLI 설치 SPIKE:** 설치 cache의 스킬·MCP 연결, 실제 생성/출력·오류·경고,
-   재시작 및 Linux Docker의 동일 ID 설치/제거/재설치·업그레이드·수동 연결 충돌을 검증.
-   [결과](CODEX_INSTALL_VALIDATION.md). CLI 범위를 마무리했으며 앱 GUI는 보류 상태 유지.
-3. **M2 — 릴리스 준비:** 검증한 클라이언트·플랫폼에 맞게 버전, 메타데이터, CHANGELOG,
-   설치/갱신 경로, artifact와 릴리스 절차를 결정.
-4. **M3 — 플랫폼 검증:** 필요한 환경 확보 시 M1과 병행. 교차 빌드를 native 실행으로 세지 않음.
+## 서버 잔여와 플러그인 후속
 
-기존에 보류한 설치 앱 자동 연결·GUI는 재개 요청 전까지 미검증 상태로 유지합니다.
-main 병합·태그·marketplace 게시, 사용자 전역 설정 변경은 별도 승인 범위입니다.
+- 보이는 native background의 canvas 유지 및 일부 indexed background texture의 RGB 전환은
+  현재 계약이며 [export 안내](MCP_EXPORT_OPTIONS.md)에 포함됩니다.
+- 별도 indexed PNG 유지 옵션, 크기 예산 정밀화, 출력 세트 crash 복구·고아 staging 정리는
+  MCP 후속 TODO입니다. 일반 오류 rollback을 crash 원자성으로 표현하지 않습니다.
+- slice/pivot/nine-slice, 범용 색상 모드 변환과 추가 편집 기능은 범위 선정·서버 구현 이후 동기화합니다.
+- 정확한 density 비율, AA 후보 확대, palette 중복 제거와 성공 payload 일괄 표준화는 개선 후보입니다.
+- 구조/태그 ID는 영구 식별자가 아니며 모든 변경 후 재조회합니다. 새 지원을 legacy 도구 전체에 소급하지 않습니다.
 
-## MCP 변경을 기다리는 항목
+## 유지하는 경계
 
-- 그룹 내부 draw_pixels 조회 실패 RM-FIX-01: 서버 저장소의 별도 FIX 필요.
-- R3 상세 구조/cel 조회와 편집, R4 export/slice 확장: 서버에서 범위를 확정·구현한 뒤 동기화.
-- 성공 payload 전체 통일, 정확한 density 비율, AA 후보 확대, palette 중복 제거: 개선 후보.
-
-MCP #26–#28은 문서/회귀 테스트 변경이며 현재 pin 이후 서버 production 코드의 변경이 없습니다.
-이 문서 작업에서 번들을 다시 빌드하거나 도구를 추가하지 않습니다.
-
-## 범위와 관리
-
-- Godot 게임 예제는 사용자 결정에 따라 반영 제외·별도 백업 완료. 개발/릴리스 backlog에서 제외.
-- 자동 history는 기본 false를 유지하며 사용자 요청 없이 켜지 않음.
-- 새 서버 변경은 MCP 병합 후 plugin pin·binary·schema·스킬·검증을 한 변경으로 동기화.
-- GitHub 이슈·마일스톤은 확인 시점에 등록돼 있지 않음. M0–M3는 문서상의 계획 ID임.
-- 검증 기록은 실행 당시 소스와 범위를 유지하며, 새 문서 변경을 테스트 재실행으로 표현하지 않음.
-- 워크트리 정리 전에 ignored 증거를 보관.
+Godot 게임은 반영 제외·별도 백업 상태입니다. 원저자 MIT 고지, smrgd88 publisher, Codex/Claude
+패키징과 영구 설치 경로를 보존합니다. 자동 history 기본 false와 timeout=30을 유지합니다.
+실행하지 않은 OS/GUI·광범위 조합과 이전 실패는 검증 보고서에 구분합니다.

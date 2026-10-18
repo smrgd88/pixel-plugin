@@ -58,7 +58,7 @@ def main():
             connected=[s for s in status['data'] if s['runtimeStatus']=='connected']
             assert len(connected)==(1 if expect_plugin or manual else 0),status
             if connected:
-                s=connected[0];assert s['name']=='aseprite' and len(s['tools'])==56,s
+                s=connected[0];assert s['name']=='aseprite' and set(s['tools'])=={t['name'] for t in json.loads((args.package/'config/mcp-contract.json').read_text())['tools']},s
                 assert s['pluginId']==(None if manual else plugin_id),s['pluginId']
                 w=server.request('mcpServer/tool/call',{'threadId':t,'server':'aseprite','tool':'create_canvas','arguments':{'width':8,'height':8,'color_mode':'rgb'}})
                 assert not w.get('isError'),w

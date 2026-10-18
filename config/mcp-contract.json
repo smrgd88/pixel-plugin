@@ -1,5 +1,5 @@
 {
-  "source_commit": "65074051f5d3903124ead37367c7fc62d9e7e7f6",
+  "source_commit": "99f193ad3a0eefcb8e8b71a3b9e3f69be47ac2d8",
   "tools": [
     {
       "description": "Add a new frame to an existing Aseprite sprite. Returns the frame number (1-based index).",
@@ -1123,6 +1123,113 @@
       }
     },
     {
+      "description": "Create an empty group at an explicit parent and sibling index using a fresh structure revision. Empty parent_id is root. Rejects locked/non-group destinations. Does not move or delete layers. Requery structure after success.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sprite_path": {
+            "type": "string",
+            "description": "Native .aseprite or .ase file"
+          },
+          "expected_revision": {
+            "type": "string",
+            "description": "Fresh revision from get_sprite_structure"
+          },
+          "name": {
+            "type": "string",
+            "description": "Group name; empty and duplicate names allowed"
+          },
+          "parent_id": {
+            "type": "string",
+            "description": "Parent group ID in expected_revision; empty string means sprite root"
+          },
+          "stack_index": {
+            "type": "integer",
+            "description": "Required 1-based bottom-to-top insertion index, 1 through child count plus one"
+          }
+        },
+        "required": [
+          "sprite_path",
+          "expected_revision",
+          "name",
+          "parent_id",
+          "stack_index"
+        ],
+        "additionalProperties": false
+      },
+      "name": "create_layer_group",
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "revision": {
+            "type": "string"
+          },
+          "layer": {
+            "type": "object",
+            "properties": {
+              "layer_id": {
+                "type": "string"
+              },
+              "parent_id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "kind": {
+                "type": "string"
+              },
+              "stack_index": {
+                "type": "integer"
+              },
+              "visible": {
+                "type": "boolean"
+              },
+              "editable": {
+                "type": "boolean"
+              },
+              "effective_visible": {
+                "type": "boolean"
+              },
+              "effective_editable": {
+                "type": "boolean"
+              },
+              "opacity": {
+                "type": [
+                  "null",
+                  "integer"
+                ]
+              },
+              "blend_mode": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "layer_id",
+              "parent_id",
+              "name",
+              "kind",
+              "stack_index",
+              "visible",
+              "editable",
+              "effective_visible",
+              "effective_editable"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "success",
+          "revision",
+          "layer"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
       "description": "Save a byte-exact recovery copy of a saved sprite. Persists across server restarts for 7 days; store limit 100 snapshots / 512 MiB. Does not capture unsaved editor changes.",
       "inputSchema": {
         "type": "object",
@@ -1840,7 +1947,7 @@
           },
           "layer_name": {
             "type": "string",
-            "description": "Name of the layer to draw on"
+            "description": "Unique exact raster layer name at any group depth; duplicate names are rejected"
           },
           "frame_number": {
             "type": "integer",
@@ -2110,10 +2217,54 @@
       }
     },
     {
-      "description": "Export sprite to PNG, GIF, JPG, or BMP. All-frame PNG/JPG/BMP exports use numbered files (stem_0001.ext etc.) and return files in frame order. exported_path and file_size identify the first real file. Single-frame exports and animated GIF retain a single output path. The output extension must match format.",
+      "description": "Export sprite to PNG, GIF, JPG, or BMP. All-frame PNG/JPG/BMP exports use numbered files (stem_0001.ext etc.) and return files in frame order. exported_path and file_size identify the first real file. Single-frame exports and animated GIF retain a single output path. The output extension must match format. PNG/JPG/BMP support tag or inclusive frame range, revision-guarded layer/group selection and trim. GIF retains its existing frame_number behavior and rejects these new rendering options.",
       "inputSchema": {
         "type": "object",
         "properties": {
+          "tag": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Exact saved native tag name; mutually exclusive with frame range and nonzero frame_number"
+          },
+          "layer_id": {
+            "type": "string",
+            "description": "Structural layer or group ID from get_sprite_structure; requires expected_revision"
+          },
+          "expected_revision": {
+            "type": "string",
+            "description": "Saved SHA-256 revision; required with layer_id"
+          },
+          "frame_start": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "description": "First inclusive source frame, 1-based; omitted defaults to 1"
+          },
+          "frame_end": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "description": "Last inclusive source frame; omitted defaults to last frame"
+          },
+          "include_hidden": {
+            "type": "boolean",
+            "description": "Include hidden target and descendants; requires layer_id; default respects saved visibility"
+          },
+          "trim": {
+            "type": "boolean",
+            "description": "Trim transparent frame margins; default false"
+          },
+          "overwrite": {
+            "type": [
+              "null",
+              "boolean"
+            ],
+            "description": "Replace existing planned outputs; omitted or null defaults to true; false rejects any existing destination"
+          },
           "sprite_path": {
             "type": "string",
             "description": "Path to the Aseprite sprite file"
@@ -2190,10 +2341,79 @@
       }
     },
     {
-      "description": "Export animation frames as spritesheet with layout options.",
+      "description": "Export saved frames as a spritesheet with optional tag/frame range, revision-guarded layer/group selection, trim, extrude and individual padding. Texture and the legacy JSON sidecar are staged and published together with ordinary-error rollback. include_json controls metadata_path in the response; both outputs are always protected.",
       "inputSchema": {
         "type": "object",
         "properties": {
+          "tag": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Exact saved native tag name; mutually exclusive with frame_start/frame_end"
+          },
+          "layer_id": {
+            "type": "string",
+            "description": "Structural layer or group ID from get_sprite_structure; requires expected_revision"
+          },
+          "expected_revision": {
+            "type": "string",
+            "description": "Saved SHA-256 revision; required with layer_id"
+          },
+          "frame_start": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "description": "First inclusive source frame, 1-based; omitted defaults to 1"
+          },
+          "frame_end": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "description": "Last inclusive source frame; omitted defaults to last frame"
+          },
+          "include_hidden": {
+            "type": "boolean",
+            "description": "Include hidden target and descendants; requires layer_id; default respects saved visibility"
+          },
+          "trim": {
+            "type": "boolean",
+            "description": "Trim transparent frame margins; visible native background keeps the full canvas; default false"
+          },
+          "overwrite": {
+            "type": [
+              "null",
+              "boolean"
+            ],
+            "description": "Replace existing planned outputs; omitted or null defaults to true; false rejects any existing destination"
+          },
+          "extrude": {
+            "type": "boolean",
+            "description": "Repeat edge pixels by one pixel outside each sheet frame; default false"
+          },
+          "border_padding": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "description": "Sheet outer padding 0-100; overrides padding including explicit zero"
+          },
+          "shape_padding": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "description": "Space between sheet shapes 0-100; overrides padding including explicit zero"
+          },
+          "inner_padding": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "description": "Transparent inset inside each sheet frame 0-100; overrides padding including explicit zero"
+          },
           "sprite_path": {
             "type": "string",
             "description": "Path to the Aseprite sprite file"
@@ -2208,11 +2428,11 @@
           },
           "padding": {
             "type": "integer",
-            "description": "Padding between frames in pixels (0-100)"
+            "description": "Default border, shape and inner padding in pixels (0-100); individual options override"
           },
           "include_json": {
             "type": "boolean",
-            "description": "Include JSON metadata file"
+            "description": "Return metadata_path; the legacy JSON sidecar is always generated and protected"
           }
         },
         "required": [
@@ -2709,6 +2929,307 @@
       }
     },
     {
+      "description": "Read saved layer hierarchy and frame/cel existence, bounds, opacity and native image sharing. Structural layer IDs are sibling-index paths valid while hierarchy order is unchanged; revision-guarded cel and layer/group editing tools accept these IDs; requery after every edit. Returns at most 100 layers x 100 frames, with exact layer filter and continuation offsets.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sprite_path": {
+            "type": "string",
+            "description": "Saved sprite to inspect without saving or recording history"
+          },
+          "layer_id": {
+            "type": "string",
+            "description": "Exact structural layer ID such as 2/1; does not include descendants"
+          },
+          "layer_offset": {
+            "type": "integer",
+            "description": "Zero-based offset in matching depth-first layers; default 0"
+          },
+          "page_size": {
+            "type": "integer",
+            "description": "Layer page size; default 50, range 1-100"
+          },
+          "frame_start": {
+            "type": "integer",
+            "description": "First frame (1-based); default 1"
+          },
+          "frame_end": {
+            "type": "integer",
+            "description": "Last inclusive frame; default at most 100 frames from frame_start; maximum span 100"
+          }
+        },
+        "required": [
+          "sprite_path"
+        ],
+        "additionalProperties": false
+      },
+      "name": "get_sprite_structure",
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "revision": {
+            "type": "string"
+          },
+          "width": {
+            "type": "integer"
+          },
+          "height": {
+            "type": "integer"
+          },
+          "color_mode": {
+            "type": "string"
+          },
+          "frame_count": {
+            "type": "integer"
+          },
+          "layer_count": {
+            "type": "integer"
+          },
+          "matching_layer_count": {
+            "type": "integer"
+          },
+          "frame_start": {
+            "type": "integer"
+          },
+          "frame_end": {
+            "type": "integer"
+          },
+          "next_frame_start": {
+            "type": "integer"
+          },
+          "next_layer_offset": {
+            "type": [
+              "null",
+              "integer"
+            ]
+          },
+          "layers": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "object",
+              "properties": {
+                "layer_id": {
+                  "type": "string"
+                },
+                "parent_id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "name_path": {
+                  "type": [
+                    "null",
+                    "array"
+                  ],
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "kind": {
+                  "type": "string"
+                },
+                "stack_index": {
+                  "type": "integer"
+                },
+                "visible": {
+                  "type": "boolean"
+                },
+                "editable": {
+                  "type": "boolean"
+                },
+                "effective_visible": {
+                  "type": "boolean"
+                },
+                "effective_editable": {
+                  "type": "boolean"
+                },
+                "opacity": {
+                  "type": [
+                    "null",
+                    "integer"
+                  ]
+                },
+                "blend_mode": {
+                  "type": "string"
+                },
+                "cels": {
+                  "type": [
+                    "null",
+                    "array"
+                  ],
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "frame_number": {
+                        "type": "integer"
+                      },
+                      "exists": {
+                        "type": "boolean"
+                      },
+                      "x": {
+                        "type": [
+                          "null",
+                          "integer"
+                        ]
+                      },
+                      "y": {
+                        "type": [
+                          "null",
+                          "integer"
+                        ]
+                      },
+                      "width": {
+                        "type": [
+                          "null",
+                          "integer"
+                        ]
+                      },
+                      "height": {
+                        "type": [
+                          "null",
+                          "integer"
+                        ]
+                      },
+                      "opacity": {
+                        "type": [
+                          "null",
+                          "integer"
+                        ]
+                      },
+                      "z_index": {
+                        "type": [
+                          "null",
+                          "integer"
+                        ]
+                      },
+                      "image_ref": {
+                        "type": "string"
+                      },
+                      "linked_cel_count": {
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "frame_number",
+                      "exists"
+                    ],
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "required": [
+                "layer_id",
+                "parent_id",
+                "name",
+                "name_path",
+                "kind",
+                "stack_index",
+                "visible",
+                "editable",
+                "effective_visible",
+                "effective_editable",
+                "cels"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "revision",
+          "width",
+          "height",
+          "color_mode",
+          "frame_count",
+          "layer_count",
+          "matching_layer_count",
+          "frame_start",
+          "frame_end",
+          "layers"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "description": "Read all saved tags in native order with names, inclusive 1-based ranges, four playback directions, repeats and RGBA color. Duplicate/empty names are retained. tag_id is an array position valid only with this revision; no save or history.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sprite_path": {
+            "type": "string",
+            "description": "Saved sprite to inspect without saving or recording history"
+          }
+        },
+        "required": [
+          "sprite_path"
+        ],
+        "additionalProperties": false
+      },
+      "name": "get_sprite_tags",
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "revision": {
+            "type": "string"
+          },
+          "frame_count": {
+            "type": "integer"
+          },
+          "tags": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "object",
+              "properties": {
+                "tag_id": {
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "from_frame": {
+                  "type": "integer"
+                },
+                "to_frame": {
+                  "type": "integer"
+                },
+                "direction": {
+                  "type": "string"
+                },
+                "repeats": {
+                  "type": "integer"
+                },
+                "color": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "tag_id",
+                "name",
+                "from_frame",
+                "to_frame",
+                "direction",
+                "repeats",
+                "color"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "revision",
+          "frame_count",
+          "tags"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
       "description": "Import an external image file as a layer in the sprite.",
       "inputSchema": {
         "type": "object",
@@ -2997,6 +3518,113 @@
         },
         "required": [
           "snapshots"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "description": "Move/reorder an ordinary raster layer or whole group subtree at a fresh revision. Both source and destination IDs refer to that revision. Required stack_index is the final bottom-to-top sibling index. Empty parent_id is root. Rejects cycles, locked source/descendants/destination, special layers and no-op. All structural IDs must be requeried after success.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sprite_path": {
+            "type": "string",
+            "description": "Native .aseprite or .ase file"
+          },
+          "expected_revision": {
+            "type": "string",
+            "description": "Fresh revision from get_sprite_structure"
+          },
+          "layer_id": {
+            "type": "string",
+            "description": "Source structural ID in expected_revision"
+          },
+          "parent_id": {
+            "type": "string",
+            "description": "Destination group ID in expected_revision; empty string means sprite root"
+          },
+          "stack_index": {
+            "type": "integer",
+            "description": "Required final 1-based bottom-to-top index, after removing source from its old position"
+          }
+        },
+        "required": [
+          "sprite_path",
+          "expected_revision",
+          "layer_id",
+          "parent_id",
+          "stack_index"
+        ],
+        "additionalProperties": false
+      },
+      "name": "move_layer",
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "revision": {
+            "type": "string"
+          },
+          "layer": {
+            "type": "object",
+            "properties": {
+              "layer_id": {
+                "type": "string"
+              },
+              "parent_id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "kind": {
+                "type": "string"
+              },
+              "stack_index": {
+                "type": "integer"
+              },
+              "visible": {
+                "type": "boolean"
+              },
+              "editable": {
+                "type": "boolean"
+              },
+              "effective_visible": {
+                "type": "boolean"
+              },
+              "effective_editable": {
+                "type": "boolean"
+              },
+              "opacity": {
+                "type": [
+                  "null",
+                  "integer"
+                ]
+              },
+              "blend_mode": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "layer_id",
+              "parent_id",
+              "name",
+              "kind",
+              "stack_index",
+              "visible",
+              "editable",
+              "effective_visible",
+              "effective_editable"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "success",
+          "revision",
+          "layer"
         ],
         "additionalProperties": false
       }
@@ -3764,6 +4392,138 @@
       }
     },
     {
+      "description": "Set existing raster cel position and/or opacity using a fresh get_sprite_structure revision. Negative/off-canvas coordinates allowed within signed 16-bit range. Rejects locked ancestors, group/tilemap/reference/background layers, absent cels and unchanged requests. Hidden layers allowed. Linked cels require allow_linked=true and change as a whole; never unlinks.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sprite_path": {
+            "type": "string",
+            "description": "Native .aseprite or .ase file to edit"
+          },
+          "layer_id": {
+            "type": "string",
+            "description": "Exact structural ID from get_sprite_structure, such as 2/1"
+          },
+          "frame_number": {
+            "type": "integer",
+            "description": "Existing cel frame, 1-based"
+          },
+          "expected_revision": {
+            "type": "string",
+            "description": "Required revision from get_sprite_structure; refresh after every edit"
+          },
+          "x": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "description": "Sprite-absolute x, -32768 to 32767; omitted or null keeps current value"
+          },
+          "y": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "description": "Sprite-absolute y, -32768 to 32767; omitted or null keeps current value"
+          },
+          "opacity": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "description": "Cel opacity, 0 to 255; omitted or null keeps current value"
+          },
+          "allow_linked": {
+            "type": "boolean",
+            "description": "Explicitly permit changing ALL cels sharing the native image; default false rejects linked cels"
+          }
+        },
+        "required": [
+          "sprite_path",
+          "layer_id",
+          "frame_number",
+          "expected_revision"
+        ],
+        "additionalProperties": false
+      },
+      "name": "set_cel_properties",
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "revision": {
+            "type": "string"
+          },
+          "affected_cels": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "object",
+              "properties": {
+                "layer_id": {
+                  "type": "string"
+                },
+                "frame_number": {
+                  "type": "integer"
+                },
+                "x": {
+                  "type": "integer"
+                },
+                "y": {
+                  "type": "integer"
+                },
+                "opacity": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "layer_id",
+                "frame_number",
+                "x",
+                "y",
+                "opacity"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "warnings": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "description": "Stable warning code"
+                },
+                "message": {
+                  "type": "string",
+                  "description": "Human-readable description of the operation's potential effect"
+                }
+              },
+              "required": [
+                "code",
+                "message"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "success",
+          "revision",
+          "affected_cels"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
       "description": "Set the duration of an existing animation frame in milliseconds.",
       "inputSchema": {
         "type": "object",
@@ -3799,6 +4559,138 @@
         },
         "required": [
           "success"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "description": "Edit name, local visibility/editability, raster opacity/blend using a fresh structure revision. Ordinary raster/group only; hidden targets allowed. Locked ancestors rejected; a locally locked target accepts only editable=true (unlock first). Group opacity/blend unsupported. No-op rejected. Requery structure after success.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sprite_path": {
+            "type": "string",
+            "description": "Native .aseprite or .ase file"
+          },
+          "expected_revision": {
+            "type": "string",
+            "description": "Fresh revision from get_sprite_structure"
+          },
+          "layer_id": {
+            "type": "string",
+            "description": "Structural sibling-index path, e.g. 2/1"
+          },
+          "name": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "New name; empty allowed; omitted or null keeps current value"
+          },
+          "visible": {
+            "type": [
+              "null",
+              "boolean"
+            ],
+            "description": "Local visibility; omitted or null keeps current value"
+          },
+          "editable": {
+            "type": [
+              "null",
+              "boolean"
+            ],
+            "description": "Local editability; false locks; omitted or null keeps current value"
+          },
+          "opacity": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "description": "Raster layer opacity 0-255; groups unsupported; omitted or null keeps current value"
+          },
+          "blend_mode": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Native layer mode: normal, multiply, screen, overlay, darken, lighten, color_dodge, color_burn, hard_light, soft_light, difference, exclusion, hsl_hue, hsl_saturation, hsl_color, hsl_luminosity, addition, subtract, divide; groups unsupported"
+          }
+        },
+        "required": [
+          "sprite_path",
+          "expected_revision",
+          "layer_id"
+        ],
+        "additionalProperties": false
+      },
+      "name": "set_layer_properties",
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "revision": {
+            "type": "string"
+          },
+          "layer": {
+            "type": "object",
+            "properties": {
+              "layer_id": {
+                "type": "string"
+              },
+              "parent_id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "kind": {
+                "type": "string"
+              },
+              "stack_index": {
+                "type": "integer"
+              },
+              "visible": {
+                "type": "boolean"
+              },
+              "editable": {
+                "type": "boolean"
+              },
+              "effective_visible": {
+                "type": "boolean"
+              },
+              "effective_editable": {
+                "type": "boolean"
+              },
+              "opacity": {
+                "type": [
+                  "null",
+                  "integer"
+                ]
+              },
+              "blend_mode": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "layer_id",
+              "parent_id",
+              "name",
+              "kind",
+              "stack_index",
+              "visible",
+              "editable",
+              "effective_visible",
+              "effective_editable"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "success",
+          "revision",
+          "layer"
         ],
         "additionalProperties": false
       }
@@ -3878,6 +4770,121 @@
         },
         "required": [
           "Success"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "description": "Edit an existing tag using get_sprite_tags tag_id and expected_revision. Supports name, inclusive range, direction and repeats; overlapping tags allowed. Empty/duplicate new names and unchanged requests rejected. Preserves existing empty/duplicate names when not renaming. Returns saved tag_id, which can change when range changes. Refresh tags after any edit.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sprite_path": {
+            "type": "string",
+            "description": "Native .aseprite or .ase file to edit"
+          },
+          "tag_id": {
+            "type": "integer",
+            "description": "1-based tag_id from get_sprite_tags; not a permanent ID"
+          },
+          "expected_revision": {
+            "type": "string",
+            "description": "Required revision from get_sprite_tags; refresh after every edit"
+          },
+          "name": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "New nonblank name; rename to another tag's name is rejected; omitted/null keeps current value"
+          },
+          "from_frame": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "description": "First inclusive frame, 1-based; omitted/null keeps current value"
+          },
+          "to_frame": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "description": "Last inclusive frame, 1-based; omitted/null keeps current value"
+          },
+          "direction": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "forward, reverse, pingpong or pingpong_reverse; omitted/null keeps current value"
+          },
+          "repeats": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "description": "0-65535; 0 is native unspecified (infinite UI, once on export); omitted/null keeps current value"
+          }
+        },
+        "required": [
+          "sprite_path",
+          "tag_id",
+          "expected_revision"
+        ],
+        "additionalProperties": false
+      },
+      "name": "set_tag_properties",
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "revision": {
+            "type": "string"
+          },
+          "tag": {
+            "type": "object",
+            "properties": {
+              "tag_id": {
+                "type": "integer"
+              },
+              "name": {
+                "type": "string"
+              },
+              "from_frame": {
+                "type": "integer"
+              },
+              "to_frame": {
+                "type": "integer"
+              },
+              "direction": {
+                "type": "string"
+              },
+              "repeats": {
+                "type": "integer"
+              },
+              "color": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "tag_id",
+              "name",
+              "from_frame",
+              "to_frame",
+              "direction",
+              "repeats",
+              "color"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "success",
+          "revision",
+          "tag"
         ],
         "additionalProperties": false
       }
@@ -4200,6 +5207,94 @@
           "success",
           "operation",
           "backup_snapshot"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "description": "Detach exactly one existing raster cel from its native shared image using a fresh get_sprite_structure revision. Copies pixels and cel metadata without moving or converting them; other members retain sharing. Rejects independent/absent cels, locked ancestors and group/tilemap/reference/background targets. Hidden targets allowed. Returns the independent cel and former peers (a sole remaining peer is independent).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sprite_path": {
+            "type": "string",
+            "description": "Native .aseprite or .ase file to edit"
+          },
+          "layer_id": {
+            "type": "string",
+            "description": "Exact structural ID from get_sprite_structure, such as 2/1"
+          },
+          "frame_number": {
+            "type": "integer",
+            "description": "Existing linked cel frame, 1-based"
+          },
+          "expected_revision": {
+            "type": "string",
+            "description": "Required revision from get_sprite_structure; refresh after every edit"
+          }
+        },
+        "required": [
+          "sprite_path",
+          "layer_id",
+          "frame_number",
+          "expected_revision"
+        ],
+        "additionalProperties": false
+      },
+      "name": "unlink_cel",
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "revision": {
+            "type": "string"
+          },
+          "cel": {
+            "type": "object",
+            "properties": {
+              "layer_id": {
+                "type": "string"
+              },
+              "frame_number": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "layer_id",
+              "frame_number"
+            ],
+            "additionalProperties": false
+          },
+          "remaining_linked_cels": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "object",
+              "properties": {
+                "layer_id": {
+                  "type": "string"
+                },
+                "frame_number": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "layer_id",
+                "frame_number"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "success",
+          "revision",
+          "cel",
+          "remaining_linked_cels"
         ],
         "additionalProperties": false
       }

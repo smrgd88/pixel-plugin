@@ -17,6 +17,7 @@ def render(contract):
              'Use `structuredContent` after checking `isError`; clients exposing only text content must parse its JSON. `Success` and `success` are distinct response fields.', '',
              'Report optional success `warnings` according to [completed-operation warning handling](MCP_WARNINGS.md), including unknown codes. Missing warnings do not guarantee lossless processing.', '',
              'For tool/JSON-RPC failures, request IDs and partial rollback recovery, follow [the error contract](MCP_ERRORS.md). Error results have no successful output schema.', '',
+             'For revision-guarded IDs/linked impact read [structure editing](MCP_STRUCTURE_EDITING.md). For format-specific selection, padding and protected output sets read [export options](MCP_EXPORT_OPTIONS.md).', '',
              '## Index', '']
     for tool in contract['tools']:
         lines.append('- [' + tool['name'] + '](#' + tool['name'] + ')')

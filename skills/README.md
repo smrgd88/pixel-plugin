@@ -9,4 +9,6 @@ The plugin keeps four automatically selected skills:
 | [Professional](pixel-art-professional/SKILL.md) | Palette editing/quantization, reference analysis, dithering, shading and antialiasing |
 | [Exporter](pixel-art-exporter/SKILL.md) | Native copies, image/sheet exports and copy-based scaling/timing |
 
-Each entrypoint links its domain guidance and validated examples. The shared [MCP contract](../docs/MCP_TOOLS.md) documents all 56 tools and their input/output schemas at the [pinned revision](../config/mcp-source.json). Every registered tool is covered by at least one skill's explicit allowed-tools list.
+Each entrypoint links its domain guidance and validated examples. The shared [MCP contract](../docs/MCP_TOOLS.md) documents all 64 tools and their input/output schemas at the [pinned revision](../config/mcp-source.json). Every registered tool is covered by at least one skill's explicit allowed-tools list.
+
+New ID/revision-based workflows: [structure editing](../docs/MCP_STRUCTURE_EDITING.md), [output-specific export](../docs/MCP_EXPORT_OPTIONS.md).

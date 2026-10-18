@@ -365,5 +365,96 @@
         "save": "result"
       }
     ]
+  },
+  {
+    "id": "nested-revision-edit",
+    "steps": [
+      {
+        "name": "create_canvas",
+        "arguments": {
+          "width": 16,
+          "height": 16,
+          "color_mode": "rgb"
+        },
+        "save": "canvas"
+      },
+      {
+        "name": "get_sprite_structure",
+        "arguments": {
+          "sprite_path": "{canvas.file_path}"
+        },
+        "save": "before"
+      },
+      {
+        "name": "create_layer_group",
+        "arguments": {
+          "sprite_path": "{canvas.file_path}",
+          "expected_revision": "{before.revision}",
+          "name": "Parts",
+          "parent_id": "",
+          "stack_index": 2
+        },
+        "save": "group"
+      },
+      {
+        "name": "get_sprite_structure",
+        "arguments": {
+          "sprite_path": "{canvas.file_path}"
+        },
+        "save": "grouped"
+      },
+      {
+        "name": "move_layer",
+        "arguments": {
+          "sprite_path": "{canvas.file_path}",
+          "expected_revision": "{grouped.revision}",
+          "layer_id": "1",
+          "parent_id": "{group.layer.layer_id}",
+          "stack_index": 1
+        },
+        "save": "moved"
+      },
+      {
+        "name": "get_sprite_structure",
+        "arguments": {
+          "sprite_path": "{canvas.file_path}"
+        },
+        "save": "nested"
+      },
+      {
+        "name": "set_layer_properties",
+        "arguments": {
+          "sprite_path": "{canvas.file_path}",
+          "expected_revision": "{nested.revision}",
+          "layer_id": "{moved.layer.layer_id}",
+          "name": "Ink",
+          "opacity": 128
+        },
+        "save": "renamed"
+      },
+      {
+        "name": "draw_pixels",
+        "arguments": {
+          "sprite_path": "{canvas.file_path}",
+          "layer_name": "Ink",
+          "frame_number": 1,
+          "pixels": [
+            {
+              "x": 2,
+              "y": 3,
+              "color": "#FF0000"
+            }
+          ]
+        }
+      },
+      {
+        "name": "save_as",
+        "arguments": {
+          "sprite_path": "{canvas.file_path}",
+          "output_path": "{output}/nested.aseprite"
+        },
+        "save": "result"
+      }
+    ]
   }
 ]

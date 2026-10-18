@@ -18,3 +18,5 @@ Read `$ARGUMENTS` as an optional help topic. Use maintained documents rather tha
 - Exact tools and response fields: [MCP contract](../docs/MCP_TOOLS.md).
 
 Give concise usage and a relevant example. Plugin options such as scale/FPS are workflows using several MCP calls; do not describe them as server export parameters. Read the current version from .claude-plugin/plugin.json when reporting it.
+
+For structure/cel/layer/group/tag changes, read [revision-guarded editing](../docs/MCP_STRUCTURE_EDITING.md). For filtered outputs and format-dependent constraints, read [export options](../docs/MCP_EXPORT_OPTIONS.md). Do not describe the new PNG/sheet options as GIF options.

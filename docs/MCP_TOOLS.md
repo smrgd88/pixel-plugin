@@ -1,6 +1,6 @@
 # MCP tool contract
 
-Generated from the actual `tools/list` response at MCP source commit `65074051f5d3903124ead37367c7fc62d9e7e7f6`.
+Generated from the actual `tools/list` response at MCP source commit `99f193ad3a0eefcb8e8b71a3b9e3f69be47ac2d8`.
 Regenerate with `python3 bin/render-mcp-reference.py` after reviewing a new snapshot.
 
 Read the tool section needed for the task. All tool names use the `mcp__aseprite__` prefix in skills/commands.
@@ -16,6 +16,8 @@ Report optional success `warnings` according to [completed-operation warning han
 
 For tool/JSON-RPC failures, request IDs and partial rollback recovery, follow [the error contract](MCP_ERRORS.md). Error results have no successful output schema.
 
+For revision-guarded IDs/linked impact read [structure editing](MCP_STRUCTURE_EDITING.md). For format-specific selection, padding and protected output sets read [export options](MCP_EXPORT_OPTIONS.md).
+
 ## Index
 
 - [add_frame](#add_frame)
@@ -28,6 +30,7 @@ For tool/JSON-RPC failures, request IDs and partial rollback recovery, follow [t
 - [apply_shading](#apply_shading)
 - [copy_selection](#copy_selection)
 - [create_canvas](#create_canvas)
+- [create_layer_group](#create_layer_group)
 - [create_snapshot](#create_snapshot)
 - [create_tag](#create_tag)
 - [crop_sprite](#crop_sprite)
@@ -53,10 +56,13 @@ For tool/JSON-RPC failures, request IDs and partial rollback recovery, follow [t
 - [get_palette](#get_palette)
 - [get_pixels](#get_pixels)
 - [get_sprite_info](#get_sprite_info)
+- [get_sprite_structure](#get_sprite_structure)
+- [get_sprite_tags](#get_sprite_tags)
 - [import_image](#import_image)
 - [link_cel](#link_cel)
 - [list_operation_history](#list_operation_history)
 - [list_snapshots](#list_snapshots)
+- [move_layer](#move_layer)
 - [move_selection](#move_selection)
 - [paste_clipboard](#paste_clipboard)
 - [quantize_palette](#quantize_palette)
@@ -68,12 +74,16 @@ For tool/JSON-RPC failures, request IDs and partial rollback recovery, follow [t
 - [select_all](#select_all)
 - [select_ellipse](#select_ellipse)
 - [select_rectangle](#select_rectangle)
+- [set_cel_properties](#set_cel_properties)
 - [set_frame_duration](#set_frame_duration)
+- [set_layer_properties](#set_layer_properties)
 - [set_palette](#set_palette)
 - [set_palette_color](#set_palette_color)
+- [set_tag_properties](#set_tag_properties)
 - [sort_palette](#sort_palette)
 - [suggest_antialiasing](#suggest_antialiasing)
 - [undo_last_operation](#undo_last_operation)
+- [unlink_cel](#unlink_cel)
 
 ## add_frame
 
@@ -375,6 +385,39 @@ Create a new Aseprite sprite with specified dimensions and color mode. Returns t
 |---|---|---|---|
 | `file_path` | string | yes | Absolute path to the created Aseprite file |
 
+## create_layer_group
+
+Create an empty group at an explicit parent and sibling index using a fresh structure revision. Empty parent_id is root. Rejects locked/non-group destinations. Does not move or delete layers. Requery structure after success.
+
+### Input
+
+| Field | Type | Required | Meaning |
+|---|---|---|---|
+| `sprite_path` | string | yes | Native .aseprite or .ase file |
+| `expected_revision` | string | yes | Fresh revision from get_sprite_structure |
+| `name` | string | yes | Group name; empty and duplicate names allowed |
+| `parent_id` | string | yes | Parent group ID in expected_revision; empty string means sprite root |
+| `stack_index` | integer | yes | Required 1-based bottom-to-top insertion index, 1 through child count plus one |
+
+### Output
+
+| Field | Type | Required | Meaning |
+|---|---|---|---|
+| `success` | boolean | yes |  |
+| `revision` | string | yes |  |
+| `layer` | object | yes |  |
+| `layer.layer_id` | string | yes |  |
+| `layer.parent_id` | string | yes |  |
+| `layer.name` | string | yes |  |
+| `layer.kind` | string | yes |  |
+| `layer.stack_index` | integer | yes |  |
+| `layer.visible` | boolean | yes |  |
+| `layer.editable` | boolean | yes |  |
+| `layer.effective_visible` | boolean | yes |  |
+| `layer.effective_editable` | boolean | yes |  |
+| `layer.opacity` | null/integer | no |  |
+| `layer.blend_mode` | string | no |  |
+
 ## create_snapshot
 
 Save a byte-exact recovery copy of a saved sprite. Persists across server restarts for 7 days; store limit 100 snapshots / 512 MiB. Does not capture unsaved editor changes.
@@ -656,7 +699,7 @@ Draw individual pixels at specified coordinates with colors. Supports batch oper
 | Field | Type | Required | Meaning |
 |---|---|---|---|
 | `sprite_path` | string | yes | Path to the Aseprite sprite file |
-| `layer_name` | string | yes | Name of the layer to draw on |
+| `layer_name` | string | yes | Unique exact raster layer name at any group depth; duplicate names are rejected |
 | `frame_number` | integer | yes | Frame number to draw on (1-based) |
 | `pixels` | null/array | yes | Array of pixels to draw |
 | `pixels[].x` | integer | yes | X coordinate of the pixel |
@@ -742,12 +785,20 @@ Duplicate an existing frame and insert it at the specified position.
 
 ## export_sprite
 
-Export sprite to PNG, GIF, JPG, or BMP. All-frame PNG/JPG/BMP exports use numbered files (stem_0001.ext etc.) and return files in frame order. exported_path and file_size identify the first real file. Single-frame exports and animated GIF retain a single output path. The output extension must match format.
+Export sprite to PNG, GIF, JPG, or BMP. All-frame PNG/JPG/BMP exports use numbered files (stem_0001.ext etc.) and return files in frame order. exported_path and file_size identify the first real file. Single-frame exports and animated GIF retain a single output path. The output extension must match format. PNG/JPG/BMP support tag or inclusive frame range, revision-guarded layer/group selection and trim. GIF retains its existing frame_number behavior and rejects these new rendering options.
 
 ### Input
 
 | Field | Type | Required | Meaning |
 |---|---|---|---|
+| `tag` | null/string | no | Exact saved native tag name; mutually exclusive with frame range and nonzero frame_number |
+| `layer_id` | string | no | Structural layer or group ID from get_sprite_structure; requires expected_revision |
+| `expected_revision` | string | no | Saved SHA-256 revision; required with layer_id |
+| `frame_start` | null/integer | no | First inclusive source frame, 1-based; omitted defaults to 1 |
+| `frame_end` | null/integer | no | Last inclusive source frame; omitted defaults to last frame |
+| `include_hidden` | boolean | no | Include hidden target and descendants; requires layer_id; default respects saved visibility |
+| `trim` | boolean | no | Trim transparent frame margins; default false |
+| `overwrite` | null/boolean | no | Replace existing planned outputs; omitted or null defaults to true; false rejects any existing destination |
 | `sprite_path` | string | yes | Path to the Aseprite sprite file |
 | `output_path` | string | yes | Output file path; multi-frame PNG/JPG/BMP uses stem_0001.ext, stem_0002.ext, etc. |
 | `format` | string | yes | Export format: png, gif, jpg, bmp |
@@ -766,17 +817,29 @@ Export sprite to PNG, GIF, JPG, or BMP. All-frame PNG/JPG/BMP exports use number
 
 ## export_spritesheet
 
-Export animation frames as spritesheet with layout options.
+Export saved frames as a spritesheet with optional tag/frame range, revision-guarded layer/group selection, trim, extrude and individual padding. Texture and the legacy JSON sidecar are staged and published together with ordinary-error rollback. include_json controls metadata_path in the response; both outputs are always protected.
 
 ### Input
 
 | Field | Type | Required | Meaning |
 |---|---|---|---|
+| `tag` | null/string | no | Exact saved native tag name; mutually exclusive with frame_start/frame_end |
+| `layer_id` | string | no | Structural layer or group ID from get_sprite_structure; requires expected_revision |
+| `expected_revision` | string | no | Saved SHA-256 revision; required with layer_id |
+| `frame_start` | null/integer | no | First inclusive source frame, 1-based; omitted defaults to 1 |
+| `frame_end` | null/integer | no | Last inclusive source frame; omitted defaults to last frame |
+| `include_hidden` | boolean | no | Include hidden target and descendants; requires layer_id; default respects saved visibility |
+| `trim` | boolean | no | Trim transparent frame margins; visible native background keeps the full canvas; default false |
+| `overwrite` | null/boolean | no | Replace existing planned outputs; omitted or null defaults to true; false rejects any existing destination |
+| `extrude` | boolean | no | Repeat edge pixels by one pixel outside each sheet frame; default false |
+| `border_padding` | null/integer | no | Sheet outer padding 0-100; overrides padding including explicit zero |
+| `shape_padding` | null/integer | no | Space between sheet shapes 0-100; overrides padding including explicit zero |
+| `inner_padding` | null/integer | no | Transparent inset inside each sheet frame 0-100; overrides padding including explicit zero |
 | `sprite_path` | string | yes | Path to the Aseprite sprite file |
 | `output_path` | string | yes | Output file path for spritesheet |
 | `layout` | string | yes | Spritesheet layout: horizontal, vertical, rows, columns, or packed |
-| `padding` | integer | yes | Padding between frames in pixels (0-100) |
-| `include_json` | boolean | yes | Include JSON metadata file |
+| `padding` | integer | yes | Default border, shape and inner padding in pixels (0-100); individual options override |
+| `include_json` | boolean | yes | Return metadata_path; the legacy JSON sidecar is always generated and protected |
 
 ### Output
 
@@ -933,6 +996,87 @@ Retrieve metadata about an existing Aseprite sprite including dimensions, color 
 | `layers` | null/array | yes | Names of all layers in the sprite |
 | `layers[]` | string | — | Array item |
 
+## get_sprite_structure
+
+Read saved layer hierarchy and frame/cel existence, bounds, opacity and native image sharing. Structural layer IDs are sibling-index paths valid while hierarchy order is unchanged; revision-guarded cel and layer/group editing tools accept these IDs; requery after every edit. Returns at most 100 layers x 100 frames, with exact layer filter and continuation offsets.
+
+### Input
+
+| Field | Type | Required | Meaning |
+|---|---|---|---|
+| `sprite_path` | string | yes | Saved sprite to inspect without saving or recording history |
+| `layer_id` | string | no | Exact structural layer ID such as 2/1; does not include descendants |
+| `layer_offset` | integer | no | Zero-based offset in matching depth-first layers; default 0 |
+| `page_size` | integer | no | Layer page size; default 50, range 1-100 |
+| `frame_start` | integer | no | First frame (1-based); default 1 |
+| `frame_end` | integer | no | Last inclusive frame; default at most 100 frames from frame_start; maximum span 100 |
+
+### Output
+
+| Field | Type | Required | Meaning |
+|---|---|---|---|
+| `revision` | string | yes |  |
+| `width` | integer | yes |  |
+| `height` | integer | yes |  |
+| `color_mode` | string | yes |  |
+| `frame_count` | integer | yes |  |
+| `layer_count` | integer | yes |  |
+| `matching_layer_count` | integer | yes |  |
+| `frame_start` | integer | yes |  |
+| `frame_end` | integer | yes |  |
+| `next_frame_start` | integer | no |  |
+| `next_layer_offset` | null/integer | no |  |
+| `layers` | null/array | yes |  |
+| `layers[].layer_id` | string | yes |  |
+| `layers[].parent_id` | string | yes |  |
+| `layers[].name` | string | yes |  |
+| `layers[].name_path` | null/array | yes |  |
+| `layers[].name_path[]` | string | — | Array item |
+| `layers[].kind` | string | yes |  |
+| `layers[].stack_index` | integer | yes |  |
+| `layers[].visible` | boolean | yes |  |
+| `layers[].editable` | boolean | yes |  |
+| `layers[].effective_visible` | boolean | yes |  |
+| `layers[].effective_editable` | boolean | yes |  |
+| `layers[].opacity` | null/integer | no |  |
+| `layers[].blend_mode` | string | no |  |
+| `layers[].cels` | null/array | yes |  |
+| `layers[].cels[].frame_number` | integer | yes |  |
+| `layers[].cels[].exists` | boolean | yes |  |
+| `layers[].cels[].x` | null/integer | no |  |
+| `layers[].cels[].y` | null/integer | no |  |
+| `layers[].cels[].width` | null/integer | no |  |
+| `layers[].cels[].height` | null/integer | no |  |
+| `layers[].cels[].opacity` | null/integer | no |  |
+| `layers[].cels[].z_index` | null/integer | no |  |
+| `layers[].cels[].image_ref` | string | no |  |
+| `layers[].cels[].linked_cel_count` | integer | no |  |
+
+## get_sprite_tags
+
+Read all saved tags in native order with names, inclusive 1-based ranges, four playback directions, repeats and RGBA color. Duplicate/empty names are retained. tag_id is an array position valid only with this revision; no save or history.
+
+### Input
+
+| Field | Type | Required | Meaning |
+|---|---|---|---|
+| `sprite_path` | string | yes | Saved sprite to inspect without saving or recording history |
+
+### Output
+
+| Field | Type | Required | Meaning |
+|---|---|---|---|
+| `revision` | string | yes |  |
+| `frame_count` | integer | yes |  |
+| `tags` | null/array | yes |  |
+| `tags[].tag_id` | integer | yes |  |
+| `tags[].name` | string | yes |  |
+| `tags[].from_frame` | integer | yes |  |
+| `tags[].to_frame` | integer | yes |  |
+| `tags[].direction` | string | yes |  |
+| `tags[].repeats` | integer | yes |  |
+| `tags[].color` | string | yes |  |
+
 ## import_image
 
 Import an external image file as a layer in the sprite.
@@ -1030,6 +1174,39 @@ List unexpired recovery copies, oldest first. Performs lazy expiry cleanup. Opti
 | `snapshots[].size_bytes` | integer | yes |  |
 | `snapshots[].sha256` | string | yes |  |
 | `snapshots[].label` | string | no |  |
+
+## move_layer
+
+Move/reorder an ordinary raster layer or whole group subtree at a fresh revision. Both source and destination IDs refer to that revision. Required stack_index is the final bottom-to-top sibling index. Empty parent_id is root. Rejects cycles, locked source/descendants/destination, special layers and no-op. All structural IDs must be requeried after success.
+
+### Input
+
+| Field | Type | Required | Meaning |
+|---|---|---|---|
+| `sprite_path` | string | yes | Native .aseprite or .ase file |
+| `expected_revision` | string | yes | Fresh revision from get_sprite_structure |
+| `layer_id` | string | yes | Source structural ID in expected_revision |
+| `parent_id` | string | yes | Destination group ID in expected_revision; empty string means sprite root |
+| `stack_index` | integer | yes | Required final 1-based bottom-to-top index, after removing source from its old position |
+
+### Output
+
+| Field | Type | Required | Meaning |
+|---|---|---|---|
+| `success` | boolean | yes |  |
+| `revision` | string | yes |  |
+| `layer` | object | yes |  |
+| `layer.layer_id` | string | yes |  |
+| `layer.parent_id` | string | yes |  |
+| `layer.name` | string | yes |  |
+| `layer.kind` | string | yes |  |
+| `layer.stack_index` | integer | yes |  |
+| `layer.visible` | boolean | yes |  |
+| `layer.editable` | boolean | yes |  |
+| `layer.effective_visible` | boolean | yes |  |
+| `layer.effective_editable` | boolean | yes |  |
+| `layer.opacity` | null/integer | no |  |
+| `layer.blend_mode` | string | no |  |
 
 ## move_selection
 
@@ -1288,6 +1465,39 @@ Create a rectangular selection with specified mode (replace/add/subtract/interse
 |---|---|---|---|
 | `success` | boolean | yes | Whether the selection was created successfully |
 
+## set_cel_properties
+
+Set existing raster cel position and/or opacity using a fresh get_sprite_structure revision. Negative/off-canvas coordinates allowed within signed 16-bit range. Rejects locked ancestors, group/tilemap/reference/background layers, absent cels and unchanged requests. Hidden layers allowed. Linked cels require allow_linked=true and change as a whole; never unlinks.
+
+### Input
+
+| Field | Type | Required | Meaning |
+|---|---|---|---|
+| `sprite_path` | string | yes | Native .aseprite or .ase file to edit |
+| `layer_id` | string | yes | Exact structural ID from get_sprite_structure, such as 2/1 |
+| `frame_number` | integer | yes | Existing cel frame, 1-based |
+| `expected_revision` | string | yes | Required revision from get_sprite_structure; refresh after every edit |
+| `x` | null/integer | no | Sprite-absolute x, -32768 to 32767; omitted or null keeps current value |
+| `y` | null/integer | no | Sprite-absolute y, -32768 to 32767; omitted or null keeps current value |
+| `opacity` | null/integer | no | Cel opacity, 0 to 255; omitted or null keeps current value |
+| `allow_linked` | boolean | no | Explicitly permit changing ALL cels sharing the native image; default false rejects linked cels |
+
+### Output
+
+| Field | Type | Required | Meaning |
+|---|---|---|---|
+| `success` | boolean | yes |  |
+| `revision` | string | yes |  |
+| `affected_cels` | null/array | yes |  |
+| `affected_cels[].layer_id` | string | yes |  |
+| `affected_cels[].frame_number` | integer | yes |  |
+| `affected_cels[].x` | integer | yes |  |
+| `affected_cels[].y` | integer | yes |  |
+| `affected_cels[].opacity` | integer | yes |  |
+| `warnings` | null/array | no |  |
+| `warnings[].code` | string | yes | Stable warning code |
+| `warnings[].message` | string | yes | Human-readable description of the operation's potential effect |
+
 ## set_frame_duration
 
 Set the duration of an existing animation frame in milliseconds.
@@ -1305,6 +1515,42 @@ Set the duration of an existing animation frame in milliseconds.
 | Field | Type | Required | Meaning |
 |---|---|---|---|
 | `success` | boolean | yes | Whether the frame duration was set successfully |
+
+## set_layer_properties
+
+Edit name, local visibility/editability, raster opacity/blend using a fresh structure revision. Ordinary raster/group only; hidden targets allowed. Locked ancestors rejected; a locally locked target accepts only editable=true (unlock first). Group opacity/blend unsupported. No-op rejected. Requery structure after success.
+
+### Input
+
+| Field | Type | Required | Meaning |
+|---|---|---|---|
+| `sprite_path` | string | yes | Native .aseprite or .ase file |
+| `expected_revision` | string | yes | Fresh revision from get_sprite_structure |
+| `layer_id` | string | yes | Structural sibling-index path, e.g. 2/1 |
+| `name` | null/string | no | New name; empty allowed; omitted or null keeps current value |
+| `visible` | null/boolean | no | Local visibility; omitted or null keeps current value |
+| `editable` | null/boolean | no | Local editability; false locks; omitted or null keeps current value |
+| `opacity` | null/integer | no | Raster layer opacity 0-255; groups unsupported; omitted or null keeps current value |
+| `blend_mode` | null/string | no | Native layer mode: normal, multiply, screen, overlay, darken, lighten, color_dodge, color_burn, hard_light, soft_light, difference, exclusion, hsl_hue, hsl_saturation, hsl_color, hsl_luminosity, addition, subtract, divide; groups unsupported |
+
+### Output
+
+| Field | Type | Required | Meaning |
+|---|---|---|---|
+| `success` | boolean | yes |  |
+| `revision` | string | yes |  |
+| `layer` | object | yes |  |
+| `layer.layer_id` | string | yes |  |
+| `layer.parent_id` | string | yes |  |
+| `layer.name` | string | yes |  |
+| `layer.kind` | string | yes |  |
+| `layer.stack_index` | integer | yes |  |
+| `layer.visible` | boolean | yes |  |
+| `layer.editable` | boolean | yes |  |
+| `layer.effective_visible` | boolean | yes |  |
+| `layer.effective_editable` | boolean | yes |  |
+| `layer.opacity` | null/integer | no |  |
+| `layer.blend_mode` | string | no |  |
 
 ## set_palette
 
@@ -1341,6 +1587,38 @@ Set a specific palette index to a color. Index must be within the current palett
 | Field | Type | Required | Meaning |
 |---|---|---|---|
 | `Success` | boolean | yes |  |
+
+## set_tag_properties
+
+Edit an existing tag using get_sprite_tags tag_id and expected_revision. Supports name, inclusive range, direction and repeats; overlapping tags allowed. Empty/duplicate new names and unchanged requests rejected. Preserves existing empty/duplicate names when not renaming. Returns saved tag_id, which can change when range changes. Refresh tags after any edit.
+
+### Input
+
+| Field | Type | Required | Meaning |
+|---|---|---|---|
+| `sprite_path` | string | yes | Native .aseprite or .ase file to edit |
+| `tag_id` | integer | yes | 1-based tag_id from get_sprite_tags; not a permanent ID |
+| `expected_revision` | string | yes | Required revision from get_sprite_tags; refresh after every edit |
+| `name` | null/string | no | New nonblank name; rename to another tag's name is rejected; omitted/null keeps current value |
+| `from_frame` | null/integer | no | First inclusive frame, 1-based; omitted/null keeps current value |
+| `to_frame` | null/integer | no | Last inclusive frame, 1-based; omitted/null keeps current value |
+| `direction` | null/string | no | forward, reverse, pingpong or pingpong_reverse; omitted/null keeps current value |
+| `repeats` | null/integer | no | 0-65535; 0 is native unspecified (infinite UI, once on export); omitted/null keeps current value |
+
+### Output
+
+| Field | Type | Required | Meaning |
+|---|---|---|---|
+| `success` | boolean | yes |  |
+| `revision` | string | yes |  |
+| `tag` | object | yes |  |
+| `tag.tag_id` | integer | yes |  |
+| `tag.name` | string | yes |  |
+| `tag.from_frame` | integer | yes |  |
+| `tag.to_frame` | integer | yes |  |
+| `tag.direction` | string | yes |  |
+| `tag.repeats` | integer | yes |  |
+| `tag.color` | string | yes |  |
 
 ## sort_palette
 
@@ -1436,3 +1714,29 @@ Undo the latest still-applied recorded edit by expected operation ID. Refuses ex
 | `backup_snapshot.size_bytes` | integer | yes |  |
 | `backup_snapshot.sha256` | string | yes |  |
 | `backup_snapshot.label` | string | no |  |
+
+## unlink_cel
+
+Detach exactly one existing raster cel from its native shared image using a fresh get_sprite_structure revision. Copies pixels and cel metadata without moving or converting them; other members retain sharing. Rejects independent/absent cels, locked ancestors and group/tilemap/reference/background targets. Hidden targets allowed. Returns the independent cel and former peers (a sole remaining peer is independent).
+
+### Input
+
+| Field | Type | Required | Meaning |
+|---|---|---|---|
+| `sprite_path` | string | yes | Native .aseprite or .ase file to edit |
+| `layer_id` | string | yes | Exact structural ID from get_sprite_structure, such as 2/1 |
+| `frame_number` | integer | yes | Existing linked cel frame, 1-based |
+| `expected_revision` | string | yes | Required revision from get_sprite_structure; refresh after every edit |
+
+### Output
+
+| Field | Type | Required | Meaning |
+|---|---|---|---|
+| `success` | boolean | yes |  |
+| `revision` | string | yes |  |
+| `cel` | object | yes |  |
+| `cel.layer_id` | string | yes |  |
+| `cel.frame_number` | integer | yes |  |
+| `remaining_linked_cels` | null/array | yes |  |
+| `remaining_linked_cels[].layer_id` | string | yes |  |
+| `remaining_linked_cels[].frame_number` | integer | yes |  |

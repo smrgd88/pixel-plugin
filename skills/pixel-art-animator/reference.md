@@ -8,7 +8,7 @@ All edit frame numbers start at 1. Duplicate insertion uses 0 only to mean appen
 
 Verify a link by editing source pixels and reading the same coordinates in the target. The integration test additionally checks serialized Aseprite linked-cel chunks. Drawing identical pictures alone does not prove native linking.
 
-Use `save_as` to keep the editable animation. See [exporter](../pixel-art-exporter/SKILL.md) for GIF/sheet exports, copy-based FPS changes and known frame-range export. There is no dedicated preview/playback, reorder-frame or list-tags tool.
+Use `save_as` to keep the editable animation. See [exporter](../pixel-art-exporter/SKILL.md) for GIF/sheet exports, copy-based FPS changes and direct PNG/sheet frame-range export. get_sprite_tags lists native ordered tags and revision; set_tag_properties edits them with a fresh token. Dedicated playback and reorder-frame remain unavailable.
 
 ## Pose and timing decisions
 
@@ -29,3 +29,5 @@ For acceleration, vary pose spacing as well as duration; merely adding frames do
 When duplicating a pose and shifting it, clear the old pixels before drawing the new position. Otherwise the duplicate retains a trail. Keep static elements on their own layer; native linked cels are for shared content, not distinct poses.
 
 Keep tags named for actions (`idle`, `walk`, `attack`) and maintain known inclusive ranges as frames are inserted/deleted. Inspect exported timings rather than assuming a tag changes the frame rate. See [complete motion recipes](examples.md#complete-animation-recipes).
+
+Use [revision-guarded cel/tag workflows](../../docs/MCP_STRUCTURE_EDITING.md) for position/opacity, linked scope and unlink. Requery IDs after layer moves and tag range edits.

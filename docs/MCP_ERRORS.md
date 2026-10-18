@@ -1,9 +1,9 @@
 # MCP errors and request tracing
 
-Bundled source `65074051f5d3903124ead37367c7fc62d9e7e7f6` includes merged MCP #25.
-The authoritative contract is [ERRORS.md at this exact pin](https://github.com/smrgd88/pixel-mcp/blob/65074051f5d3903124ead37367c7fc62d9e7e7f6/docs/ERRORS.md).
+Bundled source `99f193ad3a0eefcb8e8b71a3b9e3f69be47ac2d8` includes merged MCP #25.
+The authoritative contract is [ERRORS.md at this exact pin](https://github.com/smrgd88/pixel-mcp/blob/99f193ad3a0eefcb8e8b71a3b9e3f69be47ac2d8/docs/ERRORS.md).
 Its introductory “implementation branch” status is historical; PR #25 is merged upstream.
-All 56 tools, successful payloads, warnings and input/output schemas remain unchanged.
+The current 64-tool bundle preserves this error boundary. New revision-guarded tools and export options are described in [structure editing](MCP_STRUCTURE_EDITING.md) and [export options](MCP_EXPORT_OPTIONS.md); warnings and tool-specific success payloads remain distinct.
 
 ## Read the envelope first
 

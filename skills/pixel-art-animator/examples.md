@@ -162,3 +162,51 @@ These are MCP tools/call payloads, not a script to run sequentially. Replace `/w
 The `breathing-idle` and `attack-timing` recipes in [workflows.json](workflows.json) start from a one-frame 16×16 sprite with a 4×4 body at (6,6) on Layer 1. This is a concrete example fixture; adapt coordinates to the real subject. Idle duplicates then clears the displaced bottom row before drawing the raised row. Attack uses separate windup/strike/recovery frames and varied durations. Native links remain for static shared layers, not these distinct poses.
 
 Recipe JSON uses `{source}` for an existing absolute sprite path, `{output}` for a caller-selected output directory, and saved step results such as `{canvas.file_path}`. These are recipe substitutions, never literal MCP arguments. The runner resolves them before schema validation. Run `python3 bin/test-skill-workflows.py --aseprite /absolute/path/to/aseprite` to validate the recipes with real files. The prerequisite fixture is created only by the test runner; production use must inspect the user's actual source.
+
+## Revision-guarded examples
+
+Independent alternatives, not a sequence. Replace the all-zero revision with the actual latest query revision and resolve IDs in that same saved file. Never send placeholder revisions. Property examples assume an independent raster cel; unlink assumes a native linked cel. Requery after every edit.
+
+### get_sprite_tags
+
+```mcp-example
+{
+  "name": "get_sprite_tags",
+  "arguments": {
+    "sprite_path": "/work/hero.aseprite"
+  }
+}
+```
+
+### set_tag_properties
+
+```mcp-example
+{
+  "name": "set_tag_properties",
+  "arguments": {
+    "sprite_path": "/work/hero.aseprite",
+    "expected_revision": "0000000000000000000000000000000000000000000000000000000000000000",
+    "tag_id": 1,
+    "direction": "pingpong_reverse",
+    "repeats": 0
+  }
+}
+```
+
+### unlink_cel
+
+```mcp-example
+{
+  "name": "unlink_cel",
+  "arguments": {
+    "sprite_path": "/work/hero.aseprite",
+    "expected_revision": "0000000000000000000000000000000000000000000000000000000000000000",
+    "layer_id": "2/1",
+    "frame_number": 1
+  }
+}
+```
+
+### Executable unlink-and-retag recipe
+
+Create native frame links, query/unlink/requery and edit one cel, then query/edit the tag with repeats=0 and save. The complete schema-checked sequence is in [workflows.json](workflows.json), executed by `bin/test-skill-workflows.py`.

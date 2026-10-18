@@ -157,3 +157,48 @@ For a multi-frame sprite, report every returned `files` entry as described in [s
 ```mcp-example
 {"name":"export_sprite","arguments":{"sprite_path":"/work/walk.aseprite","output_path":"/work/walk.jpeg","format":"jpg","frame_number":1}}
 ```
+
+## Filtered sequence and protected sheet
+
+Independent examples. First query structure; replace zero revision and layer_id with current values. The sequence assumes source frames 3–4 exist; source numbering is retained. GIF cannot use these selectors.
+
+```mcp-example
+{
+  "name": "export_sprite",
+  "arguments": {
+    "sprite_path": "/work/hero.aseprite",
+    "output_path": "/work/walk.png",
+    "format": "png",
+    "frame_number": 0,
+    "frame_start": 3,
+    "frame_end": 4,
+    "trim": true,
+    "overwrite": false
+  }
+}
+```
+
+```mcp-example
+{
+  "name": "export_spritesheet",
+  "arguments": {
+    "sprite_path": "/work/hero.aseprite",
+    "output_path": "/work/selected.png",
+    "layout": "horizontal",
+    "padding": 2,
+    "include_json": false,
+    "layer_id": "1",
+    "expected_revision": "0000000000000000000000000000000000000000000000000000000000000000",
+    "trim": true,
+    "extrude": true,
+    "border_padding": 0,
+    "shape_padding": 0,
+    "inner_padding": null,
+    "overwrite": false
+  }
+}
+```
+
+### Executable selected-sheet-export recipe
+
+Query layer/revision and export a selected trimmed/extruded sheet with three explicit-zero padding overrides; verify actual PNG and source-indexed JSON. The complete schema-checked sequence is in [workflows.json](workflows.json), executed by `bin/test-skill-workflows.py`.
